@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../iController.php';
 require_once __DIR__ . '/../../main/controllers/DescriptionController.php';
+require_once 'StandardVersionController.php';
 
 class StandardController implements iController
 {
@@ -25,6 +26,7 @@ class StandardController implements iController
         $this->body = $body;
         $this->path = $path;
 
+
         if(count($path) == 1){
             //check if number, if not return error
             if(is_numeric($path[0]) && ltrim($path[0]) != ''){
@@ -38,12 +40,9 @@ class StandardController implements iController
                 $this->standard_id = $path[0];
 
                 if($path[1] == 'versions'){
-                    //TODO if part 2 == versions, then make new instance of standardversionController, and send in path - what just checked
-                    //   --> send in standard_id on that standard
-
-                    echo 'created version controller';
-                    $this->controller = 1; //REMOVE THIS, THIS FAKES A CTRL! This will cause fatal error!
-
+                    //send to StandardVersionController
+                    $this->trimPath(2);
+                    $this->controller = new VersionController($this->path,$this->method,$this->body,$this->standard_id);
                 }else{
                     $this->controller = new DescriptionController();//return error
                 }
@@ -53,6 +52,20 @@ class StandardController implements iController
         }
     }
 
+    //if $parts == 1,then remove std_id, if $parts == 2, then remove std_id AND 'verions'
+    private function trimPath($parts){
+        if($parts == 1){
+            //remove part from path array and fix index of array
+            unset($this->path[0]);
+            $this->path = array_values($this->path);
+
+        }elseif($parts == 2){
+            //remove part from path array and fix index of array
+            unset($this->path[0]);
+            unset($this->path[1]);
+            $this->path = array_values($this->path);
+        }
+    }
 
     public function getResponse()
     {
