@@ -15,4 +15,4 @@ if( $_SERVER['PATH_INFO'] ){
 }
 
 $req = new MainController($api_version, $path, $method, $body);
-echo $req->get_response();
+echo $req->getResponse();
