@@ -2,7 +2,7 @@
 
 class DescriptionController implements iController
 {
-    public function get_response()
+    public function getResponse()
     {
         return "<pre>
 @@  @@  @@@@@  @@     @@      @@@@@
