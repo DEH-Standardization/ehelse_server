@@ -25,8 +25,8 @@ class APIV1Controller implements iController
         }
     }
 
-    public function get_response()
+    public function getResponse()
     {
-        return $this->controller->get_response();
+        return $this->controller->getResponse();
     }
 }

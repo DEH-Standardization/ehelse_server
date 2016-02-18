@@ -26,7 +26,7 @@ class StandardController implements iController
         }
     }
 
-    public function get_response(){
+    public function getResponse(){
         //TODO you got controller? if so, use its get_response.
 
         //TODO if not controller, but standard_id, then return the json for THAT standard.

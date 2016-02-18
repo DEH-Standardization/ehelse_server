@@ -42,7 +42,7 @@ class MainController implements iController{
         }
     }
 
-    public function get_response(){
-        return $this->controller->get_response();
+    public function getResponse(){
+        return $this->controller->getResponse();
     }
 }
