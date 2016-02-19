@@ -17,7 +17,7 @@ class Profile
 
     public function getPrilfeVersions()
     {
-        $column = GeneralDataBaseCommunication::getColumnById()
+        $column = GeneralDataBaseCommunication::getColumnById("profile_version")
     }
 
     public function getProfileVersionByProfileId($id)
