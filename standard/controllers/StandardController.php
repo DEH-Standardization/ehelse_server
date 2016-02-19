@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../../iController.php';
 require_once __DIR__ . '/../../main/controllers/DescriptionController.php';
 require_once 'StandardVersionController.php';
+require_once 'StandardFieldController.php';
 
 class StandardController implements iController
 {
@@ -27,9 +28,16 @@ class StandardController implements iController
         $this->path = $path;
 
 
-        if(count($path) == 1){
+
+
+        if(count($path) >= 1 && $path[0] == 'fields'){
+            echo print_r($path);
+            $this->trimPath(1);
+            $this->controller = new StandardFieldController($this->path,$this->method,$this->body);
+        }
+        elseif(count($path) == 1){
             //check if number, if not return error
-            if(is_numeric($path[0]) && ltrim($path[0]) != ''){
+            if(is_numeric($path[0])){
                 $this->standard_id = $path[0];
             }else{
                 $this->controller = new DescriptionController();//return error
@@ -42,7 +50,7 @@ class StandardController implements iController
                 if($path[1] == 'versions'){
                     //send to StandardVersionController
                     $this->trimPath(2);
-                    $this->controller = new VersionController($this->path,$this->method,$this->body,$this->standard_id);
+                    $this->controller = new StandardVersionController($this->path,$this->method,$this->body,$this->standard_id);
                 }else{
                     $this->controller = new DescriptionController();//return error
                 }

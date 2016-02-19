@@ -9,7 +9,7 @@
      * .../versions/<id>
      * --return specific version
      */
-class VersionController implements iController
+class StandardVersionController implements iController
 {
     private $method, $body, $path, $standard_id;
 
