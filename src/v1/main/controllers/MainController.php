@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__.'/../../standard/controllers/StandardController.php';
+require_once __DIR__ . '/../../standards/controllers/StandardController.php';
 require_once __DIR__ . '/../../iController.php';
 require_once 'APIV1Controller.php';
 require_once 'DescriptionController.php';

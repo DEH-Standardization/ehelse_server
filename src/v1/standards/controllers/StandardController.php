@@ -75,6 +75,41 @@ class StandardController implements iController
         }
     }
 
+    private function getStandard()
+    {
+        return "Return standard";
+    }
+
+    private function updateStandard()
+    {
+        return "Standard, standard updated";
+    }
+
+    private function deleteStandard()
+    {
+        return "Sd deleted";
+    }
+
+    private function handleStandardRequest()
+    {
+        $response = null;
+        switch($this->method){
+            case "GET":
+                $response = $this->getStandard();
+                break;
+            case "POST":
+                $response = "Error not suposed to post here";
+                break;
+            case "PUT":
+                $response = $this->updateStandard();
+                break;
+            case "DELETE":
+                $response = $this->deleteStandard();
+                break;
+        }
+        return $response;
+    }
+
     public function getResponse()
     {
         $response = null;
@@ -85,7 +120,7 @@ class StandardController implements iController
 
         }elseif(is_null($this->controller) && !is_null($this->standard_id)){
             //TODO if not controller, but standard_id, then return the json for THAT standard.
-            $response = 'return specific std with given id';
+            $response = $this->handleStandardRequest();
 
         }else{
             //TODO if neither, return a list with all standards.

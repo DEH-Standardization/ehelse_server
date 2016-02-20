@@ -1,7 +1,7 @@
 <?php
 
 require_once "../EHelseTestCase.php";
-require_once "../../standard/controllers/StandardController.php";
+require_once "../../../src/v1/standards/controllers/StandardController.php";
 
 class StandardControllerTest extends EHelseTestCase
 {

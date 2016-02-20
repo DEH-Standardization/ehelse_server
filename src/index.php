@@ -1,5 +1,5 @@
 <?php
-require_once "main/controllers/MainController.php";
+require_once "v1/main/controllers/MainController.php";
 
 $method = $_SERVER['REQUEST_METHOD'];
 $path = $_SERVER['PATH_INFO'];
