@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/StandardVersion.php';
+require_once '../dbmappers/DbCommunication.php';
 
 class Standard
 {
@@ -28,8 +29,7 @@ class Standard
         $password = "ehelse12";
 
         try {
-            $conn = new PDO("mysql:host=$servername;dbname=andrkje_ehelse_db", $username, $password);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // set the PDO error mode to exception
+            $conn = DbCommunication::getInstance()->getConnection();
             $sql = "select * from andrkje_ehelse_db.standard where id = " . $id . ";";
             $result = $conn->prepare($sql);
             $result->execute();
