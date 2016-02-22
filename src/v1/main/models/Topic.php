@@ -2,9 +2,9 @@
 
 
 class Topic{
-    private $id, $timestamp, $title, $description, $number, $is_in_catalog, $order, $parent_id;
+    private $id, $timestamp, $title, $description, $number, $is_in_catalog, $sequence, $parent_id;
 
-    public function __construct($id, $timestamp, $title, $description, $number, $is_in_catalog, $order, $parent_id)
+    public function __construct($id, $timestamp, $title, $description, $number, $is_in_catalog, $sequence, $parent_id)
     {
         $this->id = $id;
         $this->timestamp = $timestamp;
@@ -12,7 +12,7 @@ class Topic{
         $this->description = $description;
         $this->number = $number;
         $this->is_in_catalog = $is_in_catalog;
-        $this->order = $order;
+        $this->sequence = $sequence;
         $this->parent_id = $parent_id;
     }
 
@@ -41,7 +41,7 @@ class Topic{
                     $row['description'],
                     $row['number'],
                     $row['is_in_catalog'],
-                    $row['order'],
+                    $row['sequence'],
                     $row['parent_id']));
             }
         }
@@ -61,7 +61,7 @@ class Topic{
                 $row['description'],
                 $row['number'],
                 $row['is_in_catalog'],
-                $row['order'],
+                $row['sequence'],
                 $row['parent_id']));
         }
         return $subtopics;
@@ -101,7 +101,7 @@ class Topic{
             $row['description'],
             $row['number'],
             $row['is_in_catalog'],
-            $row['order'],
+            $row['sequence'],
             $row['parent_id']);
     }
 
@@ -209,6 +209,16 @@ class Topic{
     public function setParentId($parent_id)
     {
         $this->parent_id = $parent_id;
+    }
+
+    public function getSequence()
+    {
+        return $this->sequence;
+    }
+
+    public function setSequence($sequence)
+    {
+        $this->sequence = $sequence;
     }
 
 

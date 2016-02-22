@@ -7,6 +7,7 @@ class DbCommunication
     private $server = "mysql.stud.ntnu.no";
     private $username = "andrkje_ehelse";
     private $password = "ehelse12";
+    private $database_name = "andrkje_ehelse_db";
 
     /**
      * Returns an instance of the database communication.
@@ -43,6 +44,14 @@ class DbCommunication
     public function getConnection()
     {
         return $this->connection;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDatabaseName()
+    {
+        return $this->database_name;
     }
 
     /**
