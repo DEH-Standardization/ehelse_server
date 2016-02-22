@@ -18,6 +18,9 @@ class APIV1Controller implements iController
             case 'standards':
                 $this->controller = new StandardController($path, $method, $body);
                 break;
+            case 'profiles':
+                $this->controller = new ProfileController($path, $method, $body);
+                break;
             default:
                 //TODO handle error
                 $this->controller = new DescriptionController();
