@@ -30,7 +30,7 @@ class Topic{
         } else {
             $this->title = $title;
         }
-        if (strlen($description) > ModelValidation::getDescriptionMaxLength($description)) {
+        if (strlen($description) > ModelValidation::getDescriptionMaxLength()) {
             $this->description = ModelValidation::getValidDescription($description);
             echo "description is too long. Description set to: " . $this->description;
         }
@@ -58,6 +58,7 @@ class Topic{
     {
         return $this->title;
     }
+
     public function  setTitle($title)
     {
         if (strlen($title) > ModelValidation::getTitleMaxLength()) {

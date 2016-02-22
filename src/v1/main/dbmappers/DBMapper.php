@@ -3,7 +3,7 @@
 /**
  * Class DBMapper
  */
-class DBMapper
+abstract class DBMapper implements iDbMapper
 {
     protected $connection;
 
@@ -26,7 +26,6 @@ class DBMapper
      */
     protected function queryDB($sql, $columns)
     {
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
         $sql_query = $sql;
         $stmt = $this->connection->prepare($sql_query);
         if(!$stmt) {

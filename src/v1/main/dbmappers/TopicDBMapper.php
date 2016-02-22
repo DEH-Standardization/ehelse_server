@@ -7,6 +7,7 @@ require_once "../DBError.php";
  */
 class TopicDbMapper extends DBMapper
 {
+    //public function get() {}
     /**
      * TopicDbMapper constructor.
      */
@@ -66,7 +67,7 @@ class TopicDbMapper extends DBMapper
      * @param $topic
      * @return DBError|null|string
      */
-    public function addTopic($topic)
+    public function add($topic)
     {
         $response = null;
         $db_name = DbCommunication::getInstance()->getDatabaseName();
@@ -94,7 +95,7 @@ class TopicDbMapper extends DBMapper
      * @param $topic
      * @return DBError|null|string
      */
-    public function updateTopic($topic)
+    public function update($topic)
     {
         $response = null;
         $db_name = DbCommunication::getInstance()->getDatabaseName();

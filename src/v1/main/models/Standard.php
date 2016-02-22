@@ -10,10 +10,23 @@ class Standard
     {
         $this->id = $id;
         $this->timestamp = $timestamp;
-        $this->title = $title;
-        $this->description = $description;
         $this->topic_id = $topic_id;
         $this->is_in_catalog = $is_in_catalog;
+        $this->title = $title;
+        $this->description = $description;
+        if (strlen($title) > ModelValidation::getTitleMaxLength()) {
+            $this->title = ModelValidation::getValidTitle($title);
+            echo "Title is too long. Title set to: " . $this->title;
+        } else {
+            $this->title = $title;
+        }
+        if (strlen($description) > ModelValidation::getDescriptionMaxLength()) {
+            $this->description = ModelValidation::getValidDescription($description);
+            echo "description is too long. Description set to: " . $this->description;
+        }
+        else {
+            $this->description = $description;
+        }
     }
 
     public function getStandardVersions()
@@ -72,9 +85,14 @@ public function  aa(){}
         return $this->title;
     }
 
-    public function setTitle($title)
+    public function  setTitle($title)
     {
-        $this->title = $title;
+        if (strlen($title) > ModelValidation::getTitleMaxLength()) {
+            $this->title = ModelValidation::getValidTitle($title);
+            echo "Title is too long. Title set to: " . $this->title;
+        } else {
+            $this->title = $title;
+        }
     }
 
     public function getDescription()
@@ -84,7 +102,13 @@ public function  aa(){}
 
     public function setDescription($description)
     {
-        $this->description = $description;
+        if (strlen($description) > ModelValidation::getDescriptionMaxLength($description)) {
+            $this->description = ModelValidation::getValidDescription($description);
+            echo "description is too long. Description set to: " . $this->description;
+        }
+        else {
+            $this->description = $description;
+        }
     }
 
     public function getTopicId()
