@@ -35,9 +35,15 @@ class TopicDbMapper extends DBMapper
         return $this->getSubtopicsByTopicIdDB($topic->getId());
     }
 
+    /**
+     * Returns topic based on topic id
+     * @param $id
+     * @return null|Topic
+     */
     public function getTopicById($id)
     {
-        $result = $this->queryDB("select * from andrkje_ehelse_db.topic where id = ?;", array($id));
+        $dbName = DbCommunication::getInstance()->getDatabaseName();
+        $result = $this->queryDB("select * from $dbName.topic where id = ?;", array($id));
         if ($result->rowCount() == 1) {
             $row = $result->fetch();
             return new Topic(
@@ -55,21 +61,47 @@ class TopicDbMapper extends DBMapper
         return null;
     }
 
-    public function storeTopic($topic)
+    /**
+     * Adds new topic to database
+     * @param $topic
+     * @return DBError|null|string
+     */
+    public function addTopic($topic)
     {
-
+        $response = null;
+        $db_name = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "INSERT INTO $db_name.topic
+                VALUES (null, now(), ?, ?, ?, ?, ?, ?);";
+        $parameters = array(
+            $topic->getTitle(),
+            $topic->getDescription(),
+            $topic->getNumber(),
+            $topic->getIsInCatalog(),
+            $topic->getSequence(),
+            $topic->getParentId(),
+        );
+        try {
+            $this->queryDB($sql, $parameters);
+            $response = "success";
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
+    /**
+     * Updates topic in database
+     * @param $topic
+     * @return DBError|null|string
+     */
     public function updateTopic($topic)
     {
         $response = null;
-
-        $sql = "UPDATE andrkje_ehelse_db.topic
+        $db_name = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "UPDATE $db_name.topic
                 SET `timestamp` = now(), title = ?, description = ?, number = ?, is_in_catalog = ?, sequence = ?, parent_id = ?
                 WHERE id = ?;";
-
         $parameters = array(
-            //date('Y-m-d G:i:s'),    // timestamp
             $topic->getTitle(),
             $topic->getDescription(),
             $topic->getNumber(),
@@ -87,11 +119,11 @@ class TopicDbMapper extends DBMapper
         return $response;
     }
 
-
     private function getSubtopicsByTopicIdDB($id)
     {
         $topics = array();
-        $sql = "select * from andrkje_ehelse_db.topic where parent_id = ?";
+        $db_name = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "select * from $db_name.topic where parent_id = ?";
 
         $result = $this->queryDB($sql, array($id));
         foreach($result as $row) {
@@ -107,8 +139,5 @@ class TopicDbMapper extends DBMapper
         }
         return $topics;
     }
-
-
-
 
 }
