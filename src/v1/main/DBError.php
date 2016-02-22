@@ -12,27 +12,35 @@ class DBError extends Error
     public function __construct($e)
     {
         $this->title = "DB error: ";
-        switch ($e->getCode()) {
-            case 23000:
-                $this->title .= "integrity constraint violation";
-                $this->message = $e;
-                // TODO handle DB error messages
-                /*
-                switch ($e->getCode()) {
+        if (is_a($e, 'PDOException')) {
+            switch ($e->getCode()) {
+                case 23000:
+                    $this->title .= "integrity constraint violation";
+                    $this->message = $e;
+                    // TODO handle DB error messages
+                    /*
+                    switch ($e->getCode()) {
 
-                    case 1452:
-                        $this->message =  "foreign key failed";
-                        break;
-                    default:
-                        break;
+                        case 1452:
+                            $this->message =  "foreign key failed";
+                            break;
+                        default:
+                            break;
 
-                };
-                */
-                break;
-            default:
-                break;
+                    };
+                    */
+                    break;
+                default:
+                    $this->message = $e;
+                    break;
 
+            }
+        } else {
+            $this->title .= "other error";
+            $this->message = $e;
         }
+
     }
+
 
 }

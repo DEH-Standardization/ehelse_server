@@ -2,6 +2,7 @@
 require_once '../dbmappers/TopicDBMapper.php';
 require_once 'Standard.php';
 require_once '../models/ModelValidation.php';
+require_once '../dbmappers/StandardDBMapper.php';
 /**
  * Created by PhpStorm.
  * User: AK
@@ -21,4 +22,8 @@ $t2 = new Topic(3,time(), "test", "test",1,true,1,1);
 */
 
 $tt = new Topic(null ,null,"tt","dd",1,true,1,2);
-echo $tm->getStandardsByTopicId(1)[0]->getTitle();
+//echo $tm->getStandardsByTopicId(999)[0]->getTitle();
+
+$sm = new StandardDBMapper();
+
+echo $sm->getStandardById(999);

@@ -16,26 +16,6 @@ class TopicDbMapper extends DBMapper
     }
 
     /**
-     * Returns a list of subtopics to a topic from it's id
-     * @param $id
-     * @return array
-     */
-    public function getSubtopicsByTopicId($id)
-    {
-        return $this->getSubtopicsByTopicIdDB($id);
-    }
-
-    /**
-     * Returns a list of subtopics to a topic
-     * @param $topic
-     * @return array
-     */
-    public function getSubtopicsByTopic($topic)
-    {
-        return $this->getSubtopicsByTopicIdDB($topic->getId());
-    }
-
-    /**
      * Returns topic based on topic id
      * @param $id
      * @return null|Topic
@@ -63,12 +43,74 @@ class TopicDbMapper extends DBMapper
 
     public function getStandardsByTopicId($id)
     {
-        return $this->getStandardsByTopicIdDB($id);
+        $response = null;
+        $standards = array();
+        $db_name = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "select * from $db_name.standard
+                where topic_id = ?;";
+
+        try {
+            $result = $this->queryDB($sql, array($id));
+            foreach($result as $row) {
+                array_push($standards, new Standard(
+                    $row['id'],
+                    $row['timestamp'],
+                    $row['title'],
+                    $row['description'],
+                    $row['is_in_catalog'],
+                    $row['sequence'],
+                    $row['topic_id']));
+            }
+            if (count($standards) == 0) {
+                $response = new DBError("Did not return any results on id: ".$id);
+            } else {
+                return $standards;
+            }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
     public function getStandardsByTopic($topic)
     {
-        return $this->getStandardsByTopicIdDB($topic->getId());
+        return $this->getSubtopicsByTopicId($topic->getId());
+    }
+
+    /**
+     * Returns a list of subtopics to a topic from it's id
+     * @param $id
+     * @return array|DBError|null
+     */
+    public function getSubtopicsByTopicId($id)
+    {
+        $response = null;
+        $topics = array();
+        $db_name = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "select * from $db_name.topic where parent_id = ?";
+
+        try {
+            $result = $this->queryDB($sql, array($id));
+            foreach($result as $row) {
+                array_push($topics, new Topic(
+                    $row['id'],
+                    $row['timestamp'],
+                    $row['title'],
+                    $row['description'],
+                    $row['number'],
+                    $row['is_in_catalog'],
+                    $row['sequence'],
+                    $row['parent_id']));
+            }
+            if (count($topics) == 0) {
+                $response = new DBError("Did not return any results on id: ".$id);
+            } else {
+                return $topics;
+            }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
     /**
@@ -129,46 +171,8 @@ class TopicDbMapper extends DBMapper
         return $response;
     }
 
-    private function getSubtopicsByTopicIdDB($id)
-    {
-        $topics = array();
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "select * from $db_name.topic where parent_id = ?";
 
-        $result = $this->queryDB($sql, array($id));
-        foreach($result as $row) {
-            array_push($topics, new Topic(
-                $row['id'],
-                $row['timestamp'],
-                $row['title'],
-                $row['description'],
-                $row['number'],
-                $row['is_in_catalog'],
-                $row['sequence'],
-                $row['parent_id']));
-        }
-        return $topics;
-    }
 
-    private function getStandardsByTopicIdDB($id)
-    {
-        $standards = array();
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "select * from $db_name.standard
-                where topic_id = ?;";
 
-        $result = $this->queryDB($sql, array($id));
-        foreach($result as $row) {
-            array_push($standards, new Standard(
-                $row['id'],
-                $row['timestamp'],
-                $row['title'],
-                $row['description'],
-                $row['is_in_catalog'],
-                $row['sequence'],
-                $row['topic_id']));
-        }
-        return $standards;
-    }
 
 }
