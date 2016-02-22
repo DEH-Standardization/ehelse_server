@@ -1,15 +1,15 @@
 <?php
 
-class StandardVersionController implements iController
+class ProfileVersionController implements iController
 {
-    private $method, $body, $path, $standard_id;
+    private $method, $body, $path, $profile_id;
 
-    public function __construct($path, $method, $body, $standard_id)
+    public function __construct($path, $method, $body, $profile_id)
     {
         $this->path = $path;
         $this->method = $method;
         $this->body = $body;
-        $this->standard_id = $standard_id;
+        $this->profile_id = $profile_id;
     }
 
     public function getResponse()
@@ -20,9 +20,9 @@ class StandardVersionController implements iController
         if(empty($this->path)){
             //if empty array, then list all versions OR create new
             if($this->method == 'GET'){
-                $response = 'list all std versions';
+                $response = 'list all profile versions';
             }elseif($this->method == 'POST'){
-                $response = 'create new std version';
+                $response = 'create new profile version';
             }
         }elseif(is_numeric($this->path[0])){
             //if not empty, check if number
