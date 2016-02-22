@@ -1,5 +1,5 @@
 <?php
-
+require_once "iDBMapper.php";
 /**
  * Class DBMapper
  */

@@ -21,4 +21,4 @@ $t2 = new Topic(3,time(), "test", "test",1,true,1,1);
 */
 
 $tt = new Topic(null ,null,"tt","dd",1,true,1,2);
-echo $tm->getTopicById(1)->getTitle();
+echo $tm->getStandardsByTopicId(1)[0]->getTitle();

@@ -7,9 +7,8 @@ require_once "../DBError.php";
  */
 class TopicDbMapper extends DBMapper
 {
-    //public function get() {}
     /**
-     * TopicDbMapper constructor.
+     * TopicDBMapper constructor.
      */
     public function __construct()
     {
@@ -60,6 +59,16 @@ class TopicDbMapper extends DBMapper
             trigger_error($result->errorInfo(), E_USER_ERROR);
         }
         return null;
+    }
+
+    public function getStandardsByTopicId($id)
+    {
+        return $this->getStandardsByTopicIdDB($id);
+    }
+
+    public function getStandardsByTopic($topic)
+    {
+        return $this->getStandardsByTopicIdDB($topic->getId());
     }
 
     /**
@@ -139,6 +148,27 @@ class TopicDbMapper extends DBMapper
                 $row['parent_id']));
         }
         return $topics;
+    }
+
+    private function getStandardsByTopicIdDB($id)
+    {
+        $standards = array();
+        $db_name = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "select * from $db_name.standard
+                where topic_id = ?;";
+
+        $result = $this->queryDB($sql, array($id));
+        foreach($result as $row) {
+            array_push($standards, new Standard(
+                $row['id'],
+                $row['timestamp'],
+                $row['title'],
+                $row['description'],
+                $row['is_in_catalog'],
+                $row['sequence'],
+                $row['topic_id']));
+        }
+        return $standards;
     }
 
 }
