@@ -1,10 +1,14 @@
 <?php
 require_once "Error.php";
 /**
+ * Error message for database errors
  */
 class DBError extends Error
 {
-
+    /**
+     * DBError constructor.
+     * @param $e
+     */
     public function __construct($e)
     {
         $this->title = "DB error: ";
