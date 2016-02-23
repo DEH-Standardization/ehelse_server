@@ -36,7 +36,28 @@ abstract class DBMapper implements iDbMapper
             $stmt->bindParam(($i+1), $columns[$i]);
         }
         $stmt->execute();
+        //$stmt->errorInfo();
+
 
         return $stmt;
     }
+
+    protected function isValidId($id, $table_name)
+    {
+        $valid = false;
+        $db_name = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "select * from $db_name.$table_name where id = $id";
+
+        try {
+            $result = $this->queryDB($sql, array(2));
+            $result->fetch();
+            if ($result->rowCount() > 0)
+                $valid = true;
+        } catch(PDOException $e) {
+            echo new DBError($e);
+        }
+        return $valid;
+    }
+
+
 }

@@ -41,6 +41,11 @@ class TopicDbMapper extends DBMapper
         return null;
     }
 
+    /**
+     * Returns list of standards based on id
+     * @param $id
+     * @return array|DBError|null
+     */
     public function getStandardsByTopicId($id)
     {
         $response = null;
@@ -72,6 +77,11 @@ class TopicDbMapper extends DBMapper
         return $response;
     }
 
+    /**
+     * Returns list of standards
+     * @param $id
+     * @return array|DBError|null
+     */
     public function getStandardsByTopic($topic)
     {
         return $this->getSubtopicsByTopicId($topic->getId());
@@ -148,6 +158,9 @@ class TopicDbMapper extends DBMapper
      */
     public function update($topic)
     {
+        if(!$this->isValidId($topic->getId(), "topic")) {
+            return new DBError("Invalid id");
+        }
         $response = null;
         $db_name = DbCommunication::getInstance()->getDatabaseName();
         $sql = "UPDATE $db_name.topic

@@ -11,19 +11,24 @@ require_once '../dbmappers/StandardDBMapper.php';
  */
 
 $tm = new TopicDbMapper();
+
 /*
 $t = $tm->getTopicById(3);
 
 $t->setDescription("idk...");
 
-$t2 = new Topic(3,time(), "test", "test",1,true,1,1);
+
 
 //echo $tm->updateTopic($t2);
 */
-
-$tt = new Topic(null ,null,"tt","dd",1,true,1,2);
 //echo $tm->getStandardsByTopicId(999)[0]->getTitle();
 
-$sm = new StandardDBMapper();
+//$t2 = new Topic(3,time(), "test", "test",1,true,1,1);
+//echo $tm->update($t2);
 
-echo $sm->getStandardById(999);
+
+$sm = new StandardDBMapper();
+$st = new Standard(3 ,null,"new","aayee",1,true,2);
+echo "sdf";
+print_r($sm->getStandardVersionByStandardId(2));
+

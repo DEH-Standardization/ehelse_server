@@ -13,6 +13,11 @@ class StandardDBMapper extends DBMapper
         parent::__construct();
     }
 
+    /**
+     * Returns standard based on id
+     * @param $id
+     * @return DBError|null|Standard
+     */
     public function getStandardById($id)
     {
         $response = null;
@@ -42,38 +47,155 @@ class StandardDBMapper extends DBMapper
 
     }
 
+    /**
+     * Returns list of standard versions based on id
+     * @param $id
+     * @return array|DBError|null
+     */
     public function getStandardVersionByStandardId($id)
     {
-        return $this->getStandardVersionByStandardIdDB($id);
+        $response = null;
+        $standard_versions = array();
+        $dbName = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "select * from $dbName.standard_version where standard_id = ?;";
+        $parameters = array($id);
+        try {
+            $result = $this->queryDB($sql, $parameters);
+            foreach ($result as $row) {
+                array_push($standard_versions, new StandardVersion(
+                    $row['id'],
+                    $row['timestamp'],
+                    $row['standard_id'],
+                    $row['document_id'],
+                    $row['document_version_id']));
+            }
+            if (count($standard_versions) == 0) {
+                $response = new DBError("Did not return any results on id: ".$id);
+            } else {
+                return $standard_versions;
+            }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
+    /**
+     * Returns list of standard versions
+     * @param $standard
+     * @return mixed
+     */
     public function getStandardVersionByStandard($standard)
     {
         return $this->getStandardVersionByStandardIdDB($standard->getId());
     }
 
+    /*
+     * Returns topic based on standard id
+     */
     public function getTopicByStandardId($id)
     {
-        // TODO
+        if(!$this->isValidId($id, "standard")) {
+            return new DBError("Invalid id");
+        }
+        $response = null;
+        $dbName = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "select T.id, T.timestamp, T.title, T.description, T.number, T.is_in_catalog, T.sequence, T.parent_id
+                from $dbName.standard as S, $dbName.topic as T
+                where S.id = ? and T.id = S.topic_id;";
+        $parameters = array($id);
+        try {
+            $result = $this->queryDB($sql, $parameters);
+            if ($result->rowCount() == 1) {
+                $row = $result->fetch();
+                return new Topic(
+                    $row['id'],
+                    $row['timestamp'],
+                    $row['title'],
+                    $row['description'],
+                    $row['number'],
+                    $row['is_in_catalog'],
+                    $row['sequence'],
+                    $row['parent_id']);
+            } else {
+                $response = new DBError("Returned " . $result->rowCount() .
+                    " standards, expected 1");
+            }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
+    /**
+     * Returns topic
+     * @param $standard
+     * @return DBError|null|Topic
+     */
     public function getTopicByStandard($standard)
     {
-        // TODO
+        return $this->getTopicByStandardId($standard->getId());
     }
 
-    public function add($model)
+    /**
+     * Adds new standard to database
+     * @param $standard
+     * @return DBError|null|string
+     */
+    public function add($standard)
     {
-        // TODO
-    }
-    public function update($model)
-    {
-        // TODO
+        $response = null;
+        $db_name = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "INSERT INTO $db_name.standard
+                VALUES (null, now(), ?, ?, ?, ?, ?);";
+        $parameters = array(
+            $standard->getTitle(),
+            $standard->getDescription(),
+            $standard->getIsInCatalog(),
+            $standard->getSequence(),
+            $standard->getTopicId(),
+        );
+        try {
+            $this->queryDB($sql, $parameters);
+            $response = "success";
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
-    private function getStandardVersionByStandardIdDB($id)
+    /**
+     * Updates standard to database
+     * @param $standard
+     * @return DBError|null|string
+     */
+    public function update($standard)
     {
-        // TODO
+        if(!$this->isValidId($standard->getId(), "standard")) {
+            return new DBError("Invalid id");
+        }
+
+        $response = null;
+        $db_name = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "UPDATE $db_name.standard
+                SET `timestamp` = now(), title = ?, description = ?, is_in_catalog = ?, sequence = ?, topic_id = ?
+                WHERE id = ?;";
+        $parameters = array(
+            $standard->getTitle(),
+            $standard->getDescription(),
+            $standard->getIsInCatalog(),
+            $standard->getSequence(),
+            $standard->getTopicId(),
+            $standard->getId()
+        );
+        try {
+            if($this->queryDB($sql, $parameters)) {
+                $response = "success";
+            }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
 }
