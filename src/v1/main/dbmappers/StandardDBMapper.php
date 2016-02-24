@@ -22,7 +22,11 @@ class StandardDBMapper extends DBMapper
     {
         $response = null;
         $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "select * from $dbName.standard where id = ?;";
+        $sql = "SELECT *
+                FROM $dbName.standard WHERE id = ? and (id,timestamp) IN
+                ( SELECT id, MAX(timestamp)
+                  FROM andrkje_ehelse_db.standard
+                GROUP BY id)";
         $parameters = array($id);
         try {
             $result = $this->queryDB($sql, $parameters);
@@ -98,12 +102,30 @@ class StandardDBMapper extends DBMapper
         if(!$this->isValidId($id, "standard")) {
             return new DBError("Invalid id");
         }
+        return $this->getTopicByStandard($this->getStandardById($id));
+    }
+
+    /**
+     * Returns topic
+     * @param $standard
+     * @return DBError|null|Topic
+     */
+    public function getTopicByStandard($standard)
+    {
+        if(!$this->isValidId($standard->getId(), "standard")) {
+            return new DBError("Standard has invalid id");
+        }
         $response = null;
         $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "select T.id, T.timestamp, T.title, T.description, T.number, T.is_in_catalog, T.sequence, T.parent_id
+       /* $sql = "select T.id, T.timestamp, T.title, T.description, T.number, T.is_in_catalog, T.sequence, T.parent_id
                 from $dbName.standard as S, $dbName.topic as T
-                where S.id = ? and T.id = S.topic_id;";
-        $parameters = array($id);
+                where S.id = ? and T.id = S.topic_id;"; */
+        $sql = "SELECT *
+                FROM andrkje_ehelse_db.topic WHERE id = ? and (id,timestamp) IN
+                ( SELECT id, MAX(timestamp)
+                  FROM andrkje_ehelse_db.topic
+                  GROUP BY id)";
+        $parameters = array($standard->getId());
         try {
             $result = $this->queryDB($sql, $parameters);
             if ($result->rowCount() == 1) {
@@ -125,16 +147,8 @@ class StandardDBMapper extends DBMapper
             $response = new DBError($e);
         }
         return $response;
-    }
 
-    /**
-     * Returns topic
-     * @param $standard
-     * @return DBError|null|Topic
-     */
-    public function getTopicByStandard($standard)
-    {
-        return $this->getTopicByStandardId($standard->getId());
+
     }
 
     /**
@@ -177,19 +191,23 @@ class StandardDBMapper extends DBMapper
 
         $response = null;
         $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "UPDATE $db_name.standard
-                SET `timestamp` = now(), title = ?, description = ?, is_in_catalog = ?, sequence = ?, topic_id = ?
+        /*$sql = "UPDATE $db_name.standard
+                SET id = ?, `timestamp` = now(), title = ?, description = ?, is_in_catalog = ?, sequence = ?, topic_id = ?
                 WHERE id = ?;";
+        */
+        $sql = "INSERT INTO $db_name.standard
+                VALUES (?, now(), ?, ?, ?, ?, ?);";
         $parameters = array(
+            $standard->getId(),
             $standard->getTitle(),
             $standard->getDescription(),
             $standard->getIsInCatalog(),
             $standard->getSequence(),
-            $standard->getTopicId(),
-            $standard->getId()
+            $standard->getTopicId()
         );
         try {
             if($this->queryDB($sql, $parameters)) {
+                print_r($parameters);
                 $response = "success";
             }
         } catch(PDOException $e) {

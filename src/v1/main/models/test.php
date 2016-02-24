@@ -28,7 +28,19 @@ $t->setDescription("idk...");
 
 
 $sm = new StandardDBMapper();
-$st = new Standard(3 ,null,"new","aayee",1,true,2);
-echo "sdf";
-print_r($sm->getStandardVersionByStandardId(2));
+
+$s1 = new Standard(3 ,null,"Change test  5","555",1,true,3);
+print_r($sm->getTopicByStandard($s1));
+
+
+/*
+$s2 = new Standard(3 ,null,"Change 1","sdfgfdfgfd",1,true,2);
+$sm->update($s2);
+sleep(2);
+
+$s3 = new Standard(3 ,null,"Change 2","sdkjfsfeijiojewjioioioweijoejwioef",1,true,2);
+$sm->update($s3);
+*/
+
+//print_r($sm->getStandardVersionByStandardId(2));
 
