@@ -1,19 +1,20 @@
 <?php
 
 
-class StandardFieldController implements iController
+class StandardFieldController extends ResponseController
 {
 
-
-    private $method, $body, $path;
 
     public function __construct($path, $method, $body)
     {
         $this->path = $path;
         $this->method = $method;
         $this->body = $body;
+        if(is_numeric($this->path[0])){
+            $this->id = path[0];
+        }
     }
-
+/*
     public function getResponse()
     {
         $response = null;
@@ -40,5 +41,30 @@ class StandardFieldController implements iController
             $response = new DescriptionController();
         }
         return $response;
+    }*/
+
+    protected function create()
+    {
+        return "new std field";
+    }
+
+    protected function getAll()
+    {
+        return "get all std fields";
+    }
+
+    protected function get()
+    {
+        return "get std field";
+    }
+
+    protected function update()
+    {
+        return "update std field";
+    }
+
+    protected function delete()
+    {
+        return "delete std field";
     }
 }
