@@ -5,6 +5,8 @@ $method = $_SERVER['REQUEST_METHOD'];
 $path = $_SERVER['PATH_INFO'];
 $api_version;
 $body;
+$user_name = $_SERVER['PHP_AUTH_USER'];
+$password = $_SERVER['PHP_AUTH_PW'];
 
 if( $_SERVER['PATH_INFO'] ){
     $temp = explode('/',$_SERVER['PATH_INFO']);
