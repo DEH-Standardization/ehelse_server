@@ -1,6 +1,9 @@
 <?php
 
 require_once __DIR__ . '/../../iController.php';
+require_once __DIR__ . '/../../standards/controllers/StandardController.php';
+require_once __DIR__ . '/../../profiles/controllers/ProfileController.php';
+require_once __DIR__ . '/../../topics/controllers/TopicController.php';
 class APIV1Controller implements iController
 {
     private $controller;
@@ -17,6 +20,12 @@ class APIV1Controller implements iController
         {
             case 'standards':
                 $this->controller = new StandardController($path, $method, $body);
+                break;
+            case 'profiles':
+                $this->controller = new ProfileController($path, $method, $body);
+                break;
+            case 'topics':
+                $this->controller = new TopicController($path, $method, $body);
                 break;
             default:
                 //TODO handle error
