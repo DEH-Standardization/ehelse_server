@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/../../Response.php';
 require_once __DIR__ . '/../../ResponseController.php';
+require_once __DIR__ . '/../../InvalidPathError.php';
+require_once __DIR__ . '/../../ErrorController.php';
 require_once __DIR__ . '/../../main/controllers/DescriptionController.php';
 
 class TopicController extends ResponseController
@@ -13,15 +15,11 @@ class TopicController extends ResponseController
         $this->body = $body;
         $this->path = $path;
 
-
-
-
-        if(count($path) == 1){
-            //check if number, if not return error
-            if(is_numeric($path[0])){
+        if(count($this->path) != 0){
+            if(count($this->path) == 1 && is_numeric($path[0])){
                 $this->id = $path[0];
             }else{
-                $this->controller = new DescriptionController();//return error
+                $this->controller = new ErrorController(new InvalidPathError());
             }
         }
     }
