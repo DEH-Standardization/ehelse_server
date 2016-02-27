@@ -6,5 +6,5 @@ interface iResponse
 
     public function getContentType();
 
-    public function getResponseCode();
+    public function getStatusCode();
 }
