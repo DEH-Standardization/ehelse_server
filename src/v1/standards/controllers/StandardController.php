@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../ResponseController.php';
+require_once __DIR__ . '/../../Response.php';
 require_once __DIR__ . '/../../main/controllers/DescriptionController.php';
 require_once 'StandardVersionController.php';
 require_once 'StandardFieldController.php';
@@ -62,27 +63,27 @@ class StandardController extends ResponseController
 
     protected function get()
     {
-        return "Return standard";
+        return new Response("Return standard");
     }
 
     protected function update()
     {
-        return "Standard, standard updated";
+        return  new Response("Standard, standard updated");
     }
 
     protected function delete()
     {
-        return "Sd deleted";
+        return  new Response("Sd deleted");
     }
 
     protected function getAll()
     {
-        return "return all std";
+        return  new Response("return all std");
     }
 
     protected function create()
     {
-        return "new standard";
+        return  new Response("new standard");
     }
 
 
