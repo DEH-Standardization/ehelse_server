@@ -19,5 +19,10 @@ if( $_SERVER['PATH_INFO'] ){
     }
 }
 
+
 $req = new MainController($api_version, $path, $method, $body);
-echo $req->getResponse();
+$response = $req->getResponse();
+
+header($response->getContentType());
+http_response_code($response->getResponseCode());
+echo $response->getBody();

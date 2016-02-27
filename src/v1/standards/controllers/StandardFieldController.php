@@ -45,26 +45,26 @@ class StandardFieldController extends ResponseController
 
     protected function create()
     {
-        return "new std field";
+        return  new Response("new std field");
     }
 
     protected function getAll()
     {
-        return "get all std fields";
+        return  new Response("get all std fields");
     }
 
     protected function get()
     {
-        return "get std field";
+        return  new Response("get std field");
     }
 
     protected function update()
     {
-        return "update std field";
+        return  new Response("update std field");
     }
 
     protected function delete()
     {
-        return "delete std field";
+        return  new Response("delete std field");
     }
 }

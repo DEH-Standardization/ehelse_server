@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../Response.php';
 require_once __DIR__ . '/../../ResponseController.php';
 require_once __DIR__ . '/../../main/controllers/DescriptionController.php';
 
@@ -27,26 +28,26 @@ class TopicController extends ResponseController
 
     protected function getAll()
     {
-        return "all topics";
+        return new Response("all topics");
     }
 
     protected function create()
     {
-        return "create topic";
+        return new Response("create topic");
     }
 
     protected function get()
     {
-        return "get topic";
+        return new Response("get topic");
     }
 
     protected function update()
     {
-        return "update topic";
+        return new Response("update topic");
     }
 
     protected function delete()
     {
-        return "delte topic";
+        return new Response("delte topic");
     }
 }

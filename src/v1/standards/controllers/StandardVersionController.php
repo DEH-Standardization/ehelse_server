@@ -23,26 +23,26 @@ class StandardVersionController extends ResponseController
 
     protected function create()
     {
-        return "create std version";
+        return  new Response("create std version");
     }
 
     protected function getAll()
     {
-        return "get std versions";
+        return  new Response("get std versions");
     }
 
     protected function get()
     {
-        return "get std version";
+        return  new Response("get std version");
     }
 
     protected function update()
     {
-        return "update std version";
+        return  new Response("update std version");
     }
 
     protected function delete()
     {
-        return "delete std version";
+        return  new Response("delete std version");
     }
 }
