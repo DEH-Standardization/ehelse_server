@@ -21,14 +21,14 @@
     <favorites_list name="ehelse" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.76500636">
+    <splitter split-orientation="horizontal" split-proportion="0.42081738">
       <split-first>
         <leaf>
-          <file leaf-file-name="test.php" pinned="false" current-in-tab="false">
+          <file leaf-file-name="test.php" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/v1/main/models/test.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="-5.643564">
-                  <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+                <state vertical-scroll-proportion="0.49667996">
+                  <caret line="34" column="42" selection-start-line="34" selection-start-column="42" selection-end-line="34" selection-end-column="42" />
                   <folding />
                 </state>
               </provider>
@@ -57,18 +57,18 @@
           <file leaf-file-name="DBCommunication.php" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/v1/main/dbmappers/DBCommunication.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="-35.6">
-                  <caret line="43" column="23" selection-start-line="43" selection-start-column="23" selection-end-line="43" selection-end-column="23" />
+                <state vertical-scroll-proportion="-5.0">
+                  <caret line="6" column="41" selection-start-line="6" selection-start-column="23" selection-end-line="6" selection-end-column="41" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="StandardDBMapper.php" pinned="false" current-in-tab="true">
+          <file leaf-file-name="StandardDBMapper.php" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/v1/main/dbmappers/StandardDBMapper.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="3.6711166">
-                  <caret line="121" column="58" selection-start-line="121" selection-start-column="58" selection-end-line="121" selection-end-column="58" />
+                <state vertical-scroll-proportion="1.2277228">
+                  <caret line="181" column="13" selection-start-line="181" selection-start-column="7" selection-end-line="181" selection-end-column="13" />
                   <folding>
                     <marker date="1456322856796" expanded="true" signature="456:660" placeholder="SELECT * FRO... standard" />
                     <marker date="1456322856796" expanded="true" signature="556:659" placeholder="SELECT id, M... standard" />
@@ -92,16 +92,23 @@
           <file leaf-file-name="TopicDBMapper.php" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/v1/main/dbmappers/TopicDBMapper.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.20053121">
-                  <caret line="122" column="0" selection-start-line="121" selection-start-column="0" selection-end-line="122" selection-end-column="0" />
+                <state vertical-scroll-proportion="0.17839806">
+                  <caret line="183" column="20" selection-start-line="183" selection-start-column="20" selection-end-line="183" selection-end-column="20" />
                   <folding>
-                    <marker date="1456238021975" expanded="true" signature="526:566" placeholder="select * fro... topic" />
-                    <marker date="1456238021975" expanded="true" signature="1390:1456" placeholder="select * fro... standard" />
-                    <marker date="1456238021975" expanded="true" signature="2762:2810" placeholder="select * fro... topic" />
-                    <marker date="1456238021975" expanded="true" signature="3853:3934" placeholder="INSERT INTO andrkje_ehelse_db.topic... " />
-                    <marker date="1456238021975" expanded="true" signature="4776:4952" placeholder="UPDATE andrk... " />
-                    <marker date="1456238021975" expanded="true" signature="4776:4953" placeholder="UPDATE andrk... " />
-                    <marker date="1456238021975" expanded="true" signature="4776:4954" placeholder="UPDATE andrk... " />
+                    <marker date="1456664611241" expanded="true" signature="508:718" placeholder="SELECT * FRO... topic" />
+                    <marker date="1456664611241" expanded="true" signature="615:717" placeholder="SELECT id, M... topic" />
+                    <marker date="1456664611241" expanded="true" signature="1582:1648" placeholder="select * fro... standard" />
+                    <marker date="1456664611241" expanded="true" signature="1679:1901" placeholder="SELECT * FRO... standard" />
+                    <marker date="1456664611241" expanded="true" signature="1795:1900" placeholder="SELECT id, M... standard" />
+                    <marker date="1456664611241" expanded="true" signature="3209:3257" placeholder="select * fro... topic" />
+                    <marker date="1456664611241" expanded="true" signature="3277:3494" placeholder="SELECT * FRO... topic" />
+                    <marker date="1456664611241" expanded="true" signature="3391:3493" placeholder="SELECT id, M... topic" />
+                    <marker date="1456664611241" expanded="true" signature="4611:4652" placeholder="select * fro... topic" />
+                    <marker date="1456664611241" expanded="true" signature="5955:6036" placeholder="INSERT INTO andrkje_ehelse_db.topic... " />
+                    <marker date="1456664611241" expanded="true" signature="6880:7056" placeholder="UPDATE andrk... " />
+                    <marker date="1456664611241" expanded="true" signature="6880:7057" placeholder="UPDATE andrk... " />
+                    <marker date="1456664611241" expanded="true" signature="6880:7058" placeholder="UPDATE andrk... " />
+                    <marker date="1456664611241" expanded="true" signature="7089:7167" placeholder="INSERT INTO ${$db_name}.topic... " />
                   </folding>
                 </state>
               </provider>
@@ -129,9 +136,10 @@
         <option value="$PROJECT_DIR$/src/v1/main/models/Standard.php" />
         <option value="$PROJECT_DIR$/src/v1/main/dbmappers/DBMapper.php" />
         <option value="$PROJECT_DIR$/src/v1/main/models/StandardVersion.php" />
-        <option value="$PROJECT_DIR$/src/v1/main/dbmappers/TopicDBMapper.php" />
-        <option value="$PROJECT_DIR$/src/v1/main/models/test.php" />
         <option value="$PROJECT_DIR$/src/v1/main/dbmappers/StandardDBMapper.php" />
+        <option value="$PROJECT_DIR$/src/v1/main/dbmappers/DBCommunication.php" />
+        <option value="$PROJECT_DIR$/src/v1/main/models/test.php" />
+        <option value="$PROJECT_DIR$/src/v1/main/dbmappers/TopicDBMapper.php" />
       </list>
     </option>
   </component>
@@ -352,6 +360,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="php.override.implement.member.chooser.php.doc" value="NONE" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../login" />
   </component>
   <component name="RunManager">
     <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
@@ -552,38 +561,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/v1/main/dbmappers/DBCommunication.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-35.6">
-          <caret line="43" column="23" selection-start-line="43" selection-start-column="23" selection-end-line="43" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/v1/main/dbmappers/TopicDBMapper.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.20053121">
-          <caret line="122" column="0" selection-start-line="121" selection-start-column="0" selection-end-line="122" selection-end-column="0" />
-          <folding>
-            <marker date="1456238021975" expanded="true" signature="526:566" placeholder="select * fro... topic" />
-            <marker date="1456238021975" expanded="true" signature="1390:1456" placeholder="select * fro... standard" />
-            <marker date="1456238021975" expanded="true" signature="2762:2810" placeholder="select * fro... topic" />
-            <marker date="1456238021975" expanded="true" signature="3853:3934" placeholder="INSERT INTO andrkje_ehelse_db.topic... " />
-            <marker date="1456238021975" expanded="true" signature="4776:4952" placeholder="UPDATE andrk... " />
-            <marker date="1456238021975" expanded="true" signature="4776:4953" placeholder="UPDATE andrk... " />
-            <marker date="1456238021975" expanded="true" signature="4776:4954" placeholder="UPDATE andrk... " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/v1/main/models/test.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.643564">
-          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/v1/main/models/Standard.php">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-2.4851484">
@@ -602,8 +579,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/v1/main/dbmappers/StandardDBMapper.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="3.6711166">
-          <caret line="121" column="58" selection-start-line="121" selection-start-column="58" selection-end-line="121" selection-end-column="58" />
+        <state vertical-scroll-proportion="1.2277228">
+          <caret line="181" column="13" selection-start-line="181" selection-start-column="7" selection-end-line="181" selection-end-column="13" />
           <folding>
             <marker date="1456322856796" expanded="true" signature="456:660" placeholder="SELECT * FRO... standard" />
             <marker date="1456322856796" expanded="true" signature="556:659" placeholder="SELECT id, M... standard" />
@@ -615,6 +592,45 @@
             <marker date="1456322856796" expanded="true" signature="5989:6165" placeholder="UPDATE ${$db... " />
             <marker date="1456322856796" expanded="true" signature="5989:6539" placeholder="UPDATE ${$db... " />
             <marker date="1456322856796" expanded="true" signature="6196:6274" placeholder="INSERT INTO ${$db_name}.standard... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/v1/main/dbmappers/DBCommunication.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-5.0">
+          <caret line="6" column="41" selection-start-line="6" selection-start-column="23" selection-end-line="6" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/v1/main/models/test.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.49667996">
+          <caret line="34" column="42" selection-start-line="34" selection-start-column="42" selection-end-line="34" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/v1/main/dbmappers/TopicDBMapper.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.17839806">
+          <caret line="183" column="20" selection-start-line="183" selection-start-column="20" selection-end-line="183" selection-end-column="20" />
+          <folding>
+            <marker date="1456664611241" expanded="true" signature="508:718" placeholder="SELECT * FRO... topic" />
+            <marker date="1456664611241" expanded="true" signature="615:717" placeholder="SELECT id, M... topic" />
+            <marker date="1456664611241" expanded="true" signature="1582:1648" placeholder="select * fro... standard" />
+            <marker date="1456664611241" expanded="true" signature="1679:1901" placeholder="SELECT * FRO... standard" />
+            <marker date="1456664611241" expanded="true" signature="1795:1900" placeholder="SELECT id, M... standard" />
+            <marker date="1456664611241" expanded="true" signature="3209:3257" placeholder="select * fro... topic" />
+            <marker date="1456664611241" expanded="true" signature="3277:3494" placeholder="SELECT * FRO... topic" />
+            <marker date="1456664611241" expanded="true" signature="3391:3493" placeholder="SELECT id, M... topic" />
+            <marker date="1456664611241" expanded="true" signature="4611:4652" placeholder="select * fro... topic" />
+            <marker date="1456664611241" expanded="true" signature="5955:6036" placeholder="INSERT INTO andrkje_ehelse_db.topic... " />
+            <marker date="1456664611241" expanded="true" signature="6880:7056" placeholder="UPDATE andrk... " />
+            <marker date="1456664611241" expanded="true" signature="6880:7057" placeholder="UPDATE andrk... " />
+            <marker date="1456664611241" expanded="true" signature="6880:7058" placeholder="UPDATE andrk... " />
+            <marker date="1456664611241" expanded="true" signature="7089:7167" placeholder="INSERT INTO ${$db_name}.topic... " />
           </folding>
         </state>
       </provider>

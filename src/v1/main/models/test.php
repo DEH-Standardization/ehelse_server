@@ -11,6 +11,7 @@ require_once '../dbmappers/StandardDBMapper.php';
  */
 
 $tm = new TopicDbMapper();
+$sm = new StandardDBMapper();
 
 /*
 $t = $tm->getTopicById(3);
@@ -27,10 +28,11 @@ $t->setDescription("idk...");
 //echo $tm->update($t2);
 
 
-$sm = new StandardDBMapper();
 
-$s1 = new Standard(3 ,null,"Change test  5","555",1,true,3);
-print_r($sm->getTopicByStandard($s1));
+//$s1 = new Standard(3 ,null,"Change test  5","555",1,true,3);
+$t = new Topic(1,null,"test 2" , "22", 1,1,1,null);
+//echo $tm->update($t);
+print_r($tm->getAllLoggedTopicsByTopicId(1));
 
 
 /*

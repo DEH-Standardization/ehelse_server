@@ -23,7 +23,12 @@ class TopicDbMapper extends DBMapper
     public function getTopicById($id)
     {
         $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $result = $this->queryDB("select * from $dbName.topic where id = ?;", array($id));
+        $sql = "SELECT *
+                FROM andrkje_ehelse_db.topic WHERE id = ? and (id,timestamp) IN
+                ( SELECT id, MAX(timestamp)
+                  FROM andrkje_ehelse_db.topic
+                  GROUP BY id)";
+        $result = $this->queryDB($sql, array($id));
         if ($result->rowCount() == 1) {
             $row = $result->fetch();
             return new Topic(
@@ -51,8 +56,14 @@ class TopicDbMapper extends DBMapper
         $response = null;
         $standards = array();
         $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "select * from $db_name.standard
+        /*$sql = "select * from $db_name.standard
                 where topic_id = ?;";
+        */
+        $sql = "SELECT *
+                FROM andrkje_ehelse_db.standard WHERE topic_id = ? and (id,timestamp) IN
+                ( SELECT id, MAX(timestamp)
+                  FROM andrkje_ehelse_db.standard
+                  GROUP BY id);";
 
         try {
             $result = $this->queryDB($sql, array($id));
@@ -97,7 +108,13 @@ class TopicDbMapper extends DBMapper
         $response = null;
         $topics = array();
         $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "select * from $db_name.topic where parent_id = ?";
+        //$sql = "select * from $db_name.topic where parent_id = ?";
+
+        $sql = "SELECT *
+                FROM andrkje_ehelse_db.topic WHERE parent_id = ? and (id,timestamp) IN
+                ( SELECT id, MAX(timestamp)
+                  FROM andrkje_ehelse_db.topic
+                  GROUP BY id);";
 
         try {
             $result = $this->queryDB($sql, array($id));
@@ -121,6 +138,52 @@ class TopicDbMapper extends DBMapper
             $response = new DBError($e);
         }
         return $response;
+    }
+
+    /**
+     * Returns list of all earlier logged versions based on id
+     * @param $id
+     * @return array|DBError|null
+     */
+    public function getAllLoggedTopicsByTopicId($id)
+    {
+        $response = null;
+        $topics = array();
+        $db_name = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "select * from $db_name.topic where id = ?";
+
+        try {
+            $result = $this->queryDB($sql, array($id));
+            foreach($result as $row) {
+                array_push($topics, new Topic(
+                    $row['id'],
+                    $row['timestamp'],
+                    $row['title'],
+                    $row['description'],
+                    $row['number'],
+                    $row['is_in_catalog'],
+                    $row['sequence'],
+                    $row['parent_id']));
+            }
+            if (count($topics) == 0) {
+                $response = new DBError("Did not return any results on id: ".$id);
+            } else {
+                return $topics;
+            }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
+
+    /**
+     * Returns list of all earlier logged versions based on id
+     * @param $topic
+     * @return array|DBError|null
+     */
+    public function getAllLoggedTopicsByTopic($topic)
+    {
+        return getAllLoggedTopicsByTopic($topic->getId());
     }
 
     /**
@@ -163,17 +226,20 @@ class TopicDbMapper extends DBMapper
         }
         $response = null;
         $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "UPDATE $db_name.topic
+        /*$sql = "UPDATE $db_name.topic
                 SET `timestamp` = now(), title = ?, description = ?, number = ?, is_in_catalog = ?, sequence = ?, parent_id = ?
                 WHERE id = ?;";
+        */
+        $sql = "INSERT INTO $db_name.topic
+                VALUES (?, now(), ?, ?, ?, ?, ?, ?);";
         $parameters = array(
+            $topic->getId(),
             $topic->getTitle(),
             $topic->getDescription(),
             $topic->getNumber(),
             $topic->getIsInCatalog(),
             $topic->getSequence(),
-            $topic->getParentId(),
-            $topic->getId()
+            $topic->getParentId()
             );
         try {
             $this->queryDB($sql, $parameters);
