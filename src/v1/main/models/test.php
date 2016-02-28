@@ -32,7 +32,7 @@ $t->setDescription("idk...");
 //$s1 = new Standard(3 ,null,"Change test  5","555",1,true,3);
 $t = new Topic(1,null,"test 2" , "22", 1,1,1,null);
 //echo $tm->update($t);
-print_r($tm->getAllLoggedTopicsByTopicId(1));
+print_r($sm->getAllLoggedStandardsByStandardId(3));
 
 
 /*

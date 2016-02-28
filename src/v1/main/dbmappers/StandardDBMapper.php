@@ -151,6 +151,42 @@ class StandardDBMapper extends DBMapper
 
     }
 
+    public function getAllLoggedStandardsByStandardId($id)
+    {
+        $response = null;
+        $standards= array();
+        $dbName = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "select * from $dbName.standard where id = ?;";
+        $parameters = array($id);
+        try {
+            $result = $this->queryDB($sql, $parameters);
+            foreach ($result as $row) {
+                array_push($standards, new Standard(
+                    $row['id'],
+                    $row['timestamp'],
+                    $row['title'],
+                    $row['description'],
+                    $row['is_in_catalog'],
+                    $row['sequence'],
+                    $row['topic_id']));
+            }
+            if (count($standards) == 0) {
+                $response = new DBError("Did not return any results on id: ".$id);
+            } else {
+                return $standards;
+            }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+
+    }
+
+    public function getAllLoggedStandardsByStandard($standard)
+    {
+        return $this->getAllLoggedStandardsByStandardId($standard->getId());
+    }
+
     /**
      * Adds new standard to database
      * @param $standard
