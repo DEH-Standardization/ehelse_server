@@ -3,6 +3,7 @@
 class InvalidPathError
 {
     protected $title, $message;
+
     /**
      * Error constructor.
      * @param $method

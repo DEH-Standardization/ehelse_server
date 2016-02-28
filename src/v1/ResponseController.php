@@ -1,8 +1,8 @@
 <?php
-
 require_once "iController.php";
 require_once "MethodNotAllowedError.php";
 require_once "ErrorResponse.php";
+
 abstract class ResponseController implements iController
 {
     protected  $method, $body, $path, $controller, $id;

@@ -1,6 +1,4 @@
 <?php
-
-
 require_once "iController.php";
 require_once "ErrorResponse.php";
 

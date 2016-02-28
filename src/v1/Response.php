@@ -1,6 +1,6 @@
 <?php
-
 require_once __DIR__ . "/../iResponse.php";
+
 class Response implements iResponse
 {
     protected $content_type, $body, $status_code;
