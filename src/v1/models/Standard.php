@@ -98,5 +98,16 @@ class Standard
         $this->sequence = $sequence;
     }
 
-
+    //$id, $timestamp, $title, $description, $topic_id, $is_in_catalog, $sequence;
+    public function toJSON(){
+        $assoc = array(
+        'id' => $this->id,
+        'timestamp' => $this->timestamp,
+        'title' => $this->title,
+        'description' => $this->description,
+        'topic_id' => $this->topic_id,
+        'is_in_catalog' => $this->is_in_catalog,
+        'sequence' => $this->sequence);
+        return json_encode($assoc,JSON_PRETTY_PRINT);
+    }
 }

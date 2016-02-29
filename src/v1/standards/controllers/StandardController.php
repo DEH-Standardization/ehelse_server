@@ -2,6 +2,7 @@
 require_once __DIR__.'/../../responses/ResponseController.php';
 require_once __DIR__.'/../../responses/Response.php';
 require_once __DIR__.'/../../main/controllers/DescriptionController.php';
+require_once __DIR__.'/../../dbmappers/StandardDBMapper.php';
 require_once 'StandardVersionController.php';
 require_once 'StandardFieldController.php';
 
@@ -63,7 +64,8 @@ class StandardController extends ResponseController
 
     protected function get()
     {
-        return new Response("Return standard");
+        $mapper = new StandardDBMapper();
+        return new Response($mapper->getStandardById($this->path[0])->toJSON());
     }
 
     protected function update()
