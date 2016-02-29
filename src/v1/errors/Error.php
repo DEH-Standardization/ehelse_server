@@ -5,7 +5,7 @@
  */
 class Error
 {
-    protected $title, $message;
+    protected $title, $message, $status_code;
 
     /**
      * Error constructor.
@@ -18,6 +18,11 @@ class Error
         $this->message = $message;
     }
 
+    public function getStatusCode()
+    {
+        return $this->status_code;
+    }
+
     /**
      * toString
      * @return string
@@ -27,6 +32,12 @@ class Error
         return $this->title . "<br>".$this->message;
     }
 
-
+    public function toJSON()
+    {
+        return json_encode(array(
+            "title" => $this->title,
+            "message" => $this->message
+        ), JSON_PRETTY_PRINT);
+    }
 
 }

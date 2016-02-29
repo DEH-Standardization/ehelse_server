@@ -1,8 +1,8 @@
 <?php
+require_once 'Error.php';
 
-class InvalidPathError
+class InvalidPathError extends Error
 {
-    protected $title, $message;
 
     /**
      * Error constructor.
@@ -14,28 +14,6 @@ class InvalidPathError
     {
         $this->title = "Error: Invalid path";
         $this->message = "Invalid path <{$_SERVER['PATH_INFO']}>";
-    }
-
-    public function getStatusCode()
-    {
-        return $this->status_code;
-    }
-
-    /**
-     * toString
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->title . "<br>".$this->message;
-    }
-
-    public function toJSON()
-    {
-        return json_encode(array(
-            "title" => $this->title,
-            "message" => $this->message
-        ), JSON_PRETTY_PRINT);
     }
 
 }
