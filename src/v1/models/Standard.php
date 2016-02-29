@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/StandardVersion.php';
-require_once __DIR__.'/../dbmappers/DBCommunication.php';
+require_once __DIR__.'/../dbmappers/DbCommunication.php';
 require_once __DIR__.'/../models/ModelValidation.php';
 
 class Standard
