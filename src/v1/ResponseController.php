@@ -1,6 +1,8 @@
 <?php
-
 require_once "iController.php";
+require_once "MethodNotAllowedError.php";
+require_once "ErrorResponse.php";
+
 abstract class ResponseController implements iController
 {
     protected  $method, $body, $path, $controller, $id;
@@ -29,19 +31,19 @@ abstract class ResponseController implements iController
 
     protected function handleRequest()
     {
-        $response = "bla";
+        $response = null;
         switch($this->method){
-            case "GET":
+            case Response::REQUEST_METHOD_GET:
                 $response = $this->get();
                 break;
-            case "POST":
-                $response = "Error not suposed to post here";
-                break;
-            case "PUT":
+            case Response::REQUEST_METHOD_PUT:
                 $response = $this->update();
                 break;
-            case "DELETE":
+            case Response::REQUEST_METHOD_DELETE:
                 $response = $this->delete();
+                break;
+            default:
+                $response = new ErrorResponse(new MethodNotAllowedError(Response::REQUEST_METHOD_POST));
                 break;
         }
         return $response;
@@ -58,10 +60,13 @@ abstract class ResponseController implements iController
             $response = $this->handleRequest();
 
         }else{
-            if($this->method == 'POST'){
+            if($this->method == Response::REQUEST_METHOD_POST){
                 $response = $this->create();
-            }elseif($this->method == 'GET'){
+            }elseif($this->method == Response::REQUEST_METHOD_GET){
                 $response = $this->getAll();
+            }
+            else{
+                $response = new ErrorResponse(new MethodNotAllowedError($this->method));
             }
         }
         return $response;

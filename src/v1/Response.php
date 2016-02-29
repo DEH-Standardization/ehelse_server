@@ -1,11 +1,16 @@
 <?php
-
 require_once __DIR__ . "/../iResponse.php";
+
 class Response implements iResponse
 {
-    private $content_type, $body, $response_code;
+    protected $content_type, $body, $status_code;
 
     const CONTENT_TYPE_JSON = 'Content-Type: application/json';
+
+    const REQUEST_METHOD_GET = 'GET';
+    const REQUEST_METHOD_POST = 'POST';
+    const REQUEST_METHOD_PUT = 'PUT';
+    const REQUEST_METHOD_DELETE = 'DELETE';
 
     const STATUS_CODE_BAD_REQUEST = 400 ;
     const STATUS_CODE_UNAUTHORIZED = 401 ;
@@ -36,9 +41,9 @@ class Response implements iResponse
         return $this->content_type;
     }
 
-    public function getResponseCode()
+    public function getStatusCode()
     {
-        return $this->response_code;
+        return $this->status_code;
     }
 
 }

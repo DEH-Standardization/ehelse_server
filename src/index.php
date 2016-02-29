@@ -24,5 +24,5 @@ $req = new MainController($api_version, $path, $method, $body);
 $response = $req->getResponse();
 
 header($response->getContentType());
-http_response_code($response->getResponseCode());
+http_response_code($response->getStatusCode());
 echo $response->getBody();
