@@ -1,6 +1,6 @@
 <?php
-require_once "iController.php";
-require_once "ErrorResponse.php";
+require_once __DIR__."/../iController.php";
+require_once __DIR__."/../responses/ErrorResponse.php";
 
 class ErrorController implements iController
 {

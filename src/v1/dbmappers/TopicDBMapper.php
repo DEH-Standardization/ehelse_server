@@ -1,7 +1,7 @@
 <?php
 require_once "DBMapper.php";
 require_once "../models/Topic.php";
-require_once "../DBError.php";
+require_once "../errors/DBError.php";
 /**
  *
  */

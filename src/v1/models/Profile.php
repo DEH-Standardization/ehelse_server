@@ -15,9 +15,9 @@ class Profile
         $this->topic_id = $topic_id;
     }
 
-    public function getPrilfeVersions()
+    public function getProfileVersions()
     {
-        $column = GeneralDataBaseCommunication::getColumnById("profile_version")
+        $column = GeneralDataBaseCommunication::getColumnById("profile_version");
     }
 
     public function getProfileVersionByProfileId($id)

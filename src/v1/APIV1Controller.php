@@ -1,9 +1,10 @@
 <?php
 
-require_once __DIR__ . '/../../iController.php';
-require_once __DIR__ . '/../../standards/controllers/StandardController.php';
-require_once __DIR__ . '/../../profiles/controllers/ProfileController.php';
-require_once __DIR__ . '/../../topics/controllers/TopicController.php';
+require_once 'iController.php';
+require_once 'standards/controllers/StandardController.php';
+require_once 'profiles/controllers/ProfileController.php';
+require_once 'topics/controllers/TopicController.php';
+
 class APIV1Controller implements iController
 {
     private $controller;

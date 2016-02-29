@@ -1,7 +1,7 @@
 <?php
-require_once "iController.php";
-require_once "MethodNotAllowedError.php";
-require_once "ErrorResponse.php";
+require_once __DIR__."/../iController.php";
+require_once __DIR__."/../../v1/errors/MethodNotAllowedError.php";
+require_once __DIR__."/ErrorResponse.php";
 
 abstract class ResponseController implements iController
 {

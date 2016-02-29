@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "/../../ResponseController.php";
+require_once __DIR__."/../../responses/ResponseController.php";
 
 class StandardVersionController extends ResponseController
 {

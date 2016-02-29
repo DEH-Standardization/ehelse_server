@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../../iController.php';
-require_once 'APIV1Controller.php';
-require_once 'DescriptionController.php';
+require_once 'v1/iController.php';
+require_once 'v1/APIV1Controller.php';
+require_once 'v1/main/controllers/DescriptionController.php';
 
 class MainController implements iController{
     private $controller, $api_version, $path;
