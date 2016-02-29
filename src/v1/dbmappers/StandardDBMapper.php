@@ -1,5 +1,6 @@
 <?php
 require_once 'DBMapper.php';
+require_once __DIR__.'/../models/Standard.php';
 
 /**
  *
