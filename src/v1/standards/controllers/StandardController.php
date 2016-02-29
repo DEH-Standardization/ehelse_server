@@ -65,7 +65,7 @@ class StandardController extends ResponseController
     protected function get()
     {
         $mapper = new StandardDBMapper();
-        return new Response($mapper->getStandardById($this->path[0])->toJSON());
+        return new Response($mapper->getStandardById($this->id)->toJSON());
     }
 
     protected function update()
