@@ -5,6 +5,8 @@ require_once __DIR__.'/../../main/controllers/DescriptionController.php';
 require_once __DIR__.'/../../dbmappers/StandardDBMapper.php';
 require_once 'StandardVersionController.php';
 require_once 'StandardFieldController.php';
+require_once __DIR__.'/../../models/Standard.php';
+require_once __DIR__.'/../../errors/DBError.php';
 
 class StandardController extends ResponseController
 {
@@ -58,6 +60,7 @@ class StandardController extends ResponseController
                 $this->controller = new DescriptionController();//return error
             }
         }
+        var_dump($body);
     }
 
 
@@ -65,12 +68,30 @@ class StandardController extends ResponseController
     protected function get()
     {
         $mapper = new StandardDBMapper();
-        return new Response($mapper->getStandardById($this->id)->toJSON());
+        $response = $mapper->getStandardById($this->id);
+        if ($response instanceof DBError) {
+            return new ErrorResponse($response);
+        }
+        return new Response($response->toJSON());
     }
 
     protected function update()
     {
-        return  new Response("Standard, standard updated");
+        $mapper = new StandardDBMapper();
+        $assoc = $this->body;
+        $standard = new Standard(
+            $assoc['id'],
+            $assoc['timestamp'],
+            $assoc['title'],
+            $assoc['description'],
+            $assoc['is_in_catalog'],
+            $assoc['sequence'],
+            $assoc['topic_id']);
+        $response = $mapper->update($standard);
+        if ($response instanceof DBError) {
+            return new ErrorResponse($response);
+        }
+        return $this->get();
     }
 
     protected function delete()
@@ -80,7 +101,16 @@ class StandardController extends ResponseController
 
     protected function getAll()
     {
-        return  new Response("return all std");
+        $mapper = new StandardDBMapper();
+        $response = $mapper->getAll();
+        if ($response instanceof DBError) {
+            return new ErrorResponse($response);
+        }
+        $result = "";
+        foreach ($response as $standard) {
+            $result .= $standard->toJSON();
+        }
+        return new Response($result);
     }
 
     protected function create()

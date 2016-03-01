@@ -42,5 +42,18 @@ class DBError extends Error
 
     }
 
+    public function toJSON()
+    {
+        return json_encode(array(
+            "title" => $this->title,
+            "message" => $this->message
+        ), JSON_PRETTY_PRINT);
+    }
+
+    public function getStatusCode()
+    {
+        return 400;
+    }
+
 
 }

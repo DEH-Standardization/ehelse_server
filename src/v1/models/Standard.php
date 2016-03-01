@@ -7,6 +7,20 @@ class Standard
 {
     private $id, $timestamp, $title, $description, $topic_id, $is_in_catalog, $sequence;
 
+    public static function  getStandardFromJSON($body)
+    {
+        $assoc = json_decode($body);
+        echo print_r( $assoc);
+        return new Standard(
+            $assoc['id'],
+            $assoc['timestamp'],
+            $assoc['title'],
+            $assoc['description'],
+            $assoc['is_in_catalog'],
+            $assoc['sequence'],
+            $assoc['topic_id']);
+    }
+
     public function __construct($id, $timestamp, $title, $description, $is_in_catalog, $sequence, $topic_id)
     {
         $this->id = $id;
@@ -17,6 +31,8 @@ class Standard
         $this->setTitle($title);
         $this->setDescription($description);
     }
+
+
 
     public function getStandardVersions()
     {
@@ -100,7 +116,8 @@ class Standard
     }
 
     //$id, $timestamp, $title, $description, $topic_id, $is_in_catalog, $sequence;
-    public function toJSON(){
+    public function toJSON()
+    {
         $assoc = array(
         'id' => $this->id,
         'timestamp' => $this->timestamp,
@@ -111,4 +128,6 @@ class Standard
         'sequence' => $this->sequence);
         return json_encode($assoc,JSON_PRETTY_PRINT);
     }
+
+
 }

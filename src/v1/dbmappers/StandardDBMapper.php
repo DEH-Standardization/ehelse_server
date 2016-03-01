@@ -1,6 +1,7 @@
 <?php
 require_once 'DBMapper.php';
 require_once __DIR__.'/../models/Standard.php';
+require_once __DIR__.'/../errors/DBError.php';
 
 /**
  *
@@ -153,6 +154,46 @@ class StandardDBMapper extends DBMapper
 
     }
 
+    /**
+     * Returns the newest versions of all standards
+     * @return array|DBError|null
+     */
+    public function getAll()
+    {
+        $response = new DBError("idk");
+        $standard_versions = array();
+        $dbName = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "SELECT *
+                FROM $dbName.standard WHERE(id,timestamp) IN
+                ( SELECT id, MAX(timestamp)
+                  FROM $dbName.standard
+                  GROUP BY id);";
+        try {
+            $result = $this->queryDB($sql, array());
+            foreach ($result as $row) {
+                array_push($standard_versions, new Standard(
+                    $row['id'],
+                    $row['timestamp'],
+                    $row['title'],
+                    $row['description'],
+                    $row['is_in_catalog'],
+                    $row['sequence'],
+                    $row['topic_id']));
+            }
+            if (count($standard_versions) === 0) {
+                $response = new DBError("Did not return any results");
+            } else {
+                return $standard_versions;
+            }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+
+
+    }
+
+
     public function getAllLoggedStandardsByStandardId($id)
     {
         $response = null;
@@ -246,7 +287,7 @@ class StandardDBMapper extends DBMapper
         try {
             if($this->queryDB($sql, $parameters)) {
                 print_r($parameters);
-                $response = "success";
+                $response = "200";// "success";
             }
         } catch(PDOException $e) {
             $response = new DBError($e);
