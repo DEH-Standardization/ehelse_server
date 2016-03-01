@@ -115,7 +115,21 @@ class StandardController extends ResponseController
 
     protected function create()
     {
-        return  new Response("new standard");
+        $mapper = new StandardDBMapper();
+        $assoc = $this->body;
+        $standard = new Standard(
+            $assoc['id'],
+            $assoc['timestamp'],
+            $assoc['title'],
+            $assoc['description'],
+            $assoc['is_in_catalog'],
+            $assoc['sequence'],
+            $assoc['topic_id']);
+        $response = $mapper->add($standard);
+        if ($response instanceof DBError) {
+            return new ErrorResponse($response);
+        }
+        return $this->get();
     }
 
 
