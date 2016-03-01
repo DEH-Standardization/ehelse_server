@@ -1,10 +1,25 @@
 <?php
 require_once __DIR__ . '/StandardVersion.php';
-require_once '../dbmappers/DBCommunication.php';
+require_once __DIR__.'/../dbmappers/DbCommunication.php';
+require_once __DIR__.'/../models/ModelValidation.php';
 
 class Standard
 {
     private $id, $timestamp, $title, $description, $topic_id, $is_in_catalog, $sequence;
+
+    public static function  getStandardFromJSON($body)
+    {
+        $assoc = json_decode($body);
+        echo print_r( $assoc);
+        return new Standard(
+            $assoc['id'],
+            $assoc['timestamp'],
+            $assoc['title'],
+            $assoc['description'],
+            $assoc['is_in_catalog'],
+            $assoc['sequence'],
+            $assoc['topic_id']);
+    }
 
     public function __construct($id, $timestamp, $title, $description, $is_in_catalog, $sequence, $topic_id)
     {
@@ -16,6 +31,8 @@ class Standard
         $this->setTitle($title);
         $this->setDescription($description);
     }
+
+
 
     public function getStandardVersions()
     {
@@ -96,6 +113,20 @@ class Standard
     public function setSequence($sequence)
     {
         $this->sequence = $sequence;
+    }
+
+    //$id, $timestamp, $title, $description, $topic_id, $is_in_catalog, $sequence;
+    public function toJSON()
+    {
+        $assoc = array(
+        'id' => $this->id,
+        'timestamp' => $this->timestamp,
+        'title' => $this->title,
+        'description' => $this->description,
+        'topic_id' => $this->topic_id,
+        'is_in_catalog' => $this->is_in_catalog,
+        'sequence' => $this->sequence);
+        return json_encode($assoc,JSON_PRETTY_PRINT);
     }
 
 

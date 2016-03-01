@@ -1,5 +1,7 @@
 <?php
 require_once "iDBMapper.php";
+require_once "DbCommunication.php";
+
 /**
  * Class DBMapper
  */
