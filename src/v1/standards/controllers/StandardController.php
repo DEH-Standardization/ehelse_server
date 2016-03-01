@@ -30,9 +30,6 @@ class StandardController extends ResponseController
         $this->body = $body;
         $this->path = $path;
 
-
-
-
         if(count($path) >= 1 && $path[0] == 'fields'){
             $this->trimPath(1);
             $this->controller = new StandardFieldController($this->path,$this->method,$this->body);
@@ -63,8 +60,10 @@ class StandardController extends ResponseController
         var_dump($body);
     }
 
-
-
+    /**
+     * Returns standard based on id
+     * @return ErrorResponse|Response
+     */
     protected function get()
     {
         $mapper = new StandardDBMapper();
@@ -75,6 +74,10 @@ class StandardController extends ResponseController
         return new Response($response->toJSON());
     }
 
+    /**
+     * Updates standard
+     * @return ErrorResponse|Response
+     */
     protected function update()
     {
         $mapper = new StandardDBMapper();
@@ -99,6 +102,10 @@ class StandardController extends ResponseController
         return  new Response("Sd deleted");
     }
 
+    /**
+     * Returns all standards
+     * @return ErrorResponse|Response
+     */
     protected function getAll()
     {
         $mapper = new StandardDBMapper();
@@ -113,6 +120,10 @@ class StandardController extends ResponseController
         return new Response($result);
     }
 
+    /**
+     * Creates new standard
+     * @return ErrorResponse|Response
+     */
     protected function create()
     {
         $mapper = new StandardDBMapper();
