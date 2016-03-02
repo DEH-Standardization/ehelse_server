@@ -33,7 +33,7 @@ class StandardDBMapper extends DBMapper
         $parameters = array($id);
         try {
             $result = $this->queryDB($sql, $parameters);
-            if ($result->rowCount() == 1) {
+            if ($result->rowCount() === 1) {
                 $row = $result->fetch();
                 return new Standard(
                     $row['id'],
@@ -97,8 +97,10 @@ class StandardDBMapper extends DBMapper
         return $this->getStandardVersionByStandardIdDB($standard->getId());
     }
 
-    /*
+    /**
      * Returns topic based on standard id
+     * @param $id
+     * @return DBError|null|Topic
      */
     public function getTopicByStandardId($id)
     {
@@ -109,7 +111,7 @@ class StandardDBMapper extends DBMapper
     }
 
     /**
-     * Returns topic
+     * Returns the topic the standard belongs to
      * @param $standard
      * @return DBError|null|Topic
      */
@@ -120,13 +122,10 @@ class StandardDBMapper extends DBMapper
         }
         $response = null;
         $dbName = DbCommunication::getInstance()->getDatabaseName();
-       /* $sql = "select T.id, T.timestamp, T.title, T.description, T.number, T.is_in_catalog, T.sequence, T.parent_id
-                from $dbName.standard as S, $dbName.topic as T
-                where S.id = ? and T.id = S.topic_id;"; */
         $sql = "SELECT *
-                FROM andrkje_ehelse_db.topic WHERE id = ? and (id,timestamp) IN
+                FROM $dbName.topic WHERE id = ? and (id,timestamp) IN
                 ( SELECT id, MAX(timestamp)
-                  FROM andrkje_ehelse_db.topic
+                  FROM $dbName.topic
                   GROUP BY id)";
         $parameters = array($standard->getId());
         try {
@@ -150,17 +149,15 @@ class StandardDBMapper extends DBMapper
             $response = new DBError($e);
         }
         return $response;
-
-
     }
 
     /**
-     * Returns the newest versions of all standards
+     * Returns the newest logged versions of all standards
      * @return array|DBError|null
      */
     public function getAll()
     {
-        $response = new DBError("idk");
+        $response = null;
         $standard_versions = array();
         $dbName = DbCommunication::getInstance()->getDatabaseName();
         $sql = "SELECT *
@@ -189,11 +186,12 @@ class StandardDBMapper extends DBMapper
             $response = new DBError($e);
         }
         return $response;
-
-
     }
 
-
+    /**
+     * @param $id
+     * @return array|DBError|null
+     */
     public function getAllLoggedStandardsByStandardId($id)
     {
         $response = null;
@@ -225,6 +223,14 @@ class StandardDBMapper extends DBMapper
 
     }
 
+    /**
+     * Returns all logged standards
+     *
+     * Returns all logged version standards, not just the newest.
+     *
+     * @param $standard
+     * @return array|DBError|null
+     */
     public function getAllLoggedStandardsByStandard($standard)
     {
         return $this->getAllLoggedStandardsByStandardId($standard->getId());
@@ -267,13 +273,8 @@ class StandardDBMapper extends DBMapper
         if(!$this->isValidId($standard->getId(), "standard")) {
             return new DBError("Invalid id");
         }
-
         $response = null;
         $db_name = DbCommunication::getInstance()->getDatabaseName();
-        /*$sql = "UPDATE $db_name.standard
-                SET id = ?, `timestamp` = now(), title = ?, description = ?, is_in_catalog = ?, sequence = ?, topic_id = ?
-                WHERE id = ?;";
-        */
         $sql = "INSERT INTO $db_name.standard
                 VALUES (?, now(), ?, ?, ?, ?, ?);";
         $parameters = array(

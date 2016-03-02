@@ -99,6 +99,7 @@ class StandardController extends ResponseController
 
     protected function delete()
     {
+        // TODO must find a solution to deleting
         return  new Response("Sd deleted");
     }
 
@@ -142,6 +143,4 @@ class StandardController extends ResponseController
         }
         return $this->get();
     }
-
-
 }
