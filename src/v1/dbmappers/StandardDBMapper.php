@@ -19,7 +19,7 @@ class StandardDBMapper extends DBMapper
     /**
      * Returns standard based on id
      * @param $id
-     * @return DBError|null|Standard
+     * @return DBError|Standard
      */
     public function getStandardById($id)
     {
@@ -57,7 +57,7 @@ class StandardDBMapper extends DBMapper
     /**
      * Returns list of standard versions based on id
      * @param $id
-     * @return array|DBError|null
+     * @return array|DBError
      */
     public function getStandardVersionByStandardId($id)
     {
@@ -90,7 +90,7 @@ class StandardDBMapper extends DBMapper
     /**
      * Returns list of standard versions
      * @param $standard
-     * @return mixed
+     * @return array|DBError
      */
     public function getStandardVersionByStandard($standard)
     {
@@ -100,7 +100,7 @@ class StandardDBMapper extends DBMapper
     /**
      * Returns topic based on standard id
      * @param $id
-     * @return DBError|null|Topic
+     * @return DBError|Topic
      */
     public function getTopicByStandardId($id)
     {
@@ -113,7 +113,7 @@ class StandardDBMapper extends DBMapper
     /**
      * Returns the topic the standard belongs to
      * @param $standard
-     * @return DBError|null|Topic
+     * @return DBError|Topic
      */
     public function getTopicByStandard($standard)
     {
@@ -153,7 +153,7 @@ class StandardDBMapper extends DBMapper
 
     /**
      * Returns the newest logged versions of all standards
-     * @return array|DBError|null
+     * @return array|DBError
      */
     public function getAll()
     {
@@ -190,7 +190,7 @@ class StandardDBMapper extends DBMapper
 
     /**
      * @param $id
-     * @return array|DBError|null
+     * @return array|DBError
      */
     public function getAllLoggedStandardsByStandardId($id)
     {
@@ -229,7 +229,7 @@ class StandardDBMapper extends DBMapper
      * Returns all logged version standards, not just the newest.
      *
      * @param $standard
-     * @return array|DBError|null
+     * @return array|DBError
      */
     public function getAllLoggedStandardsByStandard($standard)
     {
@@ -239,7 +239,7 @@ class StandardDBMapper extends DBMapper
     /**
      * Adds new standard to database
      * @param $standard
-     * @return DBError|null|string
+     * @return DBError|string
      */
     public function add($standard)
     {
@@ -266,7 +266,7 @@ class StandardDBMapper extends DBMapper
     /**
      * Updates standard to database
      * @param $standard
-     * @return DBError|null|string
+     * @return DBError|string
      */
     public function update($standard)
     {

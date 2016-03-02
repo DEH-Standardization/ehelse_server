@@ -62,7 +62,7 @@ class StandardController extends ResponseController
 
     /**
      * Returns standard based on id
-     * @return ErrorResponse|Response
+     * @return Response
      */
     protected function get()
     {
@@ -76,7 +76,7 @@ class StandardController extends ResponseController
 
     /**
      * Updates standard
-     * @return ErrorResponse|Response
+     * @return Response
      */
     protected function update()
     {
@@ -105,7 +105,7 @@ class StandardController extends ResponseController
 
     /**
      * Returns all standards
-     * @return ErrorResponse|Response
+     * @return Response
      */
     protected function getAll()
     {
@@ -123,7 +123,7 @@ class StandardController extends ResponseController
 
     /**
      * Creates new standard
-     * @return ErrorResponse|Response
+     * @return Response
      */
     protected function create()
     {
