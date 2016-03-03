@@ -156,6 +156,7 @@ class TopicController extends ResponseController
      */
     protected function delete()
     {
+        // TODO fix delete
         return new Response("delete topic");
     }
 }
