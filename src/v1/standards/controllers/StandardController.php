@@ -30,9 +30,6 @@ class StandardController extends ResponseController
         $this->body = $body;
         $this->path = $path;
 
-
-
-
         if(count($path) >= 1 && $path[0] == 'fields'){
             $this->trimPath(1);
             $this->controller = new StandardFieldController($this->path,$this->method,$this->body);
@@ -63,8 +60,10 @@ class StandardController extends ResponseController
         var_dump($body);
     }
 
-
-
+    /**
+     * Returns standard based on id
+     * @return Response
+     */
     protected function get()
     {
         $mapper = new StandardDBMapper();
@@ -75,6 +74,10 @@ class StandardController extends ResponseController
         return new Response($response->toJSON());
     }
 
+    /**
+     * Updates standard
+     * @return Response
+     */
     protected function update()
     {
         $mapper = new StandardDBMapper();
@@ -96,9 +99,14 @@ class StandardController extends ResponseController
 
     protected function delete()
     {
+        // TODO must find a solution to deleting
         return  new Response("Sd deleted");
     }
 
+    /**
+     * Returns all standards
+     * @return Response
+     */
     protected function getAll()
     {
         $mapper = new StandardDBMapper();
@@ -106,11 +114,11 @@ class StandardController extends ResponseController
         if ($response instanceof DBError) {
             return new ErrorResponse($response);
         }
-        $result = "";
+        $result = array('standards' => array());
         foreach ($response as $standard) {
-            $result .= $standard->toJSON();
+            array_push($result['standards'], $standard->toArray());
         }
-        return new Response($result);
+        return new Response(json_encode($result, JSON_PRETTY_PRINT));
     }
 
     protected function create()
@@ -131,6 +139,4 @@ class StandardController extends ResponseController
         }
         return $this->get();
     }
-
-
 }
