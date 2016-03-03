@@ -114,17 +114,13 @@ class StandardController extends ResponseController
         if ($response instanceof DBError) {
             return new ErrorResponse($response);
         }
-        $result = "";
+        $result = array('standards' => array());
         foreach ($response as $standard) {
-            $result .= $standard->toJSON();
+            array_push($result['standards'], $standard->toArray());
         }
-        return new Response($result);
+        return new Response(json_encode($result, JSON_PRETTY_PRINT));
     }
 
-    /**
-     * Creates new standard
-     * @return Response
-     */
     protected function create()
     {
         $mapper = new StandardDBMapper();

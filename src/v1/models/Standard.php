@@ -10,7 +10,6 @@ class Standard
     public static function  getStandardFromJSON($body)
     {
         $assoc = json_decode($body);
-        echo print_r( $assoc);
         return new Standard(
             $assoc['id'],
             $assoc['timestamp'],
@@ -115,18 +114,22 @@ class Standard
         $this->sequence = $sequence;
     }
 
-    //$id, $timestamp, $title, $description, $topic_id, $is_in_catalog, $sequence;
     public function toJSON()
     {
+        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+    }
+
+    public function toArray()
+    {
         $assoc = array(
-        'id' => $this->id,
-        'timestamp' => $this->timestamp,
-        'title' => $this->title,
-        'description' => $this->description,
-        'topic_id' => $this->topic_id,
-        'is_in_catalog' => $this->is_in_catalog,
-        'sequence' => $this->sequence);
-        return json_encode($assoc,JSON_PRETTY_PRINT);
+            'id' => $this->id,
+            'timestamp' => $this->timestamp,
+            'title' => $this->title,
+            'description' => $this->description,
+            'topic_id' => $this->topic_id,
+            'is_in_catalog' => $this->is_in_catalog,
+            'sequence' => $this->sequence);
+        return $assoc;
     }
 
 
