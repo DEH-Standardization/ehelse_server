@@ -247,9 +247,12 @@ class TopicDbMapper extends DBMapper
         try {
             $this->queryDB($sql, $parameters);
             $response = "success";
+            $id = PDO::lastInsertedId();
+            echo $id;
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
+
         return $response;
     }
 

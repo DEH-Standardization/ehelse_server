@@ -47,7 +47,27 @@ class TopicController extends ResponseController
      */
     protected function create()
     {
-        return new Response("create topic");
+        //echo "[",$this->body,"]";
+        var_dump($this->body);
+        $mapper = new TopicDbMapper();
+        $assoc = $this->body;
+        $topic = new Topic(
+            $assoc['id'],
+            $assoc['timestamp'],
+            $assoc['title'],
+            $assoc['description'],
+            $assoc['number'],
+            $assoc['is_in_catalog'],
+            $assoc['sequence'],
+            $assoc['parent_id']);
+
+        echo "___: ",print_r($assoc);
+        $response = $mapper->add($topic);
+        if ($response instanceof DBError) {
+            return new ErrorResponse($response);
+        }
+        return $this->get();
+        //return new Response("it worked");
     }
 
     /**

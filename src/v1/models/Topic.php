@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__.'/../dbmappers/TopicDBMapper.php';
+
 /**
  * Class Topic Model
  */
@@ -26,6 +28,17 @@ class Topic{
         $this->parent_id = $parent_id;
         $this->setTitle($title);
         $this->setDescription($description);
+    }
+
+    public static function createNewTopic($title, $description, $number, $is_in_catalog, $sequence, $parent_id)
+    {
+        $mapper = new TopicDbMapper();
+        $mapper->add(new Topic(null,null,$title, $description, $number, $is_in_catalog, $sequence, $parent_id));
+        //return
+
+
+
+
     }
 
     public function getID()
