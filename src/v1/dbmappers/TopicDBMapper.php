@@ -1,7 +1,7 @@
 <?php
 require_once "DBMapper.php";
-require_once "../models/Topic.php";
-require_once "../errors/DBError.php";
+require_once __DIR__. "/../models/Topic.php";
+require_once __DIR__. "/../errors/DBError.php";
 /**
  *
  */
@@ -81,6 +81,45 @@ class TopicDbMapper extends DBMapper
                 $response = new DBError("Did not return any results on id: ".$id);
             } else {
                 return $standards;
+            }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
+
+    /**
+     * Returns list of standards based on id
+     * @param $id
+     * @return array|DBError|null
+     */
+    public function getProfileByTopicId($id)
+    {
+        $response = null;
+        $profiles = array();
+        $db_name = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "SELECT *
+                FROM andrkje_ehelse_db.profile WHERE topic_id = ? and (id,timestamp) IN
+                ( SELECT id, MAX(timestamp)
+                  FROM andrkje_ehelse_db.profile
+                  GROUP BY id);";
+
+        try {
+            $result = $this->queryDB($sql, array($id));
+            foreach($result as $row) {
+                array_push($profiles, new Profile(
+                    $row['id'],
+                    $row['timestamp'],
+                    $row['title'],
+                    $row['description'],
+                    $row['is_in_catalog'],
+                    $row['sequence'],
+                    $row['topic_id']));
+            }
+            if (count($profiles) == 0) {
+                $response = new DBError("Did not return any results on id: ".$id);
+            } else {
+                return $profiles;
             }
         } catch(PDOException $e) {
             $response = new DBError($e);
@@ -251,7 +290,10 @@ class TopicDbMapper extends DBMapper
     }
 
 
-
+    public function getAll()
+    {
+        // TODO: Implement getAll() method.
+    }
 
 
 }

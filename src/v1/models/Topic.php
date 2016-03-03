@@ -24,19 +24,8 @@ class Topic{
         $this->is_in_catalog = $is_in_catalog;
         $this->sequence = $sequence;
         $this->parent_id = $parent_id;
-        if (strlen($title) > ModelValidation::getTitleMaxLength()) {
-            $this->title = ModelValidation::getValidTitle($title);
-            echo "Title is too long. Title set to: " . $this->title;
-        } else {
-            $this->title = $title;
-        }
-        if (strlen($description) > ModelValidation::getDescriptionMaxLength()) {
-            $this->description = ModelValidation::getValidDescription($description);
-            echo "description is too long. Description set to: " . $this->description;
-        }
-        else {
-            $this->description = $description;
-        }
+        $this->setTitle($title);
+        $this->setDescription($description);
     }
 
     public function getID()
@@ -124,4 +113,30 @@ class Topic{
     {
         $this->sequence = $sequence;
     }
+
+    public function toJSON()
+    {
+        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+    }
+
+    /**
+     * Returns associated array
+     * @return array
+     */
+    public function toArray()
+    {
+        $assoc = array(
+            'id' => $this->id,
+            'timestamp' => $this->timestamp,
+            'title' => $this->title,
+            'description' => $this->description,
+            'number' => $this->number,
+            'is_in_catalog' => $this->is_in_catalog,
+            'sequence' => $this->sequence,
+            'parent' => $this->parent_id,
+            'children' => array(),
+            'documents' => array());
+        return $assoc;
+    }
+
 }
