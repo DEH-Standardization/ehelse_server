@@ -53,6 +53,11 @@ class TopicController extends ResponseController
      */
     protected function get()
     {
+        $controller = new TopicDbMapper();
+        $topic = $controller->getTopicById($this->id);
+        $topic_standards = $controller->getStandardsByTopicId($this->id);
+
+
         return new Response("get topic");
     }
 
