@@ -49,7 +49,6 @@ class TopicController extends ResponseController
     {
         $mapper = new TopicDbMapper();
         $assoc = $this->body;
-
         $topic = new Topic(null, null,
             $assoc['title'],
             $assoc['description'],
@@ -131,7 +130,23 @@ class TopicController extends ResponseController
      */
     protected function update()
     {
-        return new Response("update topic");
+        $mapper = new TopicDbMapper();
+        $assoc = $this->body;
+        $topic = new Topic(
+            $this->id, null,
+            $assoc['title'],
+            $assoc['description'],
+            $assoc['number'],
+            $assoc['is_in_catalog'],
+            $assoc['sequence'],
+            $assoc['parent']);
+        $response = $mapper->update($topic);
+
+        if ($response instanceof DBError) {
+            return new ErrorResponse($response);
+        }
+        $result =  $mapper->getTopicById($response)->toArray();
+        return new Response(json_encode($result, JSON_PRETTY_PRINT));
     }
 
 
