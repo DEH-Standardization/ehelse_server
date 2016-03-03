@@ -3,33 +3,38 @@
 
 class Profile
 {
-    private $id, $timestamp, $title, $description, $order, $topic_id;
+    private $id, $timestamp, $title, $description, $is_in_catalog, $sequence, $topic_id;
 
-    public function __construct($id, $timestamp, $title, $description, $order, $topic_id)
+    public function __construct($id, $timestamp, $title, $description, $is_in_catalog, $sequence, $topic_id)
     {
         $this->id = $id;
         $this->timestamp = $timestamp;
-        $this->title = $title;
-        $this->description = $description;
-        $this->order = $order;
+        $this->setTitle($title);
+        $this->setDescription($description);
+        $this->is_in_catalog = $is_in_catalog;
+        $this->sequence = $sequence;
         $this->topic_id = $topic_id;
     }
 
-    public function getProfileVersions()
+    public function setTitle($title)
     {
-        $column = GeneralDataBaseCommunication::getColumnById("profile_version");
+        if (strlen($title) > ModelValidation::getTitleMaxLength()) {
+            $this->title = ModelValidation::getValidTitle($title);
+            return "Title is too long. Title set to: " . $this->title;
+        } else {
+            $this->title = $title;
+        }
     }
 
-    public function getProfileVersionByProfileId($id)
+    public function setDescription($description)
     {
-        $row = GeneralDataBaseCommunication::getRowByID("profile", $id);
-        return new Profile(
-            row['id'],
-            row['timestamp'],
-            row['title'],
-            row['description'],
-            row['order'],
-            row['topic_id']);
+        if (strlen($description) > ModelValidation::getDescriptionMaxLength($description)) {
+            $this->description = ModelValidation::getValidDescription($description);
+            return "description is too long. Description set to: " . $this->description;
+        }
+        else {
+            $this->description = $description;
+        }
     }
 
     public function getId()
@@ -52,29 +57,29 @@ class Profile
         return $this->title;
     }
 
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
     public function getDescription()
     {
         return $this->description;
     }
 
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
     public function getOrder()
     {
-        return $this->order;
+        return $this->sequence;
     }
 
     public function setOrder($order)
     {
-        $this->order = $order;
+        $this->sequence = $order;
+    }
+
+    public  function getIsInCatalog()
+    {
+        return $this->is_in_catalog;
+    }
+
+    public function setIsInCatalog($is_in_catalog)
+    {
+        $this->is_in_catalog = $is_in_catalog;
     }
 
     public function getTopicId()
@@ -87,7 +92,53 @@ class Profile
         $this->topic_id = $topic_id;
     }
 
+    public function toJSON()
+    {
+        $json = json_encode($this->toArray(),JSON_PRETTY_PRINT);
+        /*
+        switch (json_last_error()) {
+            case JSON_ERROR_NONE:
+                echo ' - No errors';
+                break;
+            case JSON_ERROR_DEPTH:
+                echo ' - Maximum stack depth exceeded';
+                break;
+            case JSON_ERROR_STATE_MISMATCH:
+                echo ' - Underflow or the modes mismatch';
+                break;
+            case JSON_ERROR_CTRL_CHAR:
+                echo ' - Unexpected control character found';
+                break;
+            case JSON_ERROR_SYNTAX:
+                echo ' - Syntax error, malformed JSON';
+                break;
+            case JSON_ERROR_UTF8:
+                echo ' - Malformed UTF-8 characters, possibly incorrectly encoded';
+                break;
+            default:
+                echo ' - Unknown error';
+                break;
+        }
+        */
+        return $json;
+    }
 
+    /**
+     * Returns associated array
+     * @return array
+     */
+    public function toArray()
+    {
+        $assoc = array(
+            'id' => $this->id,
+            'timestamp' => $this->timestamp,
+            'title' => $this->title,
+            'description' => $this->description,
+            'is_in_catalog' => $this->is_in_catalog,
+            'sequence' => $this->sequence,
+            'topic_id' => $this->topic_id);
 
+        return $assoc;
+    }
 
 }

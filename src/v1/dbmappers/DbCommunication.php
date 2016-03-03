@@ -27,7 +27,7 @@ class DbCommunication
     private function __construct()
     {
         try {
-            $this->connection = new PDO("mysql:host=$this->server;dbname=andrkje_ehelse_db", $this->username, $this->password);
+            $this->connection = new PDO("mysql:host=$this->server;dbname=andrkje_ehelse_db;charset=utf8", $this->username, $this->password);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // set the PDO error mode to exception
         }
         catch(PDOException $e)

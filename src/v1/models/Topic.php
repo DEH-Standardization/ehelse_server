@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__.'/../dbmappers/TopicDBMapper.php';
+
 /**
  * Class Topic Model
  */
@@ -24,19 +26,37 @@ class Topic{
         $this->is_in_catalog = $is_in_catalog;
         $this->sequence = $sequence;
         $this->parent_id = $parent_id;
-        if (strlen($title) > ModelValidation::getTitleMaxLength()) {
-            $this->title = ModelValidation::getValidTitle($title);
-            echo "Title is too long. Title set to: " . $this->title;
+        $this->setTitle($title);
+        $this->setDescription($description);
+    }
+
+    /**
+     * Returns a new topic with previus inserted id
+     * @param $title
+     * @param $description
+     * @param $number
+     * @param $is_in_catalog
+     * @param $sequence
+     * @param $parent_id
+     * @return DBError|null|string|Topic
+     */
+    /*  NOT IN USE
+    public static function createNewTopic($title, $description, $number, $is_in_catalog, $sequence, $parent_id)
+    {
+
+        $mapper = new TopicDbMapper();
+        $result = $mapper->add(new Topic(null,null,$title, $description, $number, $is_in_catalog, $sequence, $parent_id));
+        if ($result instanceof DBError) {
+            return $result;
         } else {
-            $this->title = $title;
+            return $mapper->getTopicById($result);
         }
-        if (strlen($description) > ModelValidation::getDescriptionMaxLength()) {
-            $this->description = ModelValidation::getValidDescription($description);
-            echo "description is too long. Description set to: " . $this->description;
-        }
-        else {
-            $this->description = $description;
-        }
+    }
+    */
+
+    public static function getLastInsertedTopic()
+    {
+
     }
 
     public function getID()
@@ -124,4 +144,30 @@ class Topic{
     {
         $this->sequence = $sequence;
     }
+
+    public function toJSON()
+    {
+        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+    }
+
+    /**
+     * Returns associated array
+     * @return array
+     */
+    public function toArray()
+    {
+        $assoc = array(
+            'id' => $this->id,
+            'timestamp' => $this->timestamp,
+            'title' => $this->title,
+            'description' => $this->description,
+            'number' => $this->number,
+            'is_in_catalog' => $this->is_in_catalog,
+            'sequence' => $this->sequence,
+            'parent' => $this->parent_id,
+            'children' => array(),
+            'documents' => array());
+        return $assoc;
+    }
+
 }

@@ -119,6 +119,10 @@ class Standard
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
     }
 
+    /**
+     * Returns associated array
+     * @return array
+     */
     public function toArray()
     {
         $assoc = array(
