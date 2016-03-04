@@ -34,7 +34,7 @@ class APIV1Controller implements iController
                 break;
             default:
                 //TODO handle error
-                $this->controller = new ErrorResponse(new InvalidPathError());
+                $this->controller = new ErrorController(new InvalidPathError());
                 break;
         }
     }
