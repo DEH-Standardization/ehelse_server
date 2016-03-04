@@ -15,7 +15,7 @@ class StandardVersionDBMapper extends DBMapper
      */
     public function get($standard_versison)
     {
-        return $this->getById($standard_version->getId());
+        return $this->getById($standard_versison->getId());
     }
 
     /**
