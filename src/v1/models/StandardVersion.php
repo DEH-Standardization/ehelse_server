@@ -39,4 +39,19 @@ class StandardVersion
         $this->document_version = $document_version;
     }
 
+    /**
+     * Returns an associative array representation of the standard version model
+     * @return array
+     */
+    public function toArray()
+    {
+        $assoc = array(
+            'id' => $this->id,
+            'timestamp' => $this->timestamp,
+            'standard_id' => $this->standard_id,
+            'document_id' => $this->document_id,
+            'document_version_id' => $this->document_version_id);
+        return $assoc;
+    }
+
 }
