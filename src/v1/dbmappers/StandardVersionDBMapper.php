@@ -8,11 +8,21 @@ class StandardVersionDBMapper extends DBMapper
 {
 
 
-    public function get($standard_version)
+    /**
+     * Returns standard version from database
+     * @param $standard_version
+     * @return DBError|StandardVersion
+     */
+    public function get($standard_versison)
     {
         return $this->getById($standard_version->getId());
     }
 
+    /**
+     * Returns standard version from database based on id
+     * @param $id
+     * @return DBError|StandardVersion
+     */
     public function getById($id)
     {
         $dbName = DbCommunication::getInstance()->getDatabaseName();
@@ -36,19 +46,93 @@ class StandardVersionDBMapper extends DBMapper
         }
     }
 
+    /**
+     * Returns all the newest logged standard versions
+     * @return array|DBError
+     */
     public function getAll()
     {
-        // TODO: Implement getAll() method.
+        $response = null;
+        $standard_versions = array();
+        $dbName = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "SELECT *
+                FROM $dbName.standard_version WHERE(id,timestamp) IN
+                ( SELECT id, MAX(timestamp)
+                  FROM $dbName.standard_version
+                  GROUP BY id);";
+        try {
+            $result = $this->queryDB($sql, array());
+            foreach ($result as $row) {
+                array_push($standard_versions, new StandardVersion(
+                    $row['id'],
+                    $row['timestamp'],
+                    $row['standard_id'],
+                    $row['document_id'],
+                    $row['document_version_id']));
+            }
+            if (count($standard_versions) === 0) {
+                $response = new DBError("Did not return any results");
+            } else {
+                return $standard_versions;
+            }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
-    public function add($model)
+    /**
+     * Adds new standard version to database, returns id if success, error otherwise
+     * @param $standard_version
+     * @return DBError|int
+     */
+    public function add($standard_version)
     {
-        // TODO: Implement add() method.
+        $result = null;
+        $db_name = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "INSERT INTO $db_name.standard_version
+                VALUES (null, now(), ?, ?, ?);";
+        $parameters = array(
+            $standard_version->getStandardId(),
+            $standard_version->getDocumentId(),
+            $standard_version->getDocumentVersionId());
+        try {
+            if($this->queryDB($sql, $parameters)) {
+                $result = $this->connection->lastInsertId();  // Sets id of the updated standard version
+            }
+        } catch(PDOException $e) {
+            $result = new DBError($e);     // Sets DBError
+        }
+        return $result;
     }
 
-    public function update($model)
+    /**
+     * Updates standard version in database by inserting new, returns id if success, error otherwise
+     * @param $standard_version
+     * @return DBError|null|string
+     */
+    public function update($standard_version)
     {
-        // TODO: Implement update() method.
+        if(!$this->isValidId($standard_version->getId(), "standard_version")) {
+            return new DBError("Invalid id");
+        }
+        $result = null;
+        $db_name = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "INSERT INTO $db_name.standard_version
+                VALUES (?, now(), ?, ?, ?);";
+        $parameters = array(
+            $standard_version->getId(),
+            $standard_version->getStandardId(),
+            $standard_version->getDocumentId(),
+            $standard_version->getDocumentVersionId());
+        try {
+            if($this->queryDB($sql, $parameters)) {
+                $result = $this->connection->lastInsertId();  // Sets id of the updated standard version
+            }
+        } catch(PDOException $e) {
+            $result = new DBError($e);     // Sets DBError
+        }
+        return $result;
     }
 
 

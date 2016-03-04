@@ -29,14 +29,24 @@ class StandardVersion
         $this->standard_id = $standard_id;
     }
 
-    public function getDocumentVersion()
+    public function getDocumentId()
     {
-        return $this->document_version;
+        return $this->document_id;
     }
 
-    public function setDocumentVersion($document_version)
+    public function setDocumentId($document_id)
     {
-        $this->document_version = $document_version;
+        $this->document_id = $document_id;
+    }
+
+    public function getDocumentVersionId()
+    {
+        return $this->document_version_id;
+    }
+
+    public function setDocumentVersionId($document_version)
+    {
+        $this->document_version_id = $document_version;
     }
 
     /**
