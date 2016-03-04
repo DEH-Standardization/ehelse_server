@@ -17,7 +17,7 @@ class Link
     {
         $this->id = $id;
         $this->text = $text;
-        $this->description = $description;
+        $this->setDescription($description);
         $this->url = $url;
         $this->link_type_id = $link_type_id;
         $this->document_version_id = $document_version_id;
@@ -28,14 +28,28 @@ class Link
         return $this->id;
     }
 
+    /**
+     * Sets text if it is valid
+     * @param $description
+     */
     public function getText()
     {
         return $this->text;
     }
 
+    /**
+     * Sets text if it is valid
+     * @param $description
+     */
     public function setText($text)
     {
-        $this->text = $text;
+        if (strlen($text) > ModelValidation::getDescriptionMaxLength()) {
+            $this->text = ModelValidation::getValidDescription($text);
+            echo "description is too long. Description set to: " . $this->text;
+        }
+        else {
+            $this->text = $text;
+        }
     }
 
     public function getDescription()
@@ -43,9 +57,19 @@ class Link
         return $this->description;
     }
 
+    /**
+     * Sets description if it is valid
+     * @param $description
+     */
     public function setDescription($description)
     {
-        $this->description = $description;
+        if (strlen($description) > ModelValidation::getDescriptionMaxLength()) {
+            $this->description = ModelValidation::getValidDescription($description);
+            echo "description is too long. Description set to: " . $this->description;
+        }
+        else {
+            $this->description = $description;
+        }
     }
 
     public function getUrl()

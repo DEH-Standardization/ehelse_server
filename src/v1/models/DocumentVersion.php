@@ -22,6 +22,10 @@ class DocumentVersion
         return $this->description;
     }
 
+    /**
+     * Sets description if it is valid
+     * @param $description
+     */
     public function setDescription($description)
     {
         if (strlen($description) > ModelValidation::getDescriptionMaxLength($description)) {

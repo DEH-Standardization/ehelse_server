@@ -13,8 +13,8 @@ class Status
     public function __construct($id, $name, $description)
     {
         $this->id = $id;
-        $this->name = $name;
-        $this->description = $description;
+        $this->setName($name);
+        $this->setDescription($description);
     }
 
     public function getId()
@@ -27,9 +27,19 @@ class Status
         return $this->name;
     }
 
+    /**
+     * Sets name if it is valid
+     * @param $description
+     */
     public function setName($name)
     {
-        $this->name = $name;
+        if (strlen($name) > ModelValidation::getNameMaxLength()) {
+            $this->name = ModelValidation::getValidDescription($name);
+            echo "name is too long. Description set to: " . $this->description;
+        }
+        else {
+            $this->name = $name;
+        }
     }
 
     public function getDescription()
@@ -37,9 +47,19 @@ class Status
         return $this->description;
     }
 
+    /**
+     * Sets description if it is valid
+     * @param $description
+     */
     public function setDescription($description)
     {
-        $this->description = $description;
+        if (strlen($description) > ModelValidation::getDescriptionMaxLength()) {
+            $this->description = ModelValidation::getValidDescription($description);
+            echo "description is too long. Description set to: " . $this->description;
+        }
+        else {
+            $this->description = $description;
+        }
     }
 
     /**

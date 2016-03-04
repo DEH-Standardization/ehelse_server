@@ -34,4 +34,9 @@ class ModelValidation
     {
         return 4096;
     }
+
+    public static function getNameMaxLength()
+    {
+        return 128;
+    }
 }
