@@ -1,7 +1,7 @@
 <?php
 require_once 'Error.php';
 
-class UnauthorizedError extends Error
+class UnauthorizedError extends ApplicationError
 {
     protected $status_code = Response::STATUS_CODE_UNAUTHORIZED;
 
