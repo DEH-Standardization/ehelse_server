@@ -3,7 +3,7 @@ require_once "Error.php";
 /**
  * Error message for database errors
  */
-class DBError extends Error
+class DBError extends ApplicationError
 {
     /**
      * DBError constructor.

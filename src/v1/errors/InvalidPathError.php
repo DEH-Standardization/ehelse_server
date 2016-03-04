@@ -1,7 +1,7 @@
 <?php
 require_once 'Error.php';
 
-class InvalidPathError extends Error
+class InvalidPathError extends ApplicationError
 {
 
     /**

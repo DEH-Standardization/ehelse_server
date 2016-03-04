@@ -57,7 +57,6 @@ class StandardController extends ResponseController
                 $this->controller = new DescriptionController();//return error
             }
         }
-        var_dump($body);
     }
 
     /**

@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Error massage
+ * ApplicationError massage
  */
-class Error
+class ApplicationError
 {
     protected $title, $message, $status_code;
 
     /**
-     * Error constructor.
+     * ApplicationError constructor.
      * @param $title
      * @param $message
      */

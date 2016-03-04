@@ -40,7 +40,6 @@ class ProfileController extends ResponseController
                 $this->controller = new DescriptionController();//return error
             }
         }
-        var_dump($body);
     }
 
     /**
