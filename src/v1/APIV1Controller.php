@@ -4,6 +4,7 @@ require_once 'iController.php';
 require_once 'standards/controllers/StandardController.php';
 require_once 'profiles/controllers/ProfileController.php';
 require_once 'topics/controllers/TopicController.php';
+require_once 'login/controllers/LoginController.php';
 
 class APIV1Controller implements iController
 {
@@ -28,9 +29,12 @@ class APIV1Controller implements iController
             case 'topics':
                 $this->controller = new TopicController($path, $method, $body);
                 break;
+            case 'login':
+                $this->controller = new LoginController($path, $method, $body);
+                break;
             default:
                 //TODO handle error
-                $this->controller = new DescriptionController();
+                $this->controller = new ErrorController(new InvalidPathError());
                 break;
         }
     }

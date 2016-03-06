@@ -8,7 +8,7 @@ $body;
 if($_SERVER && array_key_exists('PHP_AUTH_USER', $_SERVER)){
     $user_name = $_SERVER['PHP_AUTH_USER'];
     $password = $_SERVER['PHP_AUTH_PW'];
-    if(false) { //TODO: add method to authenticate user
+    if($user_name == $password) { //TODO: add method to authenticate user
         define("AUTHENTICATED", true);
     }
     else{
