@@ -38,7 +38,11 @@ class TopicController extends ResponseController
      */
     protected function getAll()
     {
-        return new Response("all topics");
+        $mapper = new TopicDbMapper();
+        $topics = $mapper->getAll();
+        $result = $this->getChildren($this->id);
+        return new Response(json_encode($result, JSON_PRETTY_PRINT));
+        //return new Response("all topics");
     }
 
     /**
@@ -72,7 +76,6 @@ class TopicController extends ResponseController
      */
     protected function get()
     {
-
         $result = $this->getChildren($this->id);
         return new Response(json_encode($result, JSON_PRETTY_PRINT));
     }

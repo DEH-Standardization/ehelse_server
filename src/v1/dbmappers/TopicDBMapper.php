@@ -292,7 +292,36 @@ class TopicDbMapper extends DBMapper
 
     public function getAll()
     {
-        // TODO: Implement getAll() method.
+        $response = null;
+        $topics = array();
+        $dbName = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "SELECT *
+                FROM $dbName.topic WHERE(id,timestamp) IN
+                ( SELECT id, MAX(timestamp)
+                  FROM $dbName.topic
+                  GROUP BY id);";
+        try {
+            $result = $this->queryDB($sql, array());
+            foreach ($result as $row) {
+                array_push($topics, new Topic(
+                    $row['id'],
+                    $row['timestamp'],
+                    $row['title'],
+                    $row['description'],
+                    $row['number'],
+                    $row['is_in_catalog'],
+                    $row['sequence'],
+                    $row['parent_id']));
+            }
+            if (count($topics) === 0) {
+                $response = new DBError("Did not return any results");
+            } else {
+                return $topics;
+            }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
 
