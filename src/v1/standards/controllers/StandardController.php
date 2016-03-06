@@ -109,7 +109,7 @@ class StandardController extends ResponseController
     protected function getAll()
     {
         $mapper = new StandardDBMapper();
-        $response = $mapper->getAll();
+        $response = $mapper->getAllIds();
         if ($response instanceof DBError) {
             return new ErrorResponse($response);
         }

@@ -155,7 +155,7 @@ class ProfileDBMapper extends DBMapper
      * Returns the newest logged versions of all profiles
      * @return array|DBError
      */
-    public function getAll()
+    public function getAllIds()
     {
         $response = null;
         $profile_versions = array();

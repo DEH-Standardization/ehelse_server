@@ -290,28 +290,17 @@ class TopicDbMapper extends DBMapper
     }
 
 
-    public function getAll()
+    public function getAllIds()
     {
         $response = null;
         $topics = array();
         $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "SELECT *
-                FROM $dbName.topic WHERE(id,timestamp) IN
-                ( SELECT id, MAX(timestamp)
-                  FROM $dbName.topic
-                  GROUP BY id);";
+        $sql = "SELECT id
+                FROM $dbName.topic";
         try {
             $result = $this->queryDB($sql, array());
             foreach ($result as $row) {
-                array_push($topics, new Topic(
-                    $row['id'],
-                    $row['timestamp'],
-                    $row['title'],
-                    $row['description'],
-                    $row['number'],
-                    $row['is_in_catalog'],
-                    $row['sequence'],
-                    $row['parent_id']));
+                array_push($topics, $row['id']);
             }
             if (count($topics) === 0) {
                 $response = new DBError("Did not return any results");

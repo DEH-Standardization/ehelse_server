@@ -39,9 +39,14 @@ class TopicController extends ResponseController
     protected function getAll()
     {
         $mapper = new TopicDbMapper();
-        $topics = $mapper->getAll();
-        $result = $this->getChildren($this->id);
-        return new Response(json_encode($result, JSON_PRETTY_PRINT));
+        $topic_ids = $mapper->getAllIds();
+        $all_topics = array();
+
+        foreach($topic_ids as $id){
+            array_push($all_topics, $this->getChildren($id));
+        }
+
+        return new Response(json_encode($all_topics, JSON_PRETTY_PRINT));
         //return new Response("all topics");
     }
 
@@ -107,7 +112,6 @@ class TopicController extends ResponseController
         $documents = array();
         foreach ($topic_standards as $standard) {
             $standard = $standard->toArray();
-            var_dump($standard);
             $standard['document'] = 'standard';
             array_push($documents, $standard);
         }

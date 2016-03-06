@@ -93,7 +93,7 @@ class ProfileController extends ResponseController
     protected function getAll()
     {
         $mapper = new ProfileDBMapper();
-        $response = $mapper->getAll();
+        $response = $mapper->getAllIds();
         if ($response instanceof DBError) {
             return new ErrorResponse($response);
         }
