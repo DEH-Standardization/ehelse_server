@@ -155,7 +155,7 @@ class StandardDBMapper extends DBMapper
      * Returns the newest logged versions of all standards
      * @return array|DBError
      */
-    public function getAll()
+    public function getAllIds()
     {
         $response = null;
         $standard_versions = array();
