@@ -1,5 +1,6 @@
 <?php
 
+require_once 'ModelValidation.php';
 
 class Mandatory
 {

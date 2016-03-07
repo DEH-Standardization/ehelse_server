@@ -1,20 +1,21 @@
 <?php
 
 
-require_once 'ActionDBMapper.php';
-require_once __DIR__.'/../models/Action.php';
+require_once 'MandatoryDBMapper.php';
+require_once __DIR__.'/../models/Mandatory.php';
 
 
-$tm = new ActionDBMapper();
+$tm = new MandatoryDBMapper();
 
-//$id = ($tm->add(new Action(3, 'Spise middag', 'Det er vel en god nok action?')));
+/*
+$id = ($tm->add(new Mandatory(1, 'Frivillig', 'det som står i navnet...')));
 echo "_____________- <br><br>";
 
-//print_r($tm->getById($id));
+print_r($tm->getById($id));
 
 echo "_____________- <br><br>";
-
-print_r($tm->update(new Action(3, 'Spise middag', 'Taco plz!')));
+*/
+print_r($tm->update(new Mandatory(2, 'Frivillig', 'jajaj')));
 
 echo "_____________- <br><br>";
 
