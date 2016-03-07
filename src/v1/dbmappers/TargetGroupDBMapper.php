@@ -1,10 +1,15 @@
 <?php
 
+require_once 'DBMapper.php';
+require_once 'DbCommunication.php';
+require_once __DIR__.'/../models/TargetGroup.php';
+require_once __DIR__.'/../errors/DBError.php';
+
 class TargetGroupDBMapper extends DBMapper
 {
     public function get($target_group)
     {
-        // TODO: Implement get() method.
+        $this->getById($target_group->getId());
     }
 
     public function getById($id)
@@ -12,23 +17,17 @@ class TargetGroupDBMapper extends DBMapper
         $response = null;
         $dbName = DbCommunication::getInstance()->getDatabaseName();
         $sql = "SELECT *
-                FROM $dbName.target_group WHERE id = ? and (id,timestamp) IN
-                ( SELECT id, MAX(timestamp)
-                  FROM $dbName.target_group
-                GROUP BY id)";
+                FROM $dbName.target_group
+                WHERE id = ?;";
         $parameters = array($id);
         try {
             $result = $this->queryDB($sql, $parameters);
             if ($result->rowCount() === 1) {
                 $row = $result->fetch();
-                return new Profile(
+                return new TargetGroup(
                     $row['id'],
-                    $row['timestamp'],
-                    $row['title'],
-                    $row['description'],
-                    $row['is_in_catalog'],
-                    $row['sequence'],
-                    $row['topic_id']);
+                    $row['name'],
+                    $row['description']);
             } else {
                 $response = new DBError("Returned " . $result->rowCount() .
                     " profiles, expected 1");
@@ -36,12 +35,32 @@ class TargetGroupDBMapper extends DBMapper
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
+        return $response;
     }
-
 
     public function getAll()
     {
-        // TODO: Implement getAll() method.
+        $response = null;
+        $target_groups= array();
+        $dbName = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "select * from $dbName.target_group";
+        try {
+            $result = $this->queryDB($sql, null);
+            foreach ($result as $row) {
+                array_push($target_groups, new TargetGroup(
+                    $row['id'],
+                    $row['name'],
+                    $row['description']));
+            }
+            if (count($target_groups) === 0) {
+                $response = new DBError("Did not return any results");
+            } else {
+                return $target_groups;
+            }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
     public function add($model)

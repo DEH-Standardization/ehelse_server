@@ -194,6 +194,7 @@ class StandardDBMapper extends DBMapper
      */
     public function getAllLoggedStandardsByStandardId($id)
     {
+        // TODO: ensure only newest standard is returned, not all logged version of all standards.
         $response = null;
         $standards= array();
         $dbName = DbCommunication::getInstance()->getDatabaseName();

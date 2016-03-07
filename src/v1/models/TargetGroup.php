@@ -1,5 +1,7 @@
 <?php
 
+require_once 'ModelValidation.php';
+
 class TargetGroup
 {
     private $id, $name, $description;
