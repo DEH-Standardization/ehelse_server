@@ -81,9 +81,27 @@ class TargetGroupDBMapper extends DBMapper
         return $response;
     }
 
-    public function update($model)
+    public function update($target_group)
     {
-        // TODO: Implement update() method.
+        if(!$this->isValidId($target_group->getId(), "target_group")) {
+            return new DBError("Invalid id");
+        }
+        $response = null;
+        $db_name = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "UPDATE $db_name.target_group
+                SET name = ?, description = ?
+                WHERE id = ?;";
+        $parameters = array(
+            $target_group->getName(),
+            $target_group->getDescription(),
+            $target_group->getId());
+        try {
+            $this->queryDB($sql, $parameters);
+            return $target_group->getId();
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
 

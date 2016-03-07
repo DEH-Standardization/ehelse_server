@@ -7,5 +7,5 @@ require_once __DIR__.'/../models/TargetGroup.php';
 
 $tm = new TargetGroupDBMapper();
 
-print_r($tm->add(new TargetGroup(null, 'Legekontor', 'Helseunderøkelser')));
+print_r($tm->update(new TargetGroup(3, 'Legekontor', 'Legeunderøkelser')));
 
