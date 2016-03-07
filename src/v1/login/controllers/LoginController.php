@@ -23,6 +23,9 @@ class LoginController implements iController
                         ),
                         JSON_PRETTY_PRINT));
             }
+            elseif($this->method == Response::REQUEST_METHOD_OPTIONS){
+                $response = new Response("{}");
+            }
             else{
                 $response = new ErrorResponse(new MethodNotAllowedError($this->method));
             }
