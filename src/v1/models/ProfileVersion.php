@@ -34,9 +34,9 @@ where PV.profile_id = " . $id . ";";
                 array_push($profile_version, new ProfileVersion(
                     $row['id'],
                     $row['timestamp'],
-                    $row['profile_id'],
-                    $row['standard_version_id'],
-                    $row['document_version_id']));
+                    $row['profileId'],
+                    $row['standardVersionId'],
+                    $row['documentVersionId']));
             }
         }
         catch(PDOException $e)

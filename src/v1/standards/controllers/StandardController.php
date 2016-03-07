@@ -10,19 +10,6 @@ require_once __DIR__.'/../../errors/DBError.php';
 
 class StandardController extends ResponseController
 {
-    /*
-     * Possibilities:
-     *
-     * .../standards
-     * --method GET/POST
-     *
-     * .../standards/<id>
-     * --return specific std
-     *
-     * .../standards/<id>/versions/...
-     * --continue to version controller
-     */
-
 
     public function __construct($path, $method, $body)
     {
@@ -86,9 +73,9 @@ class StandardController extends ResponseController
             $assoc['timestamp'],
             $assoc['title'],
             $assoc['description'],
-            $assoc['is_in_catalog'],
+            $assoc['isInCatalog'],
             $assoc['sequence'],
-            $assoc['topic_id']);
+            $assoc['topicId']);
         $response = $mapper->update($standard);
         if ($response instanceof DBError) {
             return new ErrorResponse($response);
@@ -129,9 +116,9 @@ class StandardController extends ResponseController
             $assoc['timestamp'],
             $assoc['title'],
             $assoc['description'],
-            $assoc['is_in_catalog'],
+            $assoc['isInCatalog'],
             $assoc['sequence'],
-            $assoc['topic_id']);
+            $assoc['topicId']);
         $response = $mapper->add($standard);
         if ($response instanceof DBError) {
             return new ErrorResponse($response);

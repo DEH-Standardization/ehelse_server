@@ -162,7 +162,7 @@ class Topic{
             'title' => $this->title,
             'description' => $this->description,
             'number' => $this->number,
-            'is_in_catalog' => $this->is_in_catalog,
+            'isInCatalog' => $this->is_in_catalog,
             'sequence' => $this->sequence,
             'parent' => $this->parent_id,
             'children' => array(),

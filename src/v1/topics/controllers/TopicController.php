@@ -8,7 +8,6 @@ require_once __DIR__.'/../../dbmappers/TopicDBMapper.php';
 require_once __DIR__.'/../../models/Standard.php';
 require_once __DIR__.'/../../models/Profile.php';
 
-
 class TopicController extends ResponseController
 {
     /**
@@ -46,8 +45,6 @@ class TopicController extends ResponseController
             array_push($all_topics, $this->getChildren($id));
         }
 
-
-
         return new Response(json_encode(array( "topics" => $all_topics), JSON_PRETTY_PRINT));
         //return new Response("all topics");
     }
@@ -64,7 +61,7 @@ class TopicController extends ResponseController
             $assoc['title'],
             $assoc['description'],
             $assoc['number'],
-            $assoc['is_in_catalog'],
+            $assoc['isInCatalog'],
             $assoc['sequence'],
             $assoc['parent']);
         $response = $mapper->add($topic);
@@ -105,12 +102,9 @@ class TopicController extends ResponseController
         }
         $result['children'] = $children;
 
-
-
         $topic_standards = $controller->getStandardsByTopicId($id);
         $topic_profiles = $controller->getProfileByTopicId($id);
 
-        //$result['documents'] =
         $documents = array();
         foreach ($topic_standards as $standard) {
             $standard = $standard->toArray();
@@ -131,8 +125,6 @@ class TopicController extends ResponseController
         return $result;
     }
 
-
-
     /**
      * Function updating a topics values.
      * @return Response
@@ -144,9 +136,9 @@ class TopicController extends ResponseController
         $topic = new Topic(
             $this->id, null,
             $assoc['title'],
-            $assoc['description'],
+            $assoc['des cription'],
             $assoc['number'],
-            $assoc['is_in_catalog'],
+            $assoc['isInCatalog'],
             $assoc['sequence'],
             $assoc['parent']);
         $response = $mapper->update($topic);
@@ -157,7 +149,6 @@ class TopicController extends ResponseController
         $result =  $mapper->getTopicById($response)->toArray();
         return new Response(json_encode($result, JSON_PRETTY_PRINT));
     }
-
 
     /**
      * Function deleting a topic.
