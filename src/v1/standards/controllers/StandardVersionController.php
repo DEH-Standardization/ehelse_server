@@ -2,6 +2,9 @@
 
 require_once __DIR__.'/../../responses/ResponseController.php';
 require_once __DIR__.'/../../dbmappers/StandardVersionDBMapper.php';
+require_once __DIR__.'/../../dbmappers/DocumentVersionDBMapper.php';
+require_once __DIR__.'/../../dbmappers/DocumentVersionTargetGroupDBMapper.php';
+require_once __DIR__.'/../../dbmappers/TargetGroupDBMapper.php';
 
 class StandardVersionController extends ResponseController
 {
@@ -40,21 +43,38 @@ class StandardVersionController extends ResponseController
         if ($result instanceof DBError) {
             return new ErrorResponse($result);
         }
+
+
         $standard_version = $result->toArray();
         $response['id'] = $standard_version['id'];
         $response['standardId'] = $standard_version['standardId'];
-        $response['targetGroup'] = $this->getTargetGroups();
+        $response['targetGroup'] = $this->getTargetGroups($standard_version['id']);
         $response['links'] = $this->getLinks();
         $response['fields'] = $this->getFields();
 
         return new Response(json_encode($response, JSON_PRETTY_PRINT));
     }
 
-    private function getTargetGroups()
+    /**
+     * Returns list of target groups connected to the document based on id
+     * @param $document_version_id
+     * @return array
+     */
+    private function getTargetGroups($document_version_id)
     {
-        $document_version = null;
-        // TODO: return list fo all target groups
-        return array();
+        $document_version_target_group_mapper = new DocumentVersionTargetGroupDBMapper();
+        $target_group_mapper = new TargetGroupDBMapper();
+
+        // Get id of all target groups
+        $target_group_ids = $document_version_target_group_mapper->getAllTargetGroupIdsByDocumentVersionId($document_version_id);
+
+        // Get the actual target groups
+        $target_groups = array();
+        foreach ($target_group_ids as $target_group_id) {
+            $tg = $target_group_mapper->getById($target_group_id);
+            array_push($target_groups, $tg->toArray());
+        }
+        return $target_groups;
 
     }
     private function getLinks()
