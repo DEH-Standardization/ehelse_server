@@ -11,6 +11,7 @@ class Response implements iResponse
     const REQUEST_METHOD_POST = 'POST';
     const REQUEST_METHOD_PUT = 'PUT';
     const REQUEST_METHOD_DELETE = 'DELETE';
+    const REQUEST_METHOD_OPTIONS = 'OPTIONS';
 
     const STATUS_CODE_BAD_REQUEST = 400 ;
     const STATUS_CODE_UNAUTHORIZED = 401 ;

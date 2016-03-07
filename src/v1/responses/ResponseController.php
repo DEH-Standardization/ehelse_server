@@ -10,6 +10,10 @@ abstract class ResponseController implements iController
     abstract protected function getAll();
     abstract protected function create();
 
+    protected function getOptions(){
+        return new Response("{}";
+    };
+
     abstract protected function get();
     abstract protected function update();
     abstract protected function delete();
@@ -42,6 +46,9 @@ abstract class ResponseController implements iController
             case Response::REQUEST_METHOD_DELETE:
                 $response = $this->delete();
                 break;
+            case Response::REQUEST_METHOD_OPTIONS:
+                $response = $this->getOptions();
+                break;
             default:
                 $response = new ErrorResponse(new MethodNotAllowedError(Response::REQUEST_METHOD_POST));
                 break;
@@ -64,6 +71,8 @@ abstract class ResponseController implements iController
                 $response = $this->create();
             }elseif($this->method == Response::REQUEST_METHOD_GET){
                 $response = $this->getAll();
+            }elseif($this->method == Response::REQUEST_METHOD_OPTIONS){
+                $response = $this->getOptions();
             }
             else{
                 $response = new ErrorResponse(new MethodNotAllowedError($this->method));
