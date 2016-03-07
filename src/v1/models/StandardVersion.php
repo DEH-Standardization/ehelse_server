@@ -58,9 +58,9 @@ class StandardVersion
         $assoc = array(
             'id' => $this->id,
             'timestamp' => $this->timestamp,
-            'standard_id' => $this->standard_id,
-            'document_id' => $this->document_id,
-            'document_version_id' => $this->document_version_id);
+            'standardId' => $this->standard_id,
+            'documentId' => $this->document_id,
+            'documentVersionId' => $this->document_version_id);
         return $assoc;
     }
 

@@ -1,6 +1,7 @@
 <?php
 
-require_once __DIR__."/../../responses/ResponseController.php";
+require_once __DIR__.'/../../responses/ResponseController.php';
+require_once __DIR__.'/../../dbmappers/StandardVersionDBMapper.php';
 
 class StandardVersionController extends ResponseController
 {
@@ -33,8 +34,39 @@ class StandardVersionController extends ResponseController
 
     protected function get()
     {
-        return  new Response("get std version");
+        $response = array();
+        $mapper = new StandardVersionDBMapper();
+        $result = $mapper->getById($this->id);
+        if ($result instanceof DBError) {
+            return new ErrorResponse($result);
+        }
+        $standard_version = $result->toArray();
+        $response['id'] = $standard_version['id'];
+        $response['standardId'] = $standard_version['standardId'];
+        $response['targetGroup'] = $this->getTargetGroups();
+        $response['links'] = $this->getLinks();
+        $response['fields'] = $this->getFields();
+
+        return new Response(json_encode($response, JSON_PRETTY_PRINT));
     }
+
+    private function getTargetGroups()
+    {
+        // TODO: return list fo all target groups
+        return array();
+
+    }
+    private function getLinks()
+    {
+        // TODO: return list of all links
+        return array();
+    }
+    private function getFields()
+    {
+        // TODO: return list of all links
+        return array();
+    }
+
 
     protected function update()
     {
