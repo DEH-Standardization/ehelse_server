@@ -296,4 +296,11 @@ class ProfileDBMapper extends DBMapper
         return $response;
     }
 
+    public function getAll()
+    {
+        // TODO: There is another method with teh same name
+        //  Find this, change the name, and make sure it is
+        //  working everywhere it is used
+    }
+
 }
