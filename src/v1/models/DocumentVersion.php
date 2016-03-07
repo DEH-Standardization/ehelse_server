@@ -57,7 +57,7 @@ class DocumentVersion
         return array(
             'id' => $this->id,
             'description' => $this->description,
-            'status_id' => $this->status_id);
+            'statusId' => $this->status_id);
     }
 
 }
