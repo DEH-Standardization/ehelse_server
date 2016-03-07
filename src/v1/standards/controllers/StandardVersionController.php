@@ -52,6 +52,7 @@ class StandardVersionController extends ResponseController
 
     private function getTargetGroups()
     {
+        $document_version = null;
         // TODO: return list fo all target groups
         return array();
 
