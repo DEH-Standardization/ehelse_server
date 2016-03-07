@@ -11,7 +11,7 @@ abstract class ResponseController implements iController
     abstract protected function create();
 
     protected function getOptions(){
-        return new Response("{}";
+        return new Response("{}");
     };
 
     abstract protected function get();
