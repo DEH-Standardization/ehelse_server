@@ -46,7 +46,9 @@ class TopicController extends ResponseController
             array_push($all_topics, $this->getChildren($id));
         }
 
-        return new Response(json_encode($all_topics, JSON_PRETTY_PRINT));
+
+
+        return new Response(json_encode(array( "topics" => $all_topics), JSON_PRETTY_PRINT));
         //return new Response("all topics");
     }
 
