@@ -1,6 +1,9 @@
 <?php
 require_once "MainController.php";
 
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: accept, authorization, content-type");
+
 $method = $_SERVER['REQUEST_METHOD'];
 $path = $_SERVER['PATH_INFO'];
 $api_version;
