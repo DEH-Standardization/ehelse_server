@@ -1,11 +1,22 @@
 <?php
 
 
-require_once 'TargetGroupDBMapper.php';
-require_once __DIR__.'/../models/TargetGroup.php';
+require_once 'ActionDBMapper.php';
+require_once __DIR__.'/../models/Action.php';
 
 
-$tm = new TargetGroupDBMapper();
+$tm = new ActionDBMapper();
 
-print_r($tm->update(new TargetGroup(3, 'Legekontor', 'Legeunderøkelser')));
+//$id = ($tm->add(new Action(3, 'Spise middag', 'Det er vel en god nok action?')));
+echo "_____________- <br><br>";
+
+//print_r($tm->getById($id));
+
+echo "_____________- <br><br>";
+
+print_r($tm->update(new Action(3, 'Spise middag', 'Taco plz!')));
+
+echo "_____________- <br><br>";
+
+print_r($tm->getAll());
 

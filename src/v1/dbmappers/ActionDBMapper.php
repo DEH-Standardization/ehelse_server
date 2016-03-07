@@ -2,14 +2,14 @@
 
 require_once 'DBMapper.php';
 require_once 'DbCommunication.php';
-require_once __DIR__.'/../models/TargetGroup.php';
+require_once __DIR__.'/../models/Action.php';
 require_once __DIR__.'/../errors/DBError.php';
 
-class TargetGroupDBMapper extends DBMapper
+class ActionDBMapper extends DBMapper
 {
-    public function get($target_group)
+    public function get($action)
     {
-        $this->getById($target_group->getId());
+        $this->getById($action->getId());
     }
 
     public function getById($id)
@@ -17,14 +17,14 @@ class TargetGroupDBMapper extends DBMapper
         $response = null;
         $dbName = DbCommunication::getInstance()->getDatabaseName();
         $sql = "SELECT *
-                FROM $dbName.target_group
+                FROM $dbName.action
                 WHERE id = ?;";
         $parameters = array($id);
         try {
             $result = $this->queryDB($sql, $parameters);
             if ($result->rowCount() === 1) {
                 $row = $result->fetch();
-                return new TargetGroup(
+                return new Action(
                     $row['id'],
                     $row['name'],
                     $row['description']);
@@ -41,21 +41,21 @@ class TargetGroupDBMapper extends DBMapper
     public function getAll()
     {
         $response = null;
-        $target_groups= array();
+        $actions= array();
         $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "select * from $dbName.target_group";
+        $sql = "select * from $dbName.action";
         try {
             $result = $this->queryDB($sql, null);
             foreach ($result as $row) {
-                array_push($target_groups, new TargetGroup(
+                array_push($actions, new Action(
                     $row['id'],
                     $row['name'],
                     $row['description']));
             }
-            if (count($target_groups) === 0) {
+            if (count($actions) === 0) {
                 $response = new DBError("Did not return any results");
             } else {
-                return $target_groups;
+                return $actions;
             }
         } catch(PDOException $e) {
             $response = new DBError($e);
@@ -63,15 +63,15 @@ class TargetGroupDBMapper extends DBMapper
         return $response;
     }
 
-    public function add($target_group)
+    public function add($action)
     {
         $response = null;
         $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "INSERT INTO $db_name.target_group
+        $sql = "INSERT INTO $db_name.action
                 VALUES (null, ?, ?);";
         $parameters = array(
-            $target_group->getName(),
-            $target_group->getDescription());
+            $action->getName(),
+            $action->getDescription());
         try {
             $this->queryDB($sql, $parameters);
             $response = $this->connection->lastInsertId();
@@ -81,23 +81,23 @@ class TargetGroupDBMapper extends DBMapper
         return $response;
     }
 
-    public function update($target_group)
+    public function update($action)
     {
-        if(!$this->isValidId($target_group->getId(), "target_group")) {
+        if(!$this->isValidId($action->getId(), "action")) {
             return new DBError("Invalid id");
         }
         $response = null;
         $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "UPDATE $db_name.target_group
+        $sql = "UPDATE $db_name.action
                 SET name = ?, description = ?
                 WHERE id = ?;";
         $parameters = array(
-            $target_group->getName(),
-            $target_group->getDescription(),
-            $target_group->getId());
+            $action->getName(),
+            $action->getDescription(),
+            $action->getId());
         try {
             $this->queryDB($sql, $parameters);
-            return $target_group->getId();
+            return $action->getId();
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
