@@ -12,7 +12,7 @@ abstract class ResponseController implements iController
 
     protected function getOptions(){
         return new Response("{}");
-    };
+    }
 
     abstract protected function get();
     abstract protected function update();
