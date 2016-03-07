@@ -63,9 +63,22 @@ class TargetGroupDBMapper extends DBMapper
         return $response;
     }
 
-    public function add($model)
+    public function add($target_group)
     {
-        // TODO: Implement add() method.
+        $response = null;
+        $db_name = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "INSERT INTO $db_name.target_group
+                VALUES (null, ?, ?);";
+        $parameters = array(
+            $target_group->getName(),
+            $target_group->getDescription());
+        try {
+            $this->queryDB($sql, $parameters);
+            $response = $this->connection->lastInsertId();
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
     public function update($model)
