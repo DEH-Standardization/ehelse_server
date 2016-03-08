@@ -18,11 +18,10 @@ class Topic{
      * @param $sequence
      * @param $parent_id
      */
-    public function __construct($id, $timestamp, $title, $description, $number, $is_in_catalog, $sequence, $parent_id)
+    public function __construct($id, $timestamp, $title, $description, $is_in_catalog, $sequence, $parent_id)
     {
         $this->id = $id;
         $this->timestamp = $timestamp;
-        $this->number = $number;
         $this->is_in_catalog = $is_in_catalog;
         $this->sequence = $sequence;
         $this->parent_id = $parent_id;

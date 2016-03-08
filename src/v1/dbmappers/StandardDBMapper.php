@@ -252,11 +252,11 @@ class StandardDBMapper extends DBMapper
             $standard->getDescription(),
             $standard->getIsInCatalog(),
             $standard->getSequence(),
-            $standard->getTopicId(),
+            $standard->getTopicId()
         );
         try {
             $this->queryDB($sql, $parameters);
-            $response = "success";
+            $response = $this->connection->lastInsertId();
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
@@ -296,4 +296,8 @@ class StandardDBMapper extends DBMapper
         return $response;
     }
 
+    public function getAll()
+    {
+        // TODO: Implement getAll() method.
+    }
 }

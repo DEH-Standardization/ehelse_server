@@ -112,8 +112,8 @@ class StandardController extends ResponseController
         $mapper = new StandardDBMapper();
         $assoc = $this->body;
         $standard = new Standard(
-            $assoc['id'],
-            $assoc['timestamp'],
+            null,
+            null,
             $assoc['title'],
             $assoc['description'],
             $assoc['isInCatalog'],
@@ -123,6 +123,7 @@ class StandardController extends ResponseController
         if ($response instanceof DBError) {
             return new ErrorResponse($response);
         }
+        $this->id = $response;
         return $this->get();
     }
 }

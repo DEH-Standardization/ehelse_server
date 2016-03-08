@@ -314,4 +314,8 @@ class TopicDbMapper extends DBMapper
     }
 
 
+    public function getAll()
+    {
+        // TODO: Implement getAll() method.
+    }
 }

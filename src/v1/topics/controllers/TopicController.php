@@ -57,10 +57,11 @@ class TopicController extends ResponseController
     {
         $mapper = new TopicDbMapper();
         $assoc = $this->body;
-        $topic = new Topic(null, null,
+        $topic = new Topic(
+            null,
+            null,
             $assoc['title'],
             $assoc['description'],
-            $assoc['number'],
             $assoc['isInCatalog'],
             $assoc['sequence'],
             $assoc['parent']);
@@ -69,9 +70,8 @@ class TopicController extends ResponseController
         if ($response instanceof DBError) {
             return new ErrorResponse($response);
         }
-
-        $result =  $mapper->getTopicById($response)->toArray();
-        return new Response(json_encode($result, JSON_PRETTY_PRINT));
+        $this->id = $response;
+        return $this->get();
     }
 
     /**

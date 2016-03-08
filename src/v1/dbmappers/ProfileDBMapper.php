@@ -296,4 +296,8 @@ class ProfileDBMapper extends DBMapper
         return $response;
     }
 
+    public function getAll()
+    {
+        // TODO: Implement getAll() method.
+    }
 }
