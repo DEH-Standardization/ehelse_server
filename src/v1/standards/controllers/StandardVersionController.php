@@ -5,6 +5,8 @@ require_once __DIR__.'/../../dbmappers/StandardVersionDBMapper.php';
 require_once __DIR__.'/../../dbmappers/DocumentVersionDBMapper.php';
 require_once __DIR__.'/../../dbmappers/DocumentVersionTargetGroupDBMapper.php';
 require_once __DIR__.'/../../dbmappers/TargetGroupDBMapper.php';
+require_once __DIR__.'/../../dbmappers/LinkDBMapper.php';
+require_once __DIR__.'/../../dbmappers/LinkTypeDBMapper.php';
 
 class StandardVersionController extends ResponseController
 {
@@ -44,12 +46,11 @@ class StandardVersionController extends ResponseController
             return new ErrorResponse($result);
         }
 
-
         $standard_version = $result->toArray();
         $response['id'] = $standard_version['id'];
         $response['standardId'] = $standard_version['standardId'];
         $response['targetGroup'] = $this->getTargetGroups($standard_version['id']);
-        $response['links'] = $this->getLinks();
+        $response['links'] = $this->getLinks($standard_version['documentVersionId']);
         $response['fields'] = $this->getFields();
 
         return new Response(json_encode($response, JSON_PRETTY_PRINT));
@@ -77,11 +78,45 @@ class StandardVersionController extends ResponseController
         return $target_groups;
 
     }
-    private function getLinks()
+
+    /**
+     * Returns list of link types, with associated links under each type
+     * @param $document_version_id
+     * @return array
+     */
+    private function getLinks($document_version_id)
     {
-        // TODO: return list of all links
-        return array();
+        $link_mapper = new LinkDBMapper();
+        $link_type_mapper = new LinkTypeDBMapper();
+        $links = array();
+
+        $link_type_ids = $link_mapper->getLinkTypeIdByDocumentVersionId($document_version_id);
+        foreach ($link_type_ids as $id) {
+            array_push($links,
+                array('linkCategory' => $link_type_mapper->getById($id)->toArray(),
+                    'links' => $this->getLinkByType($id, $document_version_id, $link_mapper)));
+
+        }
+        return $links;
     }
+
+    /**
+     * Returns a list of links under a a link type, based on document version id
+     * @param $link_type_id
+     * @param $document_version_id
+     * @param $link_mapper
+     * @return array
+     */
+    private function getLinkByType($link_type_id, $document_version_id, $link_mapper)
+    {
+        $links = $link_mapper->getLinksByDocumentVersionIdAndLinkTypeId($link_type_id, $document_version_id);
+        $result = array();
+        foreach ($links as $link) {
+            array_push($result, $link->toArray());
+        }
+        return $result;
+    }
+
     private function getFields()
     {
         // TODO: return list of all links

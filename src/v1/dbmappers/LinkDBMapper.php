@@ -140,5 +140,59 @@ class LinkDBMapper extends DBMapper
         return $response;
     }
 
+    public function getLinksByDocumentVersionIdAndLinkTypeId($link_type_id, $document_version_id)
+    {
+        $response = null;
+        $dbName = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "select *
+                from $dbName.link
+                where link_type_id = ? and document_version_id = ?";
+        $links = array();
+        try {
+            $result = $this->queryDB($sql, array($link_type_id, $document_version_id));
+            foreach ($result as $row) {
+                array_push($links, new Link(
+                    $row['id'],
+                    $row['text'],
+                    $row['description'],
+                    $row['url'],
+                    $row['link_type_id'],
+                    $row['document_version_id']));
+            }
+            if (count($links) === 0) {
+                $response = new DBError("Did not return any results");
+            } else {
+                return $links;
+            }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
+
+    public function getLinkTypeIdByDocumentVersionId($id)
+    {
+        $response = null;
+        $dbName = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "SELECT distinct link_type_id
+                FROM $dbName.link
+                WHERE document_version_id = ?;";
+        $links_type_ids = array();
+        try {
+            $result = $this->queryDB($sql, array($id));
+            foreach ($result as $row) {
+                array_push($links_type_ids, $row['link_type_id']);
+            }
+            if (count($links_type_ids) === 0) {
+                $response = new DBError("Did not return any results");
+            } else {
+                return $links_type_ids;
+            }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
+
 
 }

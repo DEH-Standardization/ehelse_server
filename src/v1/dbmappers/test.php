@@ -8,7 +8,8 @@ require_once __DIR__.'/../models/Link.php';
 $tm = new LinkDBMapper();
 
 
-echo ($tm->update(new Link(3, 'link 3', 'link 3', 'google.com',1,2)));
+print_r($tm->getLinkTypeIdByDocumentVersionId(3));
+//($tm->update(new Link(3, 'link 3', 'link 3', 'google.com',1,2)));
 echo "_____________- <br><br>";
 
 //print_r($tm->getAll());
