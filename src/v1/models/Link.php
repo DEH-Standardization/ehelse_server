@@ -1,5 +1,7 @@
 <?php
 
+require_once 'ModelValidation.php';
+
 class Link
 {
     private $id, $text, $description, $url, $link_type_id, $document_version_id;
