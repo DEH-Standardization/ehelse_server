@@ -3,7 +3,7 @@ require_once __DIR__ . "/../../iResponse.php";
 
 class Response implements iResponse
 {
-    protected $content_type, $body, $status_code;
+    protected $content_type, $body, $response_code;
 
     const CONTENT_TYPE_JSON = 'Content-Type: application/json';
 
@@ -42,9 +42,9 @@ class Response implements iResponse
         return $this->content_type;
     }
 
-    public function getStatusCode()
+    public function getResponseCode()
     {
-        return $this->status_code;
+        return $this->response_code;
     }
 
 }

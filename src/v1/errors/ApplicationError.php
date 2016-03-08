@@ -5,7 +5,7 @@
  */
 class ApplicationError
 {
-    protected $title, $message, $status_code;
+    protected $title, $message, $response_code;
 
     /**
      * ApplicationError constructor.
@@ -18,9 +18,9 @@ class ApplicationError
         $this->message = $message;
     }
 
-    public function getStatusCode()
+    public function getResponseCode()
     {
-        return $this->status_code;
+        return $this->response_code;
     }
 
     /**
