@@ -7,11 +7,21 @@ require_once __DIR__.'/../models/LinkType.php';
 require_once __DIR__.'/../errors/DBError.php';
 class LinkTypeDBMapper extends DBMapper
 {
+    /**
+     * Returns link type
+     * @param $id
+     * @return DBError|Link
+     */
     public function get($link_type)
     {
         $this->getById($link_type->getId());
     }
 
+    /**
+     * Returns link type based on id
+     * @param $id
+     * @return DBError|Link
+     */
     public function getById($id)
     {
         $response = null;
@@ -38,6 +48,10 @@ class LinkTypeDBMapper extends DBMapper
         return $response;
     }
 
+    /**
+     * Returns all link types
+     * @return array|DBError
+     */
     public function getAll()
     {
         $response = null;
@@ -63,6 +77,11 @@ class LinkTypeDBMapper extends DBMapper
         return $response;
     }
 
+    /**
+     * Adds element to database, and returns id of inserted element
+     * @param $document_version
+     * @return DBError|string
+     */
     public function add($link_type)
     {
         $response = null;
@@ -81,6 +100,11 @@ class LinkTypeDBMapper extends DBMapper
         return $response;
     }
 
+    /**
+     * Updates element in database, and returns id of updated element
+     * @param $document_version
+     * @return DBError|string
+     */
     public function update($link_type)
     {
         if(!$this->isValidId($link_type->getId(), "link_type")) {
