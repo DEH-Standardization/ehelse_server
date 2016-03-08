@@ -21,6 +21,8 @@ class StandardFieldController extends ResponseController
 
     protected function create()
     {
+        //TODO 10.03.2016
+
         /*
         $mapper = new DocumentFieldDBMapper();
         $assoc = $this->body;
@@ -43,55 +45,49 @@ class StandardFieldController extends ResponseController
 
     protected function getAll()
     {
-        /*
-        $mapper = new DBMapper();
-        $response = $mapper->getAllIds();
-        if ($response instanceof DBError) {
-            return new ErrorResponse($response);
-        }
-        $result = array('standards' => array());
-        foreach ($response as $standard) {
-            array_push($result['standards'], $standard->toArray());
-        }
-        return new Response(json_encode($result, JSON_PRETTY_PRINT));
 
-         */
+        //$mapper = new DocumentFieldDBMapper();
+        //$response = $mapper->getAllIds();
+        //if ($response instanceof DBError) {
+        //    return new ErrorResponse($response);
+        //}
+        //$result = array('documentField' => array());
+        //foreach ($response as $DocumentField) {
+        //    array_push($result['documentFields'], $DocumentField->toArray());
+        //}
+        //return new Response(json_encode($result, JSON_PRETTY_PRINT));
+
+
         return  new Response("get all std fields");
     }
 
     protected function get()
     {
-        /*
         $mapper = new DocumentFieldDBMapper();
         $response = $mapper->getById($this->id);
         if ($response instanceof DBError) {
             return new ErrorResponse($response);
         }
         return new Response($response->toJSON());
-        */
-        return  new Response("get specific std field");
     }
 
     protected function update()
     {
-        /*
         $mapper = new StandardDBMapper();
         $assoc = $this->body;
-        $standard = new Standard(
+        $document_field = new DocumentField(
             $assoc['id'],
-            $assoc['timestamp'],
-            $assoc['title'],
+            $assoc['name'],
             $assoc['description'],
-            $assoc['is_in_catalog'],
             $assoc['sequence'],
-            $assoc['topic_id']);
-        $response = $mapper->update($standard);
+            $assoc['mandatory'],
+            $assoc['isStandardField'],
+            $assoc['isProfileField']);
+        $response = $mapper->update($document_field);
         if ($response instanceof DBError) {
             return new ErrorResponse($response);
         }
         return $this->get();
-         */
-        return  new Response("update std field");
     }
 
     protected function delete()
