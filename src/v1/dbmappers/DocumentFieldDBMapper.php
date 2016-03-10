@@ -33,7 +33,7 @@ class DocumentFieldDBMapper extends DBMapper
                     $row['is_profile_field']);
             } else {
                 $response = new DBError("Returned " . $result->rowCount() .
-                    " profiles, expected 1");
+                    " profile, expected 1");
             }
         } catch(PDOException $e) {
             $response = new DBError($e);
@@ -87,7 +87,7 @@ class DocumentFieldDBMapper extends DBMapper
             $document_field->getSequence(),
             $document_field->getMandatory(),
             $document_field->getIsStandardField(),
-            $document_field->getIsProfilesField());
+            $document_field->getIsProfileField());
         try {
             $this->queryDB($sql, $parameters);
             $response = $this->connection->lastInsertId();
@@ -113,7 +113,7 @@ class DocumentFieldDBMapper extends DBMapper
             $document_field->getSequence(),
             $document_field->getMandatory(),
             $document_field->getIsStandardField(),
-            $document_field->getIsProfilesField(),
+            $document_field->getIsProfileField(),
             $document_field->getId());
         try {
             $this->queryDB($sql, $parameters);

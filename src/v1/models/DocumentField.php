@@ -16,7 +16,7 @@ class DocumentField
      * @param $is_standard_field
      * @param $is_profiles_field
      */
-    public function __construct($id, $name, $description, $sequence, $mandatory, $is_standard_field, $is_profiles_field)
+    public function __construct($id, $name, $description, $sequence, $mandatory, $is_standard_field, $is_profile_field)
     {
         $this->id = $id;
         $this->name = $name;
@@ -24,7 +24,7 @@ class DocumentField
         $this->sequence = $sequence;
         $this->mandatory = $mandatory;
         $this->is_standard_field = $is_standard_field;
-        $this->is_profiles_field = $is_profiles_field;
+        $this->is_profile_field = $is_profile_field;
     }
 
     public function getId()
@@ -94,14 +94,32 @@ class DocumentField
         $this->is_standard_field = $is_standard_field;
     }
 
-    public function getIsProfilesField()
+    public function getIsProfileField()
     {
-        return $this->is_profiles_field;
+        return $this->is_profile_field;
     }
 
-    public function setIsProfilesField($is_profiles_field)
+    public function setIsProfileField($is_profile_field)
     {
-        $this->is_profiles_field = $is_profiles_field;
+        $this->is_profile_field = $is_profile_field;
+    }
+
+    public function toArray()
+    {
+        $assoc = array(
+            'id' => $this->id,
+            'name' => $this->name,
+            'description' => $this->description,
+            'sequence' => $this->sequence,
+            'mandatory' => $this->mandatory,
+            'isStandardField' => $this->is_standard_field,
+            'isProfileField' => $this->is_profile_field);
+        return $assoc;
+    }
+
+    public function toJSON()
+    {
+        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
     }
 
 }
