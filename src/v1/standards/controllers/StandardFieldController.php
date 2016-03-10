@@ -1,8 +1,11 @@
 <?php
 
+require_once __DIR__."/../../dbmappers/DocumentFieldDBMapper.php";
 
 class StandardFieldController extends ResponseController
 {
+    protected static $IS_STANDARD_FIELD = 1;
+    protected static $IS_PROFILE_FIELD = 0;
 
     public function __construct($path, $method, $body)
     {
@@ -21,26 +24,21 @@ class StandardFieldController extends ResponseController
 
     protected function create()
     {
-        //TODO 10.03.2016
-
-        /*
         $mapper = new DocumentFieldDBMapper();
         $assoc = $this->body;
         $document_field = new DocumentField(
-            $assoc['id'],
-            $assoc['timestamp'],
-            $assoc['title'],
+            NULL,
+            $assoc['name'],
             $assoc['description'],
-            $assoc['is_in_catalog'],
             $assoc['sequence'],
-            $assoc['topic_id']);
+            $assoc['mandatory'],
+            StandardFieldController::$IS_STANDARD_FIELD,
+            StandardFieldController::$IS_PROFILE_FIELD);
         $response = $mapper->add($document_field);
         if ($response instanceof DBError) {
             return new ErrorResponse($response);
         }
-        return $this->get();
-         */
-        return  new Response("new std field");
+        return new Response ($mapper->getById($response)->toJSON());
     }
 
     protected function getAll()
