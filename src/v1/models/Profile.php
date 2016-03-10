@@ -3,6 +3,9 @@
 
 class Profile
 {
+    // TODO: Remove $is_in_catalog
+    // TODO: Add $comment
+
     private $id, $timestamp, $title, $description, $is_in_catalog, $sequence, $topic_id;
 
     public function __construct($id, $timestamp, $title, $description, $is_in_catalog, $sequence, $topic_id)

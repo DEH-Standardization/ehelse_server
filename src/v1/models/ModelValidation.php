@@ -20,6 +20,11 @@ class ModelValidation
         return substr($content, 0, self::getContentMaxLength());
     }
 
+    public static function getValidComment($comment)
+    {
+        return substr($comment, 0, self::getCommentMaxLength());
+    }
+
     public static function getTitleMaxLength()
     {
         return 128;
@@ -33,5 +38,10 @@ class ModelValidation
     public static function getContentMaxLength()
     {
         return 4096;
+    }
+
+    public static function getCommentMaxLength()
+    {
+        return 1024;
     }
 }

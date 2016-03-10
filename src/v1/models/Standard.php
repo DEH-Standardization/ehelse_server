@@ -5,7 +5,7 @@ require_once __DIR__.'/../models/ModelValidation.php';
 
 class Standard
 {
-    private $id, $timestamp, $title, $description, $topic_id, $is_in_catalog, $sequence;
+    private $id, $timestamp, $title, $description, $topic_id, $sequence, $comment;
 
     public static function  getStandardFromJSON($body)
     {
@@ -15,20 +15,20 @@ class Standard
             $assoc['timestamp'],
             $assoc['title'],
             $assoc['description'],
-            $assoc['isInCatalog'],
             $assoc['sequence'],
-            $assoc['topicId']);
+            $assoc['topicId'],
+            $assoc['comment']);
     }
 
-    public function __construct($id, $timestamp, $title, $description, $is_in_catalog, $sequence, $topic_id)
+    public function __construct($id, $timestamp, $title, $description, $sequence, $topic_id, $comment)
     {
         $this->id = $id;
         $this->timestamp = $timestamp;
         $this->topic_id = $topic_id;
-        $this->is_in_catalog = $is_in_catalog;
         $this->sequence = $sequence;
         $this->setTitle($title);
         $this->setDescription($description);
+        $this->setComment($comment);
     }
 
 
@@ -94,16 +94,6 @@ class Standard
         $this->topic_id = $topic_id;
     }
 
-    public function getIsInCatalog()
-    {
-        return $this->is_in_catalog;
-    }
-
-    public function setIsInCatalog($is_in_catalog)
-    {
-        $this->is_in_catalog = $is_in_catalog;
-    }
-
     public function getSequence()
     {
         return $this->sequence;
@@ -112,6 +102,22 @@ class Standard
     public function setSequence($sequence)
     {
         $this->sequence = $sequence;
+    }
+
+    public function setComment($comment)
+    {
+        if (strlen($comment) > ModelValidation::getCommentMaxLength($comment)) {
+            $this->description = ModelValidation::getValidComment($comment);
+            echo "comment is too long, set to: " . $this->comment;
+        }
+        else {
+            $this->comment = $comment;
+        }
+    }
+
+    public function getComment()
+    {
+        return $this->comment;
     }
 
     public function toJSON()
@@ -131,8 +137,8 @@ class Standard
             'title' => $this->title,
             'description' => $this->description,
             'topicId' => $this->topic_id,
-            'isInCatalog' => $this->is_in_catalog,
-            'sequence' => $this->sequence);
+            'sequence' => $this->sequence,
+            'comment' => $this->comment);
         return $assoc;
     }
 

@@ -32,13 +32,14 @@ class TopicDbMapper extends DBMapper
         if ($result->rowCount() == 1) {
             $row = $result->fetch();
             return new Topic(
-                $id=$row['id'],
-                $timestamp=$row['timestamp'],
-                $title=$row['title'],
-                $description=$row['description'],
-                $is_in_catalog=$row['is_in_catalog'],
-                $sequence=$row['sequence'],
-                $parent_id=$row['parent_id']);
+                $row['id'],
+                $row['timestamp'],
+                $row['title'],
+                $row['description'],
+                $row['sequence'],
+                $row['number'],
+                $row['parent_id'],
+                $row['comment']);
         } else {
             trigger_error($result->errorInfo(), E_USER_ERROR);
         }
@@ -72,9 +73,9 @@ class TopicDbMapper extends DBMapper
                     $row['timestamp'],
                     $row['title'],
                     $row['description'],
-                    $row['is_in_catalog'],
                     $row['sequence'],
-                    $row['topic_id']));
+                    $row['topic_id'],
+                    $row['comment']));
             }
             if (count($standards) == 0) {
                 $response = new DBError("Did not return any results on id: ".$id);
@@ -111,9 +112,9 @@ class TopicDbMapper extends DBMapper
                     $row['timestamp'],
                     $row['title'],
                     $row['description'],
-                    $row['is_in_catalog'],
                     $row['sequence'],
-                    $row['topic_id']));
+                    $row['topic_id'],
+                    $row['comment']));
             }
             if (count($profiles) == 0) {
                 $response = new DBError("Did not return any results on id: ".$id);
@@ -163,9 +164,9 @@ class TopicDbMapper extends DBMapper
                     $row['title'],
                     $row['description'],
                     $row['number'],
-                    $row['is_in_catalog'],
                     $row['sequence'],
-                    $row['parent_id']));
+                    $row['parent_id'],
+                    $row['comment']));
             }
             if (count($topics) == 0) {
                 $response = new DBError("Did not return any results on id: ".$id);
@@ -199,9 +200,9 @@ class TopicDbMapper extends DBMapper
                     $row['title'],
                     $row['description'],
                     $row['number'],
-                    $row['is_in_catalog'],
                     $row['sequence'],
-                    $row['parent_id']));
+                    $row['parent_id'],
+                    $row['comment']));
             }
             if (count($topics) == 0) {
                 $response = new DBError("Did not return any results on id: ".$id);
@@ -264,10 +265,6 @@ class TopicDbMapper extends DBMapper
         }
         $response = null;
         $db_name = DbCommunication::getInstance()->getDatabaseName();
-        /*$sql = "UPDATE $db_name.topic
-                SET `timestamp` = now(), title = ?, description = ?, number = ?, is_in_catalog = ?, sequence = ?, parent_id = ?
-                WHERE id = ?;";
-        */
         $sql = "INSERT INTO $db_name.topic
                 VALUES (?, now(), ?, ?, ?, ?, ?, ?);";
         $parameters = array(

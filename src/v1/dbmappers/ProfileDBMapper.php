@@ -140,7 +140,8 @@ class ProfileDBMapper extends DBMapper
                     $row['description'],
                     $row['number'],
                     $row['sequence'],
-                    $row['parent_id']);
+                    $row['parent_id'],
+                    $row['comment']);
             } else {
                 $response = new DBError("Returned " . $result->rowCount() .
                     " profiles, expected 1");
