@@ -15,9 +15,9 @@ class Standard
             $assoc['timestamp'],
             $assoc['title'],
             $assoc['description'],
-            $assoc['is_in_catalog'],
+            $assoc['isInCatalog'],
             $assoc['sequence'],
-            $assoc['topic_id']);
+            $assoc['topicId']);
     }
 
     public function __construct($id, $timestamp, $title, $description, $is_in_catalog, $sequence, $topic_id)
@@ -130,8 +130,8 @@ class Standard
             'timestamp' => $this->timestamp,
             'title' => $this->title,
             'description' => $this->description,
-            'topic_id' => $this->topic_id,
-            'is_in_catalog' => $this->is_in_catalog,
+            'topicId' => $this->topic_id,
+            'isInCatalog' => $this->is_in_catalog,
             'sequence' => $this->sequence);
         return $assoc;
     }

@@ -134,9 +134,9 @@ class Profile
             'timestamp' => $this->timestamp,
             'title' => $this->title,
             'description' => $this->description,
-            'is_in_catalog' => $this->is_in_catalog,
+            'isInCatalog' => $this->is_in_catalog,
             'sequence' => $this->sequence,
-            'topic_id' => $this->topic_id);
+            'topicId' => $this->topic_id);
 
         return $assoc;
     }
