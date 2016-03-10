@@ -32,14 +32,13 @@ class TopicDbMapper extends DBMapper
         if ($result->rowCount() == 1) {
             $row = $result->fetch();
             return new Topic(
-                $row['id'],
-                $row['timestamp'],
-                $row['title'],
-                $row['description'],
-                $row['sequence'],
-                $row['is_in_catalog'],
-                $row['sequence'],
-                $row['parent_id']);
+                $id=$row['id'],
+                $timestamp=$row['timestamp'],
+                $title=$row['title'],
+                $description=$row['description'],
+                $is_in_catalog=$row['is_in_catalog'],
+                $sequence=$row['sequence'],
+                $parent_id=$row['parent_id']);
         } else {
             trigger_error($result->errorInfo(), E_USER_ERROR);
         }
