@@ -3,6 +3,8 @@
 
 class ProfileVersion
 {
+    // TODO: Remove $is_in_catalog
+    // TODO: Add $comment
     private $id, $timestamp, $profile_id, $standard_version_id, $document_version_id;
 
     public function __construct($id, $time_stamps, $profile_id, $standard_version_id, $document_version_id)

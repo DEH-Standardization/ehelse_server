@@ -5,7 +5,7 @@ require_once __DIR__.'/../dbmappers/TopicDBMapper.php';
  * Class Topic Model
  */
 class Topic{
-    private $id, $timestamp, $title, $description, $number, $is_in_catalog, $sequence, $parent_id;
+    private $id, $timestamp, $title, $description, $number, $sequence, $parent_id, $comment;
 
     /**
      * Topic constructor.
@@ -14,19 +14,19 @@ class Topic{
      * @param $title
      * @param $description
      * @param $number
-     * @param $is_in_catalog
      * @param $sequence
      * @param $parent_id
+     * @param $comment
      */
-    public function __construct($id, $timestamp, $title, $description, $is_in_catalog, $sequence, $parent_id)
+    public function __construct($id, $timestamp, $title, $description, $sequence, $parent_id, $comment)
     {
         $this->id = $id;
         $this->timestamp = $timestamp;
-        $this->is_in_catalog = $is_in_catalog;
         $this->sequence = $sequence;
         $this->parent_id = $parent_id;
         $this->setTitle($title);
         $this->setDescription($description);
+        $this->setComment($comment);
     }
 
     /**
@@ -114,16 +114,6 @@ class Topic{
         $this->number = $number;
     }
 
-    public function getIsInCatalog()
-    {
-        return $this->is_in_catalog;
-    }
-
-    public function setIsInCatalog($is_in_catalog)
-    {
-        $this->is_in_catalog = $is_in_catalog;
-    }
-
     public function getParentId()
     {
         return $this->parent_id;
@@ -144,6 +134,22 @@ class Topic{
         $this->sequence = $sequence;
     }
 
+    public function setComment($comment)
+    {
+        if (strlen($comment) > ModelValidation::getCommentMaxLength($comment)) {
+            $this->description = ModelValidation::getValidComment($comment);
+            echo "comment is too long, set to: " . $this->comment;
+        }
+        else {
+            $this->comment = $comment;
+        }
+    }
+
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
     public function toJSON()
     {
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
@@ -161,9 +167,9 @@ class Topic{
             'title' => $this->title,
             'description' => $this->description,
             'number' => $this->number,
-            'isInCatalog' => $this->is_in_catalog,
             'sequence' => $this->sequence,
             'parent' => $this->parent_id,
+            'comment' => $this->comment,
             'children' => array(),
             'documents' => array());
         return $assoc;

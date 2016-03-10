@@ -1,14 +1,14 @@
 <?php
 
-require_once 'pw.php';
+//require_once 'pw.php';
 
 class DbCommunication
 {
     private $connection;
     private static $instance;
-    private $server = "refkat.eu";
-    private $username = "ehelse8";
-    private $password;
+    private $server = "mysql.stud.ntnu.no";
+    private $username = "andrkje_ehelse";
+    private $password = "ehelse12";
     private $database_name = "andrkje_ehelse_db";
 
     /**
@@ -28,7 +28,7 @@ class DbCommunication
      */
     private function __construct()
     {
-        $this->password = DB_PASSWORD;
+        //$this->password = DB_PASSWORD;
         try {
             $this->connection = new PDO("mysql:host=$this->server;dbname=andrkje_ehelse_db;charset=utf8", $this->username, $this->password);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // set the PDO error mode to exception

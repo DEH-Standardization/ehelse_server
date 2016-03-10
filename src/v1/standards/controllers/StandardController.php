@@ -73,9 +73,9 @@ class StandardController extends ResponseController
             $assoc['timestamp'],
             $assoc['title'],
             $assoc['description'],
-            $assoc['isInCatalog'],
             $assoc['sequence'],
-            $assoc['topicId']);
+            $assoc['topicId'],
+            $assoc['comment']);
         $response = $mapper->update($standard);
         if ($response instanceof DBError) {
             return new ErrorResponse($response);
@@ -116,9 +116,9 @@ class StandardController extends ResponseController
             null,
             $assoc['title'],
             $assoc['description'],
-            $assoc['isInCatalog'],
             $assoc['sequence'],
-            $assoc['topicId']);
+            $assoc['topicId'],
+            $assoc['comment']);
         $response = $mapper->add($standard);
         if ($response instanceof DBError) {
             return new ErrorResponse($response);

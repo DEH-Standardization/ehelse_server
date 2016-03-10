@@ -62,9 +62,9 @@ class TopicController extends ResponseController
             null,
             $assoc['title'],
             $assoc['description'],
-            $assoc['isInCatalog'],
             $assoc['sequence'],
-            $assoc['parent']);
+            $assoc['parent'],
+            $assoc['comment']);
         $response = $mapper->add($topic);
 
         if ($response instanceof DBError) {
@@ -136,11 +136,11 @@ class TopicController extends ResponseController
         $topic = new Topic(
             $this->id, null,
             $assoc['title'],
-            $assoc['des cription'],
+            $assoc['description'],
             $assoc['number'],
-            $assoc['isInCatalog'],
             $assoc['sequence'],
-            $assoc['parent']);
+            $assoc['parent'],
+            $assoc['comment']);
         $response = $mapper->update($topic);
 
         if ($response instanceof DBError) {
