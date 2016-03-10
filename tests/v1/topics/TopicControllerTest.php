@@ -7,8 +7,8 @@ require_once __DIR__ . "/../../../src/v1/topics/controllers/TopicController.php"
 class TopicControllerTest extends EHelseTestCase
 {
 
-
-    public function testGetResponse__path_empty__method_get__body_empty__returns_standards()
+    //GET no id no body
+    public function testGetResponse__path_empty__method_get__body_empty__returns_topics()
     {
         $controller = new TopicController($path = [], $method = Response::REQUEST_METHOD_GET, $body = "");
         $response = $controller->getResponse();
@@ -18,16 +18,45 @@ class TopicControllerTest extends EHelseTestCase
         $json=json_decode($response->getBody(), true);
         $this->assertTrue($this->validateJSONTopicList($json));
     }
-    public function testGetResponse__path_empty__method_put__body_empty__returns_method_not_allowed()
+
+    //GET with id no body
+    public function testPostResponse__path_id__method_get__body_empty__returns_topic()
     {
-        $controller = new TopicController($path = [], $method = Response::REQUEST_METHOD_PUT, $body = "");
+        $controller = new TopicController($path = [1], $method = Response::REQUEST_METHOD_GET, $body = "");
         $response = $controller->getResponse();
 
         $this->assertEquals(Response::CONTENT_TYPE_JSON, $response->getContentType());
-        $this->assertEquals(Response::STATUS_CODE_NOT_FOUND, $response->getResponseCode());
-        $r = new MethodNotAllowedError(Response::REQUEST_METHOD_PUT);
-        $this->assertEquals($response->getBody(), $r->toJSON());
+        $this->assertEquals(Response::STATUS_CODE_OK, $response->getResponseCode());
+        $json=json_decode($response->getBody(), true);
+        $this->assertTrue($this->validateJSONTopic($json));
     }
+
+    //POST no id JSON in body
+    public function testPostResponse__path_empty__method_post__body_json__returns_topic()
+    {
+        $topic = new Topic(null,null,"test","unit test",true,0,null);
+
+
+        $controller = new TopicController($path = [], $method = Response::REQUEST_METHOD_POST, $body = $topic->toArray());
+        $response = $controller->getResponse();
+
+        $this->assertEquals(Response::CONTENT_TYPE_JSON, $response->getContentType());
+        $this->assertEquals(Response::STATUS_CODE_OK, $response->getResponseCode());
+        $json=json_decode($response->getBody(), true);
+        $this->assertTrue($this->validateJSONTopic($json));
+    }
+
+
+    //PUT id JSON in body
+
+
+
+
+
+
+
+
+
 
     private function validateJSONTopicList($json)
     {
