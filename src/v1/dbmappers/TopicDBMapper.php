@@ -37,7 +37,7 @@ class TopicDbMapper extends DBMapper
                 $row['title'],
                 $row['description'],
                 $row['sequence'],
-                $row['sequence'],
+                $row['number'],
                 $row['parent_id'],
                 $row['comment']);
         } else {
