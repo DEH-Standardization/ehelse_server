@@ -29,6 +29,11 @@ class StandardVersionController extends ResponseController
 
     protected function create()
     {
+
+        /*
+        $document_version = new DocumentVersion(null,null,null);
+        $standard_version = new StandardVersion($b['id'], null, standardId,_() null,  );
+        */
         return  new Response("create std version");
     }
 
@@ -127,10 +132,12 @@ class StandardVersionController extends ResponseController
     protected function update()
     {
         return  new Response("update std version");
+        // TODO add update()
     }
 
     protected function delete()
     {
         return  new Response("delete std version");
+        // TODO add delete()
     }
 }
