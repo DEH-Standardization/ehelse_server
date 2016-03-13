@@ -34,6 +34,14 @@ class StandardVersionController extends ResponseController
         $document_version = new DocumentVersion(null,null,null);
         $standard_version = new StandardVersion($b['id'], null, standardId,_() null,  );
         */
+
+        $mapper = new StandardVersionDBMapper();
+        $mapper->add(new StandardVersion(null, null,
+            $this->body['standardId'],
+            $this->body['document_id'],
+            $this->body['document_version']));
+
+        new StandardVersion(null, )
         return  new Response("create std version");
     }
 
