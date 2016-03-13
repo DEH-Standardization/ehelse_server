@@ -35,14 +35,22 @@ class StandardVersionController extends ResponseController
         $standard_version = new StandardVersion($b['id'], null, standardId,_() null,  );
         */
 
-        $mapper = new StandardVersionDBMapper();
-        $mapper->add(new StandardVersion(null, null,
-            $this->body['standardId'],
-            $this->body['document_id'],
-            $this->body['document_version']));
+        // Status
+        $status_mapper = new StatusD
 
-        new StandardVersion(null, )
-        return  new Response("create std version");
+        // DocumentVersion
+        $document_version_mapper = new DocumentVersionDBMapper();
+        $document_version_id = $document_version_mapper->add(new DocumentVersion(null,null,)
+        );
+
+        // StandardVersion
+        $standard_version_mapper = new StandardVersionDBMapper();
+        $response = $standard_version_mapper->add(new StandardVersion(null, null,
+            $this->body['standardId'],
+            null,   // $this->body['document_version'],
+            null)); // $this->body['comment']));        // TODO needs update when API desc is updated
+
+        return  new Response($response);
     }
 
     protected function getAll()

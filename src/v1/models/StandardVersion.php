@@ -33,6 +33,7 @@ class StandardVersion
 
     public function setComment($comment)
     {
+        /*
         if (strlen($comment) > ModelValidation::getCommentMaxLength($comment)) {
             $this->description = ModelValidation::getValidComment($comment);
             echo "comment is too long, set to: " . $this->comment;
@@ -40,6 +41,8 @@ class StandardVersion
         else {
             $this->comment = $comment;
         }
+        */
+        $this->comment = $comment;
     }
 
     public function getComment()
