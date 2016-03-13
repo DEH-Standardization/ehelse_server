@@ -61,6 +61,15 @@ class StandardVersion
     }
 
     /**
+     * Returns JSON representation of StandardVersion
+     * @return string
+     */
+    public function toJSON()
+    {
+        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+    }
+
+    /**
      * Returns an associative array representation of the standard version model
      * @return array
      */
@@ -70,8 +79,8 @@ class StandardVersion
             'id' => $this->id,
             'timestamp' => $this->timestamp,
             'standardId' => $this->standard_id,
-            'documentId' => $this->document_id,
-            'documentVersionId' => $this->document_version_id);
+            'documentVersionId' => $this->document_version_id,
+            'comment' => $this->comment);
         return $assoc;
     }
 

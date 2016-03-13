@@ -7,6 +7,7 @@ require_once __DIR__.'/../../dbmappers/DocumentVersionTargetGroupDBMapper.php';
 require_once __DIR__.'/../../dbmappers/TargetGroupDBMapper.php';
 require_once __DIR__.'/../../dbmappers/LinkDBMapper.php';
 require_once __DIR__.'/../../dbmappers/LinkTypeDBMapper.php';
+require_once __DIR__.'/../../dbmappers/StatusDBMapper.php';
 
 class StandardVersionController extends ResponseController
 {
@@ -30,27 +31,37 @@ class StandardVersionController extends ResponseController
     protected function create()
     {
 
-        /*
-        $document_version = new DocumentVersion(null,null,null);
-        $standard_version = new StandardVersion($b['id'], null, standardId,_() null,  );
-        */
+        // TODO: must look at this
+        // Only creating new standard version with empty targetGroup, links, fields
 
         // Status
-        $status_mapper = new StatusD
+        //$status_mapper = new StatusDBMapper();
+        $status_id = 1;    // TODO: not in API desc.
 
         // DocumentVersion
         $document_version_mapper = new DocumentVersionDBMapper();
-        $document_version_id = $document_version_mapper->add(new DocumentVersion(null,null,)
-        );
+        $document_version_id = $document_version_mapper->add(new DocumentVersion(null, null, $status_id));
 
         // StandardVersion
         $standard_version_mapper = new StandardVersionDBMapper();
-        $response = $standard_version_mapper->add(new StandardVersion(null, null,
+        $standard_version_id = $standard_version_mapper->add(new StandardVersion(null, null,
             $this->body['standardId'],
-            null,   // $this->body['document_version'],
-            null)); // $this->body['comment']));        // TODO needs update when API desc is updated
+            $document_version_id,   // $this->body['document_version'],
+            null)); // $this->body['comment']));        // TODO: needs update when API desc. is updated
+        if ($standard_version_id instanceof DBError) {
+            return new ErrorResponse($standard_version_id);
+        }
 
-        return  new Response($response);
+        $standard_version = $standard_version_mapper->getById($standard_version_id);
+
+        $response = array();
+        $response['id'] = $standard_version->getId();
+        $response['standardId'] = $standard_version->getStandardId();
+        $response['targetGroups'] = $this->getTargetGroups($standard_version->getId());
+        $response['links'] = $this->getLinks($standard_version->getDocumentVersionId());
+        $response['fields'] = $this->getFields();
+
+        return new Response(json_encode($response, JSON_PRETTY_PRINT));
     }
 
     protected function getAll()
@@ -70,7 +81,7 @@ class StandardVersionController extends ResponseController
         $standard_version = $result->toArray();
         $response['id'] = $standard_version['id'];
         $response['standardId'] = $standard_version['standardId'];
-        $response['targetGroup'] = $this->getTargetGroups($standard_version['id']);
+        $response['targetGroups'] = $this->getTargetGroups($standard_version['id']);
         $response['links'] = $this->getLinks($standard_version['documentVersionId']);
         $response['fields'] = $this->getFields();
 
