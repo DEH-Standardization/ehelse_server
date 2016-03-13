@@ -73,8 +73,8 @@ class StandardDBMapper extends DBMapper
                     $row['id'],
                     $row['timestamp'],
                     $row['standard_id'],
-                    $row['document_id'],
-                    $row['document_version_id']));
+                    $row['document_version_id'],
+                    $row['comment']));
             }
             if (count($standard_versions) == 0) {
                 $response = new DBError("Did not return any results on id: ".$id);

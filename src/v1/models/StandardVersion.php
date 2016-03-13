@@ -2,14 +2,16 @@
 
 class StandardVersion
 {
-    private $id, $timestamp, $standard_id, $document_id, $document_version_id;
+    private $id, $timestamp, $standard_id, $document_version_id, $comment;
 
-    public  function __construct($id, $timestamp, $standard_id, $document_id, $document_version_id)
+
+
+    public  function __construct($id, $timestamp, $standard_id, $document_version_id, $comment)
     {
         $this->id = $id;
         $this->timestamp = $timestamp;
         $this->standard_id = $standard_id;
-        $this->document_id = $document_id;
+        $this->setComment($comment);
         $this->document_version_id = $document_version_id;
     }
 
@@ -29,14 +31,20 @@ class StandardVersion
         $this->standard_id = $standard_id;
     }
 
-    public function getDocumentId()
+    public function setComment($comment)
     {
-        return $this->document_id;
+        if (strlen($comment) > ModelValidation::getCommentMaxLength($comment)) {
+            $this->description = ModelValidation::getValidComment($comment);
+            echo "comment is too long, set to: " . $this->comment;
+        }
+        else {
+            $this->comment = $comment;
+        }
     }
 
-    public function setDocumentId($document_id)
+    public function getComment()
     {
-        $this->document_id = $document_id;
+        return $this->comment;
     }
 
     public function getDocumentVersionId()

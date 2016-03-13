@@ -38,8 +38,8 @@ class StandardVersionDBMapper extends DBMapper
                 $row['id'],
                 $row['timestamp'],
                 $row['standard_id'],
-                $row['document_id'],
-                $row['document_version_id']);
+                $row['document_version_id'],
+                $row['comment']);
         } else {
             return new DBError("Returned " . $result->rowCount() .
                 " standard version, expected 1");
@@ -67,8 +67,8 @@ class StandardVersionDBMapper extends DBMapper
                     $row['id'],
                     $row['timestamp'],
                     $row['standard_id'],
-                    $row['document_id'],
-                    $row['document_version_id']));
+                    $row['document_version_id'],
+                    $row['comment']));
             }
             if (count($standard_versions) === 0) {
                 $response = new DBError("Did not return any results");
@@ -94,8 +94,8 @@ class StandardVersionDBMapper extends DBMapper
                 VALUES (null, now(), ?, ?, ?);";
         $parameters = array(
             $standard_version->getStandardId(),
-            $standard_version->getDocumentId(),
-            $standard_version->getDocumentVersionId());
+            $standard_version->getDocumentVersionId(),
+            $standard_version->getComment());
         try {
             if($this->queryDB($sql, $parameters)) {
                 $result = $this->connection->lastInsertId();  // Sets id of the updated standard version
@@ -123,8 +123,8 @@ class StandardVersionDBMapper extends DBMapper
         $parameters = array(
             $standard_version->getId(),
             $standard_version->getStandardId(),
-            $standard_version->getDocumentId(),
-            $standard_version->getDocumentVersionId());
+            $standard_version->getDocumentVersionId(),
+            $standard_version->getComment());
         try {
             if($this->queryDB($sql, $parameters)) {
                 $result = $this->connection->lastInsertId();  // Sets id of the updated standard version
