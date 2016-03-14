@@ -304,6 +304,11 @@ class TopicDbMapper extends DBMapper
         return $response;
     }
 
+    public function getAll()
+    {
+        // TODO: Might not be needed here, but could still be implemented
+    }
+
 
     public function getAll()
     {

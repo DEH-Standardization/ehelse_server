@@ -1,40 +1,31 @@
 <?php
 
-
 require_once 'DBMapper.php';
 require_once 'DbCommunication.php';
-require_once __DIR__.'/../models/LinkType.php';
+require_once __DIR__.'/../models/Status.php';
 require_once __DIR__.'/../errors/DBError.php';
-class LinkTypeDBMapper extends DBMapper
+
+class StatusDBMapper extends DBMapper
 {
-    /**
-     * Returns link type
-     * @param $id
-     * @return DBError|Link
-     */
-    public function get($link_type)
+
+    public function get($status)
     {
-        $this->getById($link_type->getId());
+        $this->getById($status->getId());
     }
 
-    /**
-     * Returns link type based on id
-     * @param $id
-     * @return DBError|Link
-     */
     public function getById($id)
     {
         $response = null;
         $dbName = DbCommunication::getInstance()->getDatabaseName();
         $sql = "SELECT *
-                FROM $dbName.link_type
+                FROM $dbName.status
                 WHERE id = ?;";
         $parameters = array($id);
         try {
             $result = $this->queryDB($sql, $parameters);
             if ($result->rowCount() === 1) {
                 $row = $result->fetch();
-                return new LinkType(
+                return new Status(
                     $row['id'],
                     $row['name'],
                     $row['description']);
@@ -48,28 +39,24 @@ class LinkTypeDBMapper extends DBMapper
         return $response;
     }
 
-    /**
-     * Returns all link types
-     * @return array|DBError
-     */
     public function getAll()
     {
         $response = null;
-        $link_types= array();
+        $statuses= array();
         $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "select * from $dbName.link_type";
+        $sql = "select * from $dbName.status";
         try {
             $result = $this->queryDB($sql, null);
             foreach ($result as $row) {
-                array_push($link_types, new LinkType(
+                array_push($statuses, new Status(
                     $row['id'],
                     $row['name'],
                     $row['description']));
             }
-            if (count($link_types) === 0) {
+            if (count($statuses) === 0) {
                 $response = new DBError("Did not return any results");
             } else {
-                return $link_types;
+                return $statuses;
             }
         } catch(PDOException $e) {
             $response = new DBError($e);
@@ -77,20 +64,15 @@ class LinkTypeDBMapper extends DBMapper
         return $response;
     }
 
-    /**
-     * Adds element to database, and returns id of inserted element
-     * @param $document_version
-     * @return DBError|string
-     */
-    public function add($link_type)
+    public function add($status)
     {
         $response = null;
         $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "INSERT INTO $db_name.link_type
+        $sql = "INSERT INTO $db_name.status
                 VALUES (null, ?, ?);";
         $parameters = array(
-            $link_type->getName(),
-            $link_type->getDescription());
+            $status->getName(),
+            $status->getDescription());
         try {
             $this->queryDB($sql, $parameters);
             $response = $this->connection->lastInsertId();
@@ -100,34 +82,26 @@ class LinkTypeDBMapper extends DBMapper
         return $response;
     }
 
-    /**
-     * Updates element in database, and returns id of updated element
-     * @param $document_version
-     * @return DBError|string
-     */
-    public function update($link_type)
+    public function update($status)
     {
-        if(!$this->isValidId($link_type->getId(), "link_type")) {
+        if(!$this->isValidId($status->getId(), "status")) {
             return new DBError("Invalid id");
         }
         $response = null;
         $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "UPDATE $db_name.link_type
+        $sql = "UPDATE $db_name.status
                 SET name = ?, description = ?
                 WHERE id = ?;";
         $parameters = array(
-            $link_type->getName(),
-            $link_type->getDescription(),
-            $link_type->getId());
+            $status->getName(),
+            $status->getDescription(),
+            $status->getId());
         try {
             $this->queryDB($sql, $parameters);
-            return $link_type->getId();
+            return $status->getId();
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
     }
-
-
-
 }

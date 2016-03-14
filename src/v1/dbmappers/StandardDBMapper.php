@@ -73,8 +73,8 @@ class StandardDBMapper extends DBMapper
                     $row['id'],
                     $row['timestamp'],
                     $row['standard_id'],
-                    $row['document_id'],
-                    $row['document_version_id']));
+                    $row['document_version_id'],
+                    $row['comment']));
             }
             if (count($standard_versions) == 0) {
                 $response = new DBError("Did not return any results on id: ".$id);
@@ -299,5 +299,9 @@ class StandardDBMapper extends DBMapper
     public function getAll()
     {
         // TODO: Implement getAll() method.
+
+        // TODO: There is another method with teh same name
+        //  Find this, change the name, and make sure it is
+        //  working everywhere it is used
     }
 }

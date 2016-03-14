@@ -299,5 +299,9 @@ class ProfileDBMapper extends DBMapper
     public function getAll()
     {
         // TODO: Implement getAll() method.
+
+        // TODO: There is another method with teh same name
+        //  Find this, change the name, and make sure it is
+        //  working everywhere it is used
     }
 }

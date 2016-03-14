@@ -1,5 +1,7 @@
 <?php
 
+require_once 'ModelValidation.php';
+
 class Link
 {
     private $id, $text, $description, $url, $link_type_id, $document_version_id;
@@ -113,8 +115,8 @@ class Link
             'text' => $this->text,
             'description' => $this->description,
             'url' => $this->url,
-            'link_type_id' => $this->link_type_id,
-            'document_version_id' => $this->document_version_id);
+            'linkTypeId' => $this->link_type_id,
+            'documentVersionId' => $this->document_version_id);
     }
 
 }

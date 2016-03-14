@@ -2,14 +2,16 @@
 
 class StandardVersion
 {
-    private $id, $timestamp, $standard_id, $document_id, $document_version_id;
+    private $id, $timestamp, $standard_id, $document_version_id, $comment;
 
-    public  function __construct($id, $timestamp, $standard_id, $document_id, $document_version_id)
+
+
+    public  function __construct($id, $timestamp, $standard_id, $document_version_id, $comment)
     {
         $this->id = $id;
         $this->timestamp = $timestamp;
         $this->standard_id = $standard_id;
-        $this->document_id = $document_id;
+        $this->setComment($comment);
         $this->document_version_id = $document_version_id;
     }
 
@@ -29,14 +31,23 @@ class StandardVersion
         $this->standard_id = $standard_id;
     }
 
-    public function getDocumentId()
+    public function setComment($comment)
     {
-        return $this->document_id;
+        /*
+        if (strlen($comment) > ModelValidation::getCommentMaxLength($comment)) {
+            $this->description = ModelValidation::getValidComment($comment);
+            echo "comment is too long, set to: " . $this->comment;
+        }
+        else {
+            $this->comment = $comment;
+        }
+        */
+        $this->comment = $comment;
     }
 
-    public function setDocumentId($document_id)
+    public function getComment()
     {
-        $this->document_id = $document_id;
+        return $this->comment;
     }
 
     public function getDocumentVersionId()
@@ -50,6 +61,15 @@ class StandardVersion
     }
 
     /**
+     * Returns JSON representation of StandardVersion
+     * @return string
+     */
+    public function toJSON()
+    {
+        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+    }
+
+    /**
      * Returns an associative array representation of the standard version model
      * @return array
      */
@@ -59,8 +79,8 @@ class StandardVersion
             'id' => $this->id,
             'timestamp' => $this->timestamp,
             'standardId' => $this->standard_id,
-            'documentId' => $this->document_id,
-            'documentVersionId' => $this->document_version_id);
+            'documentVersionId' => $this->document_version_id,
+            'comment' => $this->comment);
         return $assoc;
     }
 

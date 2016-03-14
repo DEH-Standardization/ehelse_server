@@ -1,24 +1,26 @@
 <?php
 
 
-require_once 'LinkTypeDBMapper.php';
-require_once __DIR__.'/../models/LinkType.php';
+require_once 'LinkDBMapper.php';
+require_once __DIR__.'/../models/Link.php';
 
 
-$tm = new LinkTypeDBMapper();
+$tm = new LinkDBMapper();
+
+
+print_r($tm->getLinkTypeIdByDocumentVersionId(3));
+//($tm->update(new Link(3, 'link 3', 'link 3', 'google.com',1,2)));
+echo "_____________- <br><br>";
+
+//print_r($tm->getAll());
+
+echo "_____________- <br><br>";
 
 /*
-$id = ($tm->add(new LinkType(1, 'Frivillig', 'det som står i navnet...')));
-echo "_____________- <br><br>";
 
-print_r($tm->getById($id));
-
-echo "_____________- <br><br>";
-
-*/
-print_r($tm->update(new LinkType(3, 'three', '3')));
+print_r($tm->update(new DocumentVersion(3, 'three', 1)));
 
 echo "_____________- <br><br>";
 
 print_r($tm->getAll());
-
+*/
