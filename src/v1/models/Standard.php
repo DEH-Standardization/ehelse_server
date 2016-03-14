@@ -5,6 +5,7 @@ require_once __DIR__.'/../models/ModelValidation.php';
 
 class Standard
 {
+    const REQUIRED_POST_FIELDS =  ['title', 'description', 'sequence','topicId','comment'];
     private $id, $timestamp, $title, $description, $topic_id, $sequence, $comment;
 
     public static function  getStandardFromJSON($body)
@@ -31,6 +32,17 @@ class Standard
         $this->setComment($comment);
     }
 
+    public static function fromArray($assoc)
+    {
+        return new Standard(
+            $assoc['id'],
+            $assoc['timestamp'],
+            $assoc['title'],
+            $assoc['description'],
+            $assoc['sequence'],
+            $assoc['topicId'],
+            $assoc['comment']);
+    }
 
 
     public function getStandardVersions()
