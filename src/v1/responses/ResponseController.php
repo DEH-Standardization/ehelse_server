@@ -80,4 +80,15 @@ abstract class ResponseController implements iController
         }
         return $response;
     }
+
+    protected static function validateJSONFormat($json, $required_fields)
+    {
+        $missing_fields = [];
+        foreach($required_fields as $required_field){
+            if( !array_key_exists($required_field, $json)){
+                array_push($missing_fields, $required_field);
+            }
+        }
+        return $missing_fields;
+    }
 }

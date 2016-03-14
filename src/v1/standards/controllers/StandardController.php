@@ -7,6 +7,7 @@ require_once 'StandardVersionController.php';
 require_once 'StandardFieldController.php';
 require_once __DIR__.'/../../models/Standard.php';
 require_once __DIR__.'/../../errors/DBError.php';
+require_once __DIR__.'/../../errors/MalformedJSONFormatError.php';
 
 class StandardController extends ResponseController
 {
@@ -14,6 +15,7 @@ class StandardController extends ResponseController
     public function __construct($path, $method, $body)
     {
         $this->method = $method;
+
         $this->body = $body;
         $this->path = $path;
 
@@ -67,15 +69,7 @@ class StandardController extends ResponseController
     protected function update()
     {
         $mapper = new StandardDBMapper();
-        $assoc = $this->body;
-        $standard = new Standard(
-            $assoc['id'],
-            $assoc['timestamp'],
-            $assoc['title'],
-            $assoc['description'],
-            $assoc['sequence'],
-            $assoc['topicId'],
-            $assoc['comment']);
+        $standard = Standard::fromArray($this->body);
         $response = $mapper->update($standard);
         if ($response instanceof DBError) {
             return new ErrorResponse($response);
@@ -110,20 +104,24 @@ class StandardController extends ResponseController
     protected function create()
     {
         $mapper = new StandardDBMapper();
-        $assoc = $this->body;
-        $standard = new Standard(
-            null,
-            null,
-            $assoc['title'],
-            $assoc['description'],
-            $assoc['sequence'],
-            $assoc['topicId'],
-            $assoc['comment']);
-        $response = $mapper->add($standard);
-        if ($response instanceof DBError) {
-            return new ErrorResponse($response);
+        $missing_fields = StandardController::validateJSONFormat($this->body, Standard::REQUIRED_POST_FIELDS);
+
+        if( empty( $missing_fields) ){
+            $standard = Standard::fromArray($this->body);
+            $response = $mapper->add($standard);
+
+            if ($response instanceof DBError) {
+                $response = new ErrorResponse($response);
+            }
+            else{
+                $this->id = $response;
+                $response =  $this->get();
+            }
         }
-        $this->id = $response;
-        return $this->get();
+        else{
+            $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
+        }
+
+        return $response;
     }
 }
