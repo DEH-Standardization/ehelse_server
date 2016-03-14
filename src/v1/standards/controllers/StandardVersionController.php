@@ -28,6 +28,10 @@ class StandardVersionController extends ResponseController
     }
 
 
+    /**
+     * Adds standard version to database
+     * @return ErrorResponse|Response
+     */
     protected function create()
     {
 
@@ -64,11 +68,37 @@ class StandardVersionController extends ResponseController
         return new Response(json_encode($response, JSON_PRETTY_PRINT));
     }
 
+    /**
+     * Returns all standard versions
+     * @return ErrorResponse|Response
+     */
     protected function getAll()
     {
-        return  new Response("get std versions");
+        $response = array();
+        $mapper = new StandardVersionDBMapper();
+        $result = $mapper->getAll();
+        if ($result instanceof DBError) {
+            return new ErrorResponse($result);
+        }
+
+        foreach ($result as $element) {
+            $standard_version = $element->toArray();
+            array_push($response, array(
+                'id' => $standard_version['id'],
+                'standardId' => $standard_version['standardId'],
+                'targetGroups' => $this->getTargetGroups($standard_version['id']),
+                'links' => $this->getLinks($standard_version['documentVersionId']),
+                'fields' => $this->getFields()
+            ));
+        }
+
+       return new Response(json_encode($response, JSON_PRETTY_PRINT));
     }
 
+    /**
+     * Returns standard version
+     * @return ErrorResponse|Response
+     */
     protected function get()
     {
         $response = array();
