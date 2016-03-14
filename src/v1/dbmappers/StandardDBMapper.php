@@ -137,7 +137,6 @@ class StandardDBMapper extends DBMapper
                     $row['timestamp'],
                     $row['title'],
                     $row['description'],
-                    $row['number'],
                     $row['sequence'],
                     $row['parent_id'],
                     $row['comment']);

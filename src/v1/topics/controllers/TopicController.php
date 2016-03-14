@@ -137,7 +137,6 @@ class TopicController extends ResponseController
             $this->id, null,
             $assoc['title'],
             $assoc['description'],
-            $assoc['number'],
             $assoc['sequence'],
             $assoc['parent'],
             $assoc['comment']);

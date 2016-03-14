@@ -5,7 +5,7 @@ require_once __DIR__.'/../dbmappers/TopicDBMapper.php';
  * Class Topic Model
  */
 class Topic{
-    private $id, $timestamp, $title, $description, $sequence, $number, $parent_id, $comment;
+    private $id, $timestamp, $title, $description, $sequence, $parent_id, $comment;
 
     /**
      * Topic constructor.
@@ -13,17 +13,15 @@ class Topic{
      * @param $timestamp
      * @param $title
      * @param $description
-     * @param $number
      * @param $sequence
      * @param $parent_id
      * @param $comment
      */
-    public function __construct($id, $timestamp, $title, $description, $number, $sequence , $parent_id, $comment)
+    public function __construct($id, $timestamp, $title, $description, $sequence , $parent_id, $comment)
     {
         $this->id = $id;
         $this->timestamp = $timestamp;
         $this->sequence = $sequence;
-        $this->number = $number;
         $this->parent_id = $parent_id;
         $this->setTitle($title);
         $this->setDescription($description);
@@ -105,16 +103,6 @@ class Topic{
         }
     }
 
-    public function getNumber()
-    {
-        return $this->number;
-    }
-
-    public function setNumber($number)
-    {
-        $this->number = $number;
-    }
-
     public function getParentId()
     {
         return $this->parent_id;
@@ -167,7 +155,6 @@ class Topic{
             'timestamp' => $this->timestamp,
             'title' => $this->title,
             'description' => $this->description,
-            'number' => $this->number,
             'sequence' => $this->sequence,
             'parent' => $this->parent_id,
             'comment' => $this->comment,

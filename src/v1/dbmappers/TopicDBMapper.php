@@ -37,7 +37,6 @@ class TopicDbMapper extends DBMapper
                 $row['title'],
                 $row['description'],
                 $row['sequence'],
-                $row['number'],
                 $row['parent_id'],
                 $row['comment']);
         } else {
@@ -163,7 +162,6 @@ class TopicDbMapper extends DBMapper
                     $row['timestamp'],
                     $row['title'],
                     $row['description'],
-                    $row['number'],
                     $row['sequence'],
                     $row['parent_id'],
                     $row['comment']));
@@ -199,7 +197,6 @@ class TopicDbMapper extends DBMapper
                     $row['timestamp'],
                     $row['title'],
                     $row['description'],
-                    $row['number'],
                     $row['sequence'],
                     $row['parent_id'],
                     $row['comment']));
@@ -235,14 +232,13 @@ class TopicDbMapper extends DBMapper
         $response = null;
         $db_name = DbCommunication::getInstance()->getDatabaseName();
         $sql = "INSERT INTO $db_name.topic
-                VALUES (null, now(), ?, ?, ?, ?, ?, ?);";
+                VALUES (null, now(), ?, ?, ?, ?, ?);";
         $parameters = array(
             $topic->getTitle(),
             $topic->getDescription(),
-            $topic->getNumber(),
-            $topic->getIsInCatalog(),
             $topic->getSequence(),
             $topic->getParentId(),
+            $topic->getComment()
         );
         try {
             $this->queryDB($sql, $parameters);
@@ -266,15 +262,14 @@ class TopicDbMapper extends DBMapper
         $response = null;
         $db_name = DbCommunication::getInstance()->getDatabaseName();
         $sql = "INSERT INTO $db_name.topic
-                VALUES (?, now(), ?, ?, ?, ?, ?, ?);";
+                VALUES (?, now(), ?, ?, ?, ?, ?);";
         $parameters = array(
             $topic->getId(),
             $topic->getTitle(),
             $topic->getDescription(),
-            $topic->getNumber(),
-            $topic->getIsInCatalog(),
             $topic->getSequence(),
-            $topic->getParentId()
+            $topic->getParentId(),
+            $topic->getComment()
             );
         try {
             $this->queryDB($sql, $parameters);
