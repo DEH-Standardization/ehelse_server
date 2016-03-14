@@ -270,7 +270,7 @@ class TopicDbMapper extends DBMapper
             $topic->getSequence(),
             $topic->getParentId(),
             $topic->getComment()
-            );
+        );
         try {
             $this->queryDB($sql, $parameters);
             $response = $this->connection->lastInsertId();
@@ -306,7 +306,51 @@ class TopicDbMapper extends DBMapper
 
     public function getAll()
     {
-        // TODO: Might not be needed here, but could still be implemented
+        $response = null;
+        $topics = array();
+        $dbName = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "SELECT * FROM topic";
+        try {
+            $result = $this->queryDB($sql, array());
+            $topics_raw = $result->fetchAll();
+            $topics = [];
+            foreach($topics_raw as $topic_raw){
+                array_push($topics, Topic::fromDBArray($topic_raw));
+            }
+            if (count($topics) === 0) {
+                $response = new DBError("Did not return any results");
+            } else {
+                $response = $topics;
+            }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
+
+    public function getTopicsAsThree()
+    {
+        $topic_three = [];
+        $topic_dict = array();
+        $topic_children = array();
+        $topic_list = $this->getAll();
+        foreach($topic_list as $topic){
+            $parent_id = $topic->getParentId();
+            if($parent_id == null){
+                array_push($topic_three, $topic);
+            }
+            else{
+                if(!array_key_exists($parent_id, $topic_children)){
+                    $topic_children[$parent_id] = array();
+                }
+                array_push($topic_children[$parent_id], $topic);
+            }
+            $topic_dict[$topic->getID()] = $topic;
+        }
+        foreach($topic_children as $parent =>  $children){
+            $topic_dict[$parent]->addChildren($children);
+        }
+        return $topic_three;
     }
 
 }

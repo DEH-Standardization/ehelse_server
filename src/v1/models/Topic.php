@@ -5,7 +5,7 @@ require_once __DIR__.'/../dbmappers/TopicDBMapper.php';
  * Class Topic Model
  */
 class Topic{
-    private $id, $timestamp, $title, $description, $sequence, $parent_id, $comment;
+    private $id, $timestamp, $title, $description, $sequence, $parent_id, $comment, $children, $documents;
 
     /**
      * Topic constructor.
@@ -26,6 +26,8 @@ class Topic{
         $this->setTitle($title);
         $this->setDescription($description);
         $this->setComment($comment);
+        $this->documents = [];
+        $this->children = [];
     }
 
     /**
@@ -158,6 +160,14 @@ class Topic{
      */
     public function toArray()
     {
+        $children = [];
+        foreach($this->children as $child){
+            array_push($children, $child->toArray());
+        }
+        $documents = [];
+        foreach($this->documents as $document){
+            array_push($documents, $document->toArray());
+        }
         $assoc = array(
             'id' => $this->id,
             'timestamp' => $this->timestamp,
@@ -166,9 +176,51 @@ class Topic{
             'sequence' => $this->sequence,
             'parent' => $this->parent_id,
             'comment' => $this->comment,
-            'children' => array(),
-            'documents' => array());
+            'children' => $children,
+            'documents' => $documents);
         return $assoc;
+    }
+
+    public static function fromDBArray($assoc)
+    {
+        return new Topic(
+            $assoc['id'],
+            $assoc['timestamp'],
+            $assoc['title'],
+            $assoc['description'],
+            $assoc['sequence'],
+            $assoc['parent_id'],
+            $assoc['comment']);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocuments()
+    {
+        return $this->documents;
+    }
+
+    public function addChild($child)
+    {
+        array_push($this->children, $child);
+    }
+    public function addChildren($children)
+    {
+        $this->children = array_merge($this->children, $children);
+    }
+
+    public function addDocument($document)
+    {
+        array_push($this->documents, $document);
     }
 
 }
