@@ -58,6 +58,10 @@ class Standard
         return $this->title;
     }
 
+    /**
+     * Sets title if it is valid
+     * @param $description
+     */
     public function  setTitle($title)
     {
         if (strlen($title) > ModelValidation::getTitleMaxLength()) {
@@ -73,6 +77,10 @@ class Standard
         return $this->description;
     }
 
+    /**
+     * Sets description if it is valid
+     * @param $description
+     */
     public function setDescription($description)
     {
         if (strlen($description) > ModelValidation::getDescriptionMaxLength($description)) {
