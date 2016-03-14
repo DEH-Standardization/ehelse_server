@@ -7,10 +7,9 @@ require_once 'v1/main/controllers/DescriptionController.php';
 class MainController implements iController{
     private $controller, $api_version, $path;
 
-    public function __construct($api_version, $path, $method, $body)
+    public function __construct($path, $method, $body)
     {
         $this->path = $path;
-        $path = explode('/',$this->path);
 
         $this->api_version = $path[1];
 
