@@ -309,9 +309,4 @@ class TopicDbMapper extends DBMapper
         // TODO: Might not be needed here, but could still be implemented
     }
 
-
-    public function getAll()
-    {
-        // TODO: Implement getAll() method.
-    }
 }
