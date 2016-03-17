@@ -3,6 +3,8 @@
 
 class ProfileVersion
 {
+    // TODO: Remove $is_in_catalog
+    // TODO: Add $comment
     private $id, $timestamp, $profile_id, $standard_version_id, $document_version_id;
 
     public function __construct($id, $time_stamps, $profile_id, $standard_version_id, $document_version_id)
@@ -34,9 +36,9 @@ where PV.profile_id = " . $id . ";";
                 array_push($profile_version, new ProfileVersion(
                     $row['id'],
                     $row['timestamp'],
-                    $row['profile_id'],
-                    $row['standard_version_id'],
-                    $row['document_version_id']));
+                    $row['profileId'],
+                    $row['standardVersionId'],
+                    $row['documentVersionId']));
             }
         }
         catch(PDOException $e)

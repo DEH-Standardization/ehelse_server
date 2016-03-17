@@ -2,14 +2,16 @@
 
 class StandardVersion
 {
-    private $id, $timestamp, $standard_id, $document_id, $document_version_id;
+    private $id, $timestamp, $standard_id, $document_version_id, $comment;
 
-    public  function __construct($id, $timestamp, $standard_id, $document_id, $document_version_id)
+
+
+    public  function __construct($id, $timestamp, $standard_id, $document_version_id, $comment)
     {
         $this->id = $id;
         $this->timestamp = $timestamp;
         $this->standard_id = $standard_id;
-        $this->document_id = $document_id;
+        $this->setComment($comment);
         $this->document_version_id = $document_version_id;
     }
 
@@ -29,14 +31,57 @@ class StandardVersion
         $this->standard_id = $standard_id;
     }
 
-    public function getDocumentVersion()
+    public function setComment($comment)
     {
-        return $this->document_version;
+        /*
+        if (strlen($comment) > ModelValidation::getCommentMaxLength($comment)) {
+            $this->description = ModelValidation::getValidComment($comment);
+            echo "comment is too long, set to: " . $this->comment;
+        }
+        else {
+            $this->comment = $comment;
+        }
+        */
+        $this->comment = $comment;
     }
 
-    public function setDocumentVersion($document_version)
+    public function getComment()
     {
-        $this->document_version = $document_version;
+        return $this->comment;
+    }
+
+    public function getDocumentVersionId()
+    {
+        return $this->document_version_id;
+    }
+
+    public function setDocumentVersionId($document_version)
+    {
+        $this->document_version_id = $document_version;
+    }
+
+    /**
+     * Returns JSON representation of StandardVersion
+     * @return string
+     */
+    public function toJSON()
+    {
+        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+    }
+
+    /**
+     * Returns an associative array representation of the standard version model
+     * @return array
+     */
+    public function toArray()
+    {
+        $assoc = array(
+            'id' => $this->id,
+            'timestamp' => $this->timestamp,
+            'standardId' => $this->standard_id,
+            'documentVersionId' => $this->document_version_id,
+            'comment' => $this->comment);
+        return $assoc;
     }
 
 }

@@ -5,7 +5,8 @@ require_once __DIR__.'/../models/ModelValidation.php';
 
 class Standard
 {
-    private $id, $timestamp, $title, $description, $topic_id, $is_in_catalog, $sequence;
+    const REQUIRED_POST_FIELDS =  ['title', 'description', 'sequence','topicId','comment'];
+    private $id, $timestamp, $title, $description, $topic_id, $sequence, $comment;
 
     public static function  getStandardFromJSON($body)
     {
@@ -15,22 +16,33 @@ class Standard
             $assoc['timestamp'],
             $assoc['title'],
             $assoc['description'],
-            $assoc['is_in_catalog'],
             $assoc['sequence'],
-            $assoc['topic_id']);
+            $assoc['topicId'],
+            $assoc['comment']);
     }
 
-    public function __construct($id, $timestamp, $title, $description, $is_in_catalog, $sequence, $topic_id)
+    public function __construct($id, $timestamp, $title, $description, $sequence, $topic_id, $comment)
     {
         $this->id = $id;
         $this->timestamp = $timestamp;
         $this->topic_id = $topic_id;
-        $this->is_in_catalog = $is_in_catalog;
         $this->sequence = $sequence;
         $this->setTitle($title);
         $this->setDescription($description);
+        $this->setComment($comment);
     }
 
+    public static function fromArray($assoc)
+    {
+        return new Standard(
+            $assoc['id'],
+            $assoc['timestamp'],
+            $assoc['title'],
+            $assoc['description'],
+            $assoc['sequence'],
+            $assoc['topicId'],
+            $assoc['comment']);
+    }
 
 
     public function getStandardVersions()
@@ -58,6 +70,10 @@ class Standard
         return $this->title;
     }
 
+    /**
+     * Sets title if it is valid
+     * @param $description
+     */
     public function  setTitle($title)
     {
         if (strlen($title) > ModelValidation::getTitleMaxLength()) {
@@ -73,6 +89,10 @@ class Standard
         return $this->description;
     }
 
+    /**
+     * Sets description if it is valid
+     * @param $description
+     */
     public function setDescription($description)
     {
         if (strlen($description) > ModelValidation::getDescriptionMaxLength($description)) {
@@ -94,16 +114,6 @@ class Standard
         $this->topic_id = $topic_id;
     }
 
-    public function getIsInCatalog()
-    {
-        return $this->is_in_catalog;
-    }
-
-    public function setIsInCatalog($is_in_catalog)
-    {
-        $this->is_in_catalog = $is_in_catalog;
-    }
-
     public function getSequence()
     {
         return $this->sequence;
@@ -112,6 +122,22 @@ class Standard
     public function setSequence($sequence)
     {
         $this->sequence = $sequence;
+    }
+
+    public function setComment($comment)
+    {
+        if (strlen($comment) > ModelValidation::getCommentMaxLength($comment)) {
+            $this->description = ModelValidation::getValidComment($comment);
+            echo "comment is too long, set to: " . $this->comment;
+        }
+        else {
+            $this->comment = $comment;
+        }
+    }
+
+    public function getComment()
+    {
+        return $this->comment;
     }
 
     public function toJSON()
@@ -130,9 +156,9 @@ class Standard
             'timestamp' => $this->timestamp,
             'title' => $this->title,
             'description' => $this->description,
-            'topic_id' => $this->topic_id,
-            'is_in_catalog' => $this->is_in_catalog,
-            'sequence' => $this->sequence);
+            'topicId' => $this->topic_id,
+            'sequence' => $this->sequence,
+            'comment' => $this->comment);
         return $assoc;
     }
 

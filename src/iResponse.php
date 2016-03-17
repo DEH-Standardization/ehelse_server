@@ -18,5 +18,5 @@ interface iResponse
      * Method returning the status code of the response as an integer
      * @return integer
      */
-    public function getStatusCode();
+    public function getResponseCode();
 }

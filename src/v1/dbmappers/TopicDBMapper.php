@@ -37,9 +37,8 @@ class TopicDbMapper extends DBMapper
                 $row['title'],
                 $row['description'],
                 $row['sequence'],
-                $row['is_in_catalog'],
-                $row['sequence'],
-                $row['parent_id']);
+                $row['parent_id'],
+                $row['comment']);
         } else {
             trigger_error($result->errorInfo(), E_USER_ERROR);
         }
@@ -73,9 +72,9 @@ class TopicDbMapper extends DBMapper
                     $row['timestamp'],
                     $row['title'],
                     $row['description'],
-                    $row['is_in_catalog'],
                     $row['sequence'],
-                    $row['topic_id']));
+                    $row['topic_id'],
+                    $row['comment']));
             }
             if (count($standards) == 0) {
                 $response = new DBError("Did not return any results on id: ".$id);
@@ -112,9 +111,9 @@ class TopicDbMapper extends DBMapper
                     $row['timestamp'],
                     $row['title'],
                     $row['description'],
-                    $row['is_in_catalog'],
                     $row['sequence'],
-                    $row['topic_id']));
+                    $row['topic_id'],
+                    $row['comment']));
             }
             if (count($profiles) == 0) {
                 $response = new DBError("Did not return any results on id: ".$id);
@@ -163,10 +162,9 @@ class TopicDbMapper extends DBMapper
                     $row['timestamp'],
                     $row['title'],
                     $row['description'],
-                    $row['number'],
-                    $row['is_in_catalog'],
                     $row['sequence'],
-                    $row['parent_id']));
+                    $row['parent_id'],
+                    $row['comment']));
             }
             if (count($topics) == 0) {
                 $response = new DBError("Did not return any results on id: ".$id);
@@ -199,10 +197,9 @@ class TopicDbMapper extends DBMapper
                     $row['timestamp'],
                     $row['title'],
                     $row['description'],
-                    $row['number'],
-                    $row['is_in_catalog'],
                     $row['sequence'],
-                    $row['parent_id']));
+                    $row['parent_id'],
+                    $row['comment']));
             }
             if (count($topics) == 0) {
                 $response = new DBError("Did not return any results on id: ".$id);
@@ -235,14 +232,13 @@ class TopicDbMapper extends DBMapper
         $response = null;
         $db_name = DbCommunication::getInstance()->getDatabaseName();
         $sql = "INSERT INTO $db_name.topic
-                VALUES (null, now(), ?, ?, ?, ?, ?, ?);";
+                VALUES (null, now(), ?, ?, ?, ?, ?);";
         $parameters = array(
             $topic->getTitle(),
             $topic->getDescription(),
-            $topic->getNumber(),
-            $topic->getIsInCatalog(),
             $topic->getSequence(),
             $topic->getParentId(),
+            $topic->getComment()
         );
         try {
             $this->queryDB($sql, $parameters);
@@ -265,21 +261,16 @@ class TopicDbMapper extends DBMapper
         }
         $response = null;
         $db_name = DbCommunication::getInstance()->getDatabaseName();
-        /*$sql = "UPDATE $db_name.topic
-                SET `timestamp` = now(), title = ?, description = ?, number = ?, is_in_catalog = ?, sequence = ?, parent_id = ?
-                WHERE id = ?;";
-        */
         $sql = "INSERT INTO $db_name.topic
-                VALUES (?, now(), ?, ?, ?, ?, ?, ?);";
+                VALUES (?, now(), ?, ?, ?, ?, ?);";
         $parameters = array(
             $topic->getId(),
             $topic->getTitle(),
             $topic->getDescription(),
-            $topic->getNumber(),
-            $topic->getIsInCatalog(),
             $topic->getSequence(),
-            $topic->getParentId()
-            );
+            $topic->getParentId(),
+            $topic->getComment()
+        );
         try {
             $this->queryDB($sql, $parameters);
             $response = $this->connection->lastInsertId();
@@ -313,5 +304,56 @@ class TopicDbMapper extends DBMapper
         return $response;
     }
 
+    public function getAll()
+    {
+        $response = null;
+        $dbName = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "SELECT *
+                FROM $dbName.topic WHERE(id,timestamp) IN
+                ( SELECT id, MAX(timestamp)
+                  FROM $dbName.topic
+                  GROUP BY id);";
+        try {
+            $result = $this->queryDB($sql, array());
+            $topics_raw = $result->fetchAll();
+            $topics = [];
+            foreach($topics_raw as $topic_raw){
+                array_push($topics, Topic::fromDBArray($topic_raw));
+            }
+            if (count($topics) === 0) {
+                $response = new DBError("Did not return any results");
+            } else {
+                $response = $topics;
+            }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
+
+    public function getTopicsAsThree()
+    {
+        $topic_three = [];
+        $topic_dict = array();
+        $topic_children = array();
+        $topic_list = $this->getAll();
+        foreach($topic_list as $topic){
+            $parent_id = $topic->getParentId();
+            if($parent_id == null){
+                array_push($topic_three, $topic);
+            }
+            else{
+                if(!array_key_exists($parent_id, $topic_children)){
+                    $topic_children[$parent_id] = array();
+                }
+                array_push($topic_children[$parent_id], $topic);
+            }
+            $topic_dict[$topic->getID()] = $topic;
+        }
+        foreach($topic_children as $parent =>  $children){
+            $topic_dict[$parent]->addChildren($children);
+        }
+        return $topic_three;
+    }
 
 }

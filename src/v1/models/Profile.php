@@ -3,6 +3,9 @@
 
 class Profile
 {
+    // TODO: Remove $is_in_catalog
+    // TODO: Add $comment
+
     private $id, $timestamp, $title, $description, $is_in_catalog, $sequence, $topic_id;
 
     public function __construct($id, $timestamp, $title, $description, $is_in_catalog, $sequence, $topic_id)
@@ -16,6 +19,10 @@ class Profile
         $this->topic_id = $topic_id;
     }
 
+    /**
+     * Sets title if it is valid
+     * @param $description
+     */
     public function setTitle($title)
     {
         if (strlen($title) > ModelValidation::getTitleMaxLength()) {
@@ -26,6 +33,10 @@ class Profile
         }
     }
 
+    /**
+     * Sets description if it is valid
+     * @param $description
+     */
     public function setDescription($description)
     {
         if (strlen($description) > ModelValidation::getDescriptionMaxLength($description)) {
@@ -134,9 +145,9 @@ class Profile
             'timestamp' => $this->timestamp,
             'title' => $this->title,
             'description' => $this->description,
-            'is_in_catalog' => $this->is_in_catalog,
+            'isInCatalog' => $this->is_in_catalog,
             'sequence' => $this->sequence,
-            'topic_id' => $this->topic_id);
+            'topicId' => $this->topic_id);
 
         return $assoc;
     }

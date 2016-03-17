@@ -138,9 +138,9 @@ class ProfileDBMapper extends DBMapper
                     $row['timestamp'],
                     $row['title'],
                     $row['description'],
-                    $row['number'],
                     $row['sequence'],
-                    $row['parent_id']);
+                    $row['parent_id'],
+                    $row['comment']);
             } else {
                 $response = new DBError("Returned " . $result->rowCount() .
                     " profiles, expected 1");
@@ -296,4 +296,12 @@ class ProfileDBMapper extends DBMapper
         return $response;
     }
 
+    public function getAll()
+    {
+        // TODO: Implement getAll() method.
+
+        // TODO: There is another method with teh same name
+        //  Find this, change the name, and make sure it is
+        //  working everywhere it is used
+    }
 }

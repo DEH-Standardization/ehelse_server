@@ -40,9 +40,9 @@ class StandardDBMapper extends DBMapper
                     $row['timestamp'],
                     $row['title'],
                     $row['description'],
-                    $row['is_in_catalog'],
                     $row['sequence'],
-                    $row['topic_id']);
+                    $row['topic_id'],
+                    $row['comment']);
             } else {
                 $response = new DBError("Returned " . $result->rowCount() .
                 " standards, expected 1");
@@ -73,8 +73,8 @@ class StandardDBMapper extends DBMapper
                     $row['id'],
                     $row['timestamp'],
                     $row['standard_id'],
-                    $row['document_id'],
-                    $row['document_version_id']));
+                    $row['document_version_id'],
+                    $row['comment']));
             }
             if (count($standard_versions) == 0) {
                 $response = new DBError("Did not return any results on id: ".$id);
@@ -137,10 +137,9 @@ class StandardDBMapper extends DBMapper
                     $row['timestamp'],
                     $row['title'],
                     $row['description'],
-                    $row['number'],
-                    $row['is_in_catalog'],
                     $row['sequence'],
-                    $row['parent_id']);
+                    $row['parent_id'],
+                    $row['comment']);
             } else {
                 $response = new DBError("Returned " . $result->rowCount() .
                     " standards, expected 1");
@@ -173,9 +172,9 @@ class StandardDBMapper extends DBMapper
                     $row['timestamp'],
                     $row['title'],
                     $row['description'],
-                    $row['is_in_catalog'],
                     $row['sequence'],
-                    $row['topic_id']));
+                    $row['topic_id'],
+                    $row['comment']));
             }
             if (count($standard_versions) === 0) {
                 $response = new DBError("Did not return any results");
@@ -194,6 +193,7 @@ class StandardDBMapper extends DBMapper
      */
     public function getAllLoggedStandardsByStandardId($id)
     {
+        // TODO: ensure only newest standard is returned, not all logged version of all standards.
         $response = null;
         $standards= array();
         $dbName = DbCommunication::getInstance()->getDatabaseName();
@@ -207,9 +207,9 @@ class StandardDBMapper extends DBMapper
                     $row['timestamp'],
                     $row['title'],
                     $row['description'],
-                    $row['is_in_catalog'],
                     $row['sequence'],
-                    $row['topic_id']));
+                    $row['topic_id'],
+                    $row['comment']));
             }
             if (count($standards) == 0) {
                 $response = new DBError("Did not return any results on id: ".$id);
@@ -250,13 +250,13 @@ class StandardDBMapper extends DBMapper
         $parameters = array(
             $standard->getTitle(),
             $standard->getDescription(),
-            $standard->getIsInCatalog(),
             $standard->getSequence(),
             $standard->getTopicId(),
+            $standard->getComment()
         );
         try {
             $this->queryDB($sql, $parameters);
-            $response = "success";
+            $response = $this->connection->lastInsertId();
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
@@ -281,9 +281,9 @@ class StandardDBMapper extends DBMapper
             $standard->getId(),
             $standard->getTitle(),
             $standard->getDescription(),
-            $standard->getIsInCatalog(),
             $standard->getSequence(),
-            $standard->getTopicId()
+            $standard->getTopicId(),
+            $standard->getComment()
         );
         try {
             if($this->queryDB($sql, $parameters)) {
@@ -296,4 +296,12 @@ class StandardDBMapper extends DBMapper
         return $response;
     }
 
+    public function getAll()
+    {
+        // TODO: Implement getAll() method.
+
+        // TODO: There is another method with teh same name
+        //  Find this, change the name, and make sure it is
+        //  working everywhere it is used
+    }
 }

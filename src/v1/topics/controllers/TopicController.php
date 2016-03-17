@@ -8,7 +8,6 @@ require_once __DIR__.'/../../dbmappers/TopicDBMapper.php';
 require_once __DIR__.'/../../models/Standard.php';
 require_once __DIR__.'/../../models/Profile.php';
 
-
 class TopicController extends ResponseController
 {
     /**
@@ -39,17 +38,15 @@ class TopicController extends ResponseController
     protected function getAll()
     {
         $mapper = new TopicDbMapper();
-        $topic_ids = $mapper->getAllIds();
-        $all_topics = array();
-
-        foreach($topic_ids as $id){
-            array_push($all_topics, $this->getChildren($id));
+        $topics = $mapper->getTopicsAsThree();
+        $topics_array = [];
+        foreach($topics as $topic){
+            array_push($topics_array, $topic->toArray());
         }
 
+        $json = json_encode(array( "topics" => $topics_array), JSON_PRETTY_PRINT);
 
-
-        return new Response(json_encode(array( "topics" => $all_topics), JSON_PRETTY_PRINT));
-        //return new Response("all topics");
+        return new Response($json);
     }
 
     /**
@@ -60,21 +57,21 @@ class TopicController extends ResponseController
     {
         $mapper = new TopicDbMapper();
         $assoc = $this->body;
-        $topic = new Topic(null, null,
+        $topic = new Topic(
+            null,
+            null,
             $assoc['title'],
             $assoc['description'],
-            $assoc['number'],
-            $assoc['is_in_catalog'],
             $assoc['sequence'],
-            $assoc['parent']);
+            $assoc['parent'],
+            $assoc['comment']);
         $response = $mapper->add($topic);
 
         if ($response instanceof DBError) {
             return new ErrorResponse($response);
         }
-
-        $result =  $mapper->getTopicById($response)->toArray();
-        return new Response(json_encode($result, JSON_PRETTY_PRINT));
+        $this->id = $response;
+        return $this->get();
     }
 
     /**
@@ -105,12 +102,9 @@ class TopicController extends ResponseController
         }
         $result['children'] = $children;
 
-
-
         $topic_standards = $controller->getStandardsByTopicId($id);
         $topic_profiles = $controller->getProfileByTopicId($id);
 
-        //$result['documents'] =
         $documents = array();
         foreach ($topic_standards as $standard) {
             $standard = $standard->toArray();
@@ -131,8 +125,6 @@ class TopicController extends ResponseController
         return $result;
     }
 
-
-
     /**
      * Function updating a topics values.
      * @return Response
@@ -145,10 +137,9 @@ class TopicController extends ResponseController
             $this->id, null,
             $assoc['title'],
             $assoc['description'],
-            $assoc['number'],
-            $assoc['is_in_catalog'],
             $assoc['sequence'],
-            $assoc['parent']);
+            $assoc['parent'],
+            $assoc['comment']);
         $response = $mapper->update($topic);
 
         if ($response instanceof DBError) {
@@ -157,7 +148,6 @@ class TopicController extends ResponseController
         $result =  $mapper->getTopicById($response)->toArray();
         return new Response(json_encode($result, JSON_PRETTY_PRINT));
     }
-
 
     /**
      * Function deleting a topic.

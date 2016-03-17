@@ -5,7 +5,7 @@ require_once __DIR__.'/../dbmappers/TopicDBMapper.php';
  * Class Topic Model
  */
 class Topic{
-    private $id, $timestamp, $title, $description, $number, $is_in_catalog, $sequence, $parent_id;
+    private $id, $timestamp, $title, $description, $sequence, $parent_id, $comment, $children, $documents;
 
     /**
      * Topic constructor.
@@ -13,21 +13,21 @@ class Topic{
      * @param $timestamp
      * @param $title
      * @param $description
-     * @param $number
-     * @param $is_in_catalog
      * @param $sequence
      * @param $parent_id
+     * @param $comment
      */
-    public function __construct($id, $timestamp, $title, $description, $number, $is_in_catalog, $sequence, $parent_id)
+    public function __construct($id, $timestamp, $title, $description, $sequence , $parent_id, $comment)
     {
         $this->id = $id;
         $this->timestamp = $timestamp;
-        $this->number = $number;
-        $this->is_in_catalog = $is_in_catalog;
         $this->sequence = $sequence;
         $this->parent_id = $parent_id;
         $this->setTitle($title);
         $this->setDescription($description);
+        $this->setComment($comment);
+        $this->documents = [];
+        $this->children = [];
     }
 
     /**
@@ -79,6 +79,10 @@ class Topic{
         return $this->title;
     }
 
+    /**
+     * Sets title if it is valid
+     * @param $description
+     */
     public function  setTitle($title)
     {
         if (strlen($title) > ModelValidation::getTitleMaxLength()) {
@@ -94,6 +98,10 @@ class Topic{
         return $this->description;
     }
 
+    /**
+     * Sets description if it is valid
+     * @param $description
+     */
     public function setDescription($description)
     {
         if (strlen($description) > ModelValidation::getDescriptionMaxLength($description)) {
@@ -103,26 +111,6 @@ class Topic{
         else {
             $this->description = $description;
         }
-    }
-
-    public function getNumber()
-    {
-        return $this->number;
-    }
-
-    public function setNumber($number)
-    {
-        $this->number = $number;
-    }
-
-    public function getIsInCatalog()
-    {
-        return $this->is_in_catalog;
-    }
-
-    public function setIsInCatalog($is_in_catalog)
-    {
-        $this->is_in_catalog = $is_in_catalog;
     }
 
     public function getParentId()
@@ -145,6 +133,22 @@ class Topic{
         $this->sequence = $sequence;
     }
 
+    public function setComment($comment)
+    {
+        if (strlen($comment) > ModelValidation::getCommentMaxLength($comment)) {
+            $this->description = ModelValidation::getValidComment($comment);
+            echo "comment is too long, set to: " . $this->comment;
+        }
+        else {
+            $this->comment = $comment;
+        }
+    }
+
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
     public function toJSON()
     {
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
@@ -156,18 +160,67 @@ class Topic{
      */
     public function toArray()
     {
+        $children = [];
+        foreach($this->children as $child){
+            array_push($children, $child->toArray());
+        }
+        $documents = [];
+        foreach($this->documents as $document){
+            array_push($documents, $document->toArray());
+        }
         $assoc = array(
             'id' => $this->id,
             'timestamp' => $this->timestamp,
             'title' => $this->title,
             'description' => $this->description,
-            'number' => $this->number,
-            'is_in_catalog' => $this->is_in_catalog,
             'sequence' => $this->sequence,
             'parent' => $this->parent_id,
-            'children' => array(),
-            'documents' => array());
+            'comment' => $this->comment,
+            'children' => $children,
+            'documents' => $documents);
         return $assoc;
+    }
+
+    public static function fromDBArray($assoc)
+    {
+        return new Topic(
+            $assoc['id'],
+            $assoc['timestamp'],
+            $assoc['title'],
+            $assoc['description'],
+            $assoc['sequence'],
+            $assoc['parent_id'],
+            $assoc['comment']);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocuments()
+    {
+        return $this->documents;
+    }
+
+    public function addChild($child)
+    {
+        array_push($this->children, $child);
+    }
+    public function addChildren($children)
+    {
+        $this->children = array_merge($this->children, $children);
+    }
+
+    public function addDocument($document)
+    {
+        array_push($this->documents, $document);
     }
 
 }

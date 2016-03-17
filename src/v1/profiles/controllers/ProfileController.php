@@ -70,9 +70,9 @@ class ProfileController extends ResponseController
             $assoc['timestamp'],
             $assoc['title'],
             $assoc['description'],
-            $assoc['is_in_catalog'],
+            $assoc['isInCatalog'],
             $assoc['sequence'],
-            $assoc['topic_id']);
+            $assoc['topicId']);
         $response = $mapper->update($profile);
         if ($response instanceof DBError) {
             return new ErrorResponse($response);
@@ -113,9 +113,9 @@ class ProfileController extends ResponseController
             $assoc['timestamp'],
             $assoc['title'],
             $assoc['description'],
-            $assoc['is_in_catalog'],
+            $assoc['isInCatalog'],
             $assoc['sequence'],
-            $assoc['topic_id']);
+            $assoc['topicId']);
         $response = $mapper->add($profile);
         if ($response instanceof DBError) {
             return new ErrorResponse($response);
