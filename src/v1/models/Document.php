@@ -56,7 +56,7 @@ class Document implements iModel
      * Sets title if it is valid, return the n first characters if it is too long
      * @param $description
      */
-    public function  setTitle($title)
+    public function setTitle($title)
     {
         if (strlen($title) > ModelValidation::TITLE_MAX_LENGTH) {
             $this->title = ModelValidation::getValidTitle($title);
@@ -80,8 +80,7 @@ class Document implements iModel
         if (strlen($description) > ModelValidation::DESCRIPTION_MAX_LENGTH) {
             $this->description = ModelValidation::getValidDescription($description);
             echo "description is too long, set to: " . $this->description;
-        }
-        else {
+        } else {
             $this->description = $description;
         }
     }
@@ -120,8 +119,7 @@ class Document implements iModel
         if (strlen($comment) > ModelValidation::COMMENT_MAX_LENGTH) {
             $this->comment = ModelValidation::getValidComment($comment);
             echo "Comment is too long, set to: " . $this->comment;
-        }
-        else {
+        } else {
             $this->comment = $comment;
         }
     }
@@ -152,6 +150,17 @@ class Document implements iModel
      */
     public function toArray()
     {
-        // TODO: Implement toArray() method.
+        // TODO: check with API description
+        return array(
+            'id' => $this->id,
+            'timestamp' => $this->timestamp,
+            'title' => $this->title,
+            'description' => $this->description,
+            'sequence' => $this->sequence,
+            'topicId' => $this->topic_id,
+            'comment' => $this->comment,
+            'statusId' => $this->status_id,
+            'documentTypeId' => $this->document_type_id
+        );
     }
 }
