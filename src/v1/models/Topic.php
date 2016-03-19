@@ -1,10 +1,12 @@
 <?php
-require_once __DIR__.'/../dbmappers/TopicDBMapper.php';
+require_once __DIR__ . '/../dbmappers/TopicDBMapper.php';
+require_once __DIR__ . '/iModel.php';
 
 /**
  * Class Topic Model
  */
-class Topic{
+class Topic implements iModel
+{
     private $id, $timestamp, $title, $description, $sequence, $parent_id, $comment, $children, $documents;
 
     /**

@@ -1,6 +1,8 @@
 <?php
+require_once __DIR__ . '/ModelValidation.php';
+require_once __DIR__ . '/iModel.php';
 
-class Status
+class Status implements iModel
 {
     private $id, $name, $description;
 

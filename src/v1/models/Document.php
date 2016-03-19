@@ -1,8 +1,9 @@
 <?php
 
 require_once __DIR__ . '\ModelValidation.php';
+require_once __DIR__ . '/iModel.php';
 
-class Document
+class Document implements iModel
 {
     private $id, $timestamp, $title, $description, $sequence, $topic_id, $comment, $status_id, $document_type_id;
 
@@ -145,4 +146,8 @@ class Document
         $this->document_type_id = $document_type_id;
     }
 
+    public function toArray()
+    {
+        // TODO: Implement toArray() method.
+    }
 }
