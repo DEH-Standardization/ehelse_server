@@ -51,4 +51,13 @@ class DocumentType implements iModel
     {
         // TODO: Implement toArray() method.
     }
+
+    /**
+     * Returns JSON representation of model
+     * @return string
+     */
+    public function toJSON()
+    {
+        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+    }
 }

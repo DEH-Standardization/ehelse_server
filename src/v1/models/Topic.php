@@ -151,6 +151,10 @@ class Topic implements iModel
         return $this->comment;
     }
 
+    /**
+     * Returns JSON representation of model
+     * @return string
+     */
     public function toJSON()
     {
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);

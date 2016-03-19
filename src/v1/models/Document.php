@@ -163,4 +163,13 @@ class Document implements iModel
             'documentTypeId' => $this->document_type_id
         );
     }
+
+    /**
+     * Returns JSON representation of model
+     * @return string
+     */
+    public function toJSON()
+    {
+        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+    }
 }

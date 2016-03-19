@@ -75,4 +75,13 @@ class Status implements iModel
             'name' => $this->name,
             'description' => $this->description);
     }
+
+    /**
+     * Returns JSON representation of model
+     * @return string
+     */
+    public function toJSON()
+    {
+        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+    }
 }
