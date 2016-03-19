@@ -30,7 +30,7 @@ class Status implements iModel
     }
 
     /**
-     * Sets name if it is valid
+     * Sets name if it is valid, return the n first characters if it is too long
      * @param $description
      */
     public function setName($name)
@@ -50,7 +50,7 @@ class Status implements iModel
     }
 
     /**
-     * Sets description if it is valid
+     * Sets description if it is valid, return the n first characters if it is too long
      * @param $description
      */
     public function setDescription($description)
