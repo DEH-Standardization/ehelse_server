@@ -33,9 +33,9 @@ class Status
      */
     public function setName($name)
     {
-        if (strlen($name) > ModelValidation::getNameMaxLength()) {
-            $this->name = ModelValidation::getValidDescription($name);
-            echo "name is too long. Description set to: " . $this->description;
+        if (strlen($name) > ModelValidation::NAME_MAX_LENGTH) {
+            $this->name = ModelValidation::getValidName($name);
+            echo "name is too long. Name set to: " . $this->name;
         }
         else {
             $this->name = $name;

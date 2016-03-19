@@ -4,49 +4,51 @@
  */
 class ModelValidation
 {
+    // Max length valid in database
+    const NAME_MAX_LENGTH = 128;
+    const TITLE_MAX_LENGTH = 128;
+    const DESCRIPTION_MAX_LENGTH = 1024;
+    const COMMENT_MAX_LENGTH = 1024;
+
+    /**
+     * Returns a valid title, if title is longer than max length, the excess characters are removed
+     * @param $title
+     * @return string
+     */
     public static function getValidTitle($title)
     {
-        return substr($title, 0, self::getTitleMaxLength());
+        return substr($title, 0, self::TITLE_MAX_LENGTH);
     }
 
+    /**
+     * Returns a valid description, if title is longer than max length, the excess characters are removed
+     * @param $description
+     * @return string
+     */
     public static function getValidDescription($description)
     {
 
-        return substr($description, 0, self::getDescriptionMaxLength());
+        return substr($description, 0, self::DESCRIPTION_MAX_LENGTH);
     }
 
-    public static function getValidContent($content)
-    {
-        return substr($content, 0, self::getContentMaxLength());
-    }
-
+    /**
+     * Returns a valid comment, if title is longer than max length, the excess characters are removed
+     * @param $comment
+     * @return string
+     */
     public static function getValidComment($comment)
     {
-        return substr($comment, 0, self::getCommentMaxLength());
+        return substr($comment, 0, self::COMMENT_MAX_LENGTH);
     }
 
-    public static function getTitleMaxLength()
+    /**
+     * Returns a valid name, if title is longer than max length, the excess characters are removed
+     * @param $name
+     * @return string
+     */
+    public static function getValidName($name)
     {
-        return 128;
+        return substr($name, 0, self::NAME_MAX_LENGTH);
     }
 
-    public static function getDescriptionMaxLength()
-    {
-        return 1024;
-    }
-
-    public static function getContentMaxLength()
-    {
-        return 4096;
-    }
-
-    public static function getCommentMaxLength()
-    {
-        return 1024;
-    }
-    
-    public static function getNameMaxLength()
-    {
-        return 128;
-    }
 }
