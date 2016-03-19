@@ -57,9 +57,9 @@ class Document
      */
     public function  setTitle($title)
     {
-        if (strlen($title) > ModelValidation::getTitleMaxLength()) {
+        if (strlen($title) > ModelValidation::TITLE_MAX_LENGTH) {
             $this->title = ModelValidation::getValidTitle($title);
-            echo "Title is too long. Title set to: " . $this->title;
+            echo "Title is too long, set to: " . $this->title;
         } else {
             $this->title = $title;
         }
@@ -76,9 +76,9 @@ class Document
      */
     public function setDescription($description)
     {
-        if (strlen($description) > ModelValidation::getDescriptionMaxLength($description)) {
+        if (strlen($description) > ModelValidation::DESCRIPTION_MAX_LENGTH) {
             $this->description = ModelValidation::getValidDescription($description);
-            echo "description is too long. Description set to: " . $this->description;
+            echo "description is too long, set to: " . $this->description;
         }
         else {
             $this->description = $description;
@@ -116,9 +116,9 @@ class Document
      */
     public function setComment($comment)
     {
-        if (strlen($comment) > ModelValidation::getCommentMaxLength()) {
+        if (strlen($comment) > ModelValidation::COMMENT_MAX_LENGTH) {
             $this->comment = ModelValidation::getValidComment($comment);
-            echo "Comment is too long. Comment set to: " . $this->comment;
+            echo "Comment is too long, set to: " . $this->comment;
         }
         else {
             $this->comment = $comment;
