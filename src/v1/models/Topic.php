@@ -157,7 +157,7 @@ class Topic implements iModel
     }
 
     /**
-     * Returns associated array
+     * Returns associated array representation of model
      * @return array
      */
     public function toArray()

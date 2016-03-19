@@ -53,7 +53,7 @@ class Document implements iModel
     }
 
     /**
-     * Sets title if it is valid
+     * Sets title if it is valid, return the n first characters if it is too long
      * @param $description
      */
     public function  setTitle($title)
@@ -72,7 +72,7 @@ class Document implements iModel
     }
 
     /**
-     * Sets description if it is valid
+     * Sets description if it is valid, return the n first characters if it is too long
      * @param $description
      */
     public function setDescription($description)
@@ -112,8 +112,8 @@ class Document implements iModel
     }
 
     /**
-     * Sets comment if it is valid
-     * @param $description
+     * Sets comment if it is valid, return the n first characters if it is too long
+     * @param $comment
      */
     public function setComment($comment)
     {
@@ -146,6 +146,10 @@ class Document implements iModel
         $this->document_type_id = $document_type_id;
     }
 
+    /**
+     * Returns associated array representation of model
+     * @return array
+     */
     public function toArray()
     {
         // TODO: Implement toArray() method.
