@@ -19,7 +19,7 @@ class DocumentController extends ResponseController
         elseif(count($path) >= 1){
             if(is_numeric($path[0])){
                 $this->id = $path[0];
-                $path = array_shift($path);
+                $path = trimPath($path, 1);
                 //TODO document field controller
             }else{
                 $this->controller = new ErrorController(new InvalidPathError());

@@ -11,29 +11,23 @@ class MainController implements iController{
     {
         $this->path = $path;
 
-        $this->api_version = $path[1];
+        print_r($path);
+
+        $this->api_version = $path[0];
 
         //check if the url ended with '/', if se delete
         if(end($path) == ''){
             $ak = array_keys($path);
             unset($path[end($ak)]);
         }
-        unset($path[0]); //remove blank from explode
-        unset($path[1]); //remove version
-        $path = array_values($path); //remaining path
-
-        if(count($path) == 0){
-            $this->api_version = ' ';
-        }
+        $path = trimPath($path, 1);
 
         switch($this->api_version)
         {
             case 'v1':
-                //send to standard section
                 $this->controller = new APIV1Controller($path, $method, $body);
                 break;
             default:
-                //Handle error
                 //TODO handle error
                 $this->controller = new DescriptionController();
                 break;
