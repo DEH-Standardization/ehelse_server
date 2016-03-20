@@ -19,13 +19,13 @@ abstract class ResponseController implements iController
     abstract protected function delete();
 
     //if $parts == 1,then remove std_id, if $parts == 2, then remove std_id AND 'verions'
-    protected function trimPath($parts){
-        if($parts == 1){
+    protected function trimPath($number){
+        if($number == 1){
             //remove part from path array and fix index of array
             unset($this->path[0]);
             $this->path = array_values($this->path);
 
-        }elseif($parts == 2){
+        }elseif($number == 2){
             //remove part from path array and fix index of array
             unset($this->path[0]);
             unset($this->path[1]);

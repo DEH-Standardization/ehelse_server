@@ -14,22 +14,15 @@ class DocumentController extends ResponseController
         $this->path = $path;
 
         if(count($path) >= 1 && $path[0] == 'fields'){
-            $this->trimPath(1);
-            $this->controller = new DocumentFieldController($this->path,$this->method,$this->body);
+            $this->controller = new DocumentFieldController(array_shift($path),$this->method,$this->body);
         }
-        elseif(count($path) == 1){
-            //check if number, if not return error
+        elseif(count($path) >= 1){
             if(is_numeric($path[0])){
                 $this->id = $path[0];
+                $path = array_shift($path);
+                //TODO document field controller
             }else{
-                $this->controller = new ErrorController(new InvalidPathError());//return error
-            }
-        }elseif(count($path) >= 2){
-            //check if number, if not return error
-            if(is_numeric($path[0])){
-                $this->id = $path[0];
-            }else{
-                $this->controller = new ErrorController(new InvalidPathError());//return error
+                $this->controller = new ErrorController(new InvalidPathError());
             }
         }
     }
