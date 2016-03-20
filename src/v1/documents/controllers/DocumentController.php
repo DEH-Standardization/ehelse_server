@@ -1,6 +1,9 @@
 <?php
 
 require_once  __DIR__ . '/../../responses/ResponseController.php';
+require_once __DIR__ . '/../../models/Document.php';
+require_once __DIR__ . '/../../errors/MalformedJSONFormatError.php';
+require_once __DIR__ . '/../../responses/ErrorResponse.php';
 
 class DocumentController extends ResponseController
 {
@@ -35,6 +38,12 @@ class DocumentController extends ResponseController
     protected function create()
     {
         // TODO: Implement create() method.
+        $missing_fields = ResponseController::validateJSONFormat($this->body,Document::REQUIRED_POST_FIELDS);
+        if( $missing_fields ){
+            $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
+        }
+
+        return $response;
     }
 
     protected function get()
