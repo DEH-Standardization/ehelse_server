@@ -49,7 +49,10 @@ class DocumentType implements iModel
      */
     public function toArray()
     {
-        // TODO: Implement toArray() method.
+        // TODO: check with API
+        return array(
+            'id' => $this->id,
+            'name' => $this->name);
     }
 
     /**

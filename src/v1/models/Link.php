@@ -14,27 +14,28 @@ class Link implements iModel
      * @param $description
      * @param $url
      * @param $link_category_id
-     * @param $document_version_id
+     * @param $document_id
+     * @param $document_timestamp
+     * @param $link_document_id
      */
-    public function __construct($id, $text, $description, $url, $link_category_id, $document_version_id)
+    public function __construct($id, $text, $description, $url, $link_category_id, $document_id, $document_timestamp, $link_document_id)
     {
         $this->id = $id;
-        $this->text = $text;
+        $this->setText($text);
         $this->setDescription($description);
-        $this->url = $url;
+        $this->setUrl($url);
         $this->link_category_id = $link_category_id;
-        $this->document_id = $document_version_id;
+        $this->document_id = $document_id;
+        $this->document_timestamp = $document_timestamp;
+        $this->link_document_id = $link_document_id;
     }
+
 
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * Sets text if it is valid
-     * @param $description
-     */
     public function getText()
     {
         return $this->text;
@@ -46,7 +47,7 @@ class Link implements iModel
      */
     public function setText($text)
     {
-        if (strlen($text) > ModelValidation::TEXT_MAX_LENGTH()) {
+        if (strlen($text) > ModelValidation::TEXT_MAX_LENGTH) {
             $this->text = ModelValidation::getValidText($text);
             echo "Text is too long, set to: " . $this->text;
         }
@@ -85,24 +86,44 @@ class Link implements iModel
         $this->url = $url;
     }
 
-    public function getLinkTypeId()
+    public function getLinkCategoryId()
     {
         return $this->link_category_id;
     }
 
-    public function setLinkTypeId($link_type_id)
+    public function setLinkCategoryId($link_type_id)
     {
         $this->link_category_id = $link_type_id;
     }
 
-    public function getDocumentVersionId()
+    public function getDocumentId()
     {
         return $this->document_id;
     }
 
-    public function setDocumentVersionId($document_version_id)
+    public function setDocumentId($document_id)
     {
-        $this->document_id = $document_version_id;
+        $this->document_id = $document_id;
+    }
+
+    public function getDocumentTimestamp()
+    {
+        return $this->document_timestamp;
+    }
+
+    public function setDocumentTimestamp($document_timestamp)
+    {
+        $this->document_timestamp = $document_timestamp;
+    }
+
+    public function getLinkDocumentId()
+    {
+        return $this->link_document_id;
+    }
+
+    public function setLinkDocumentId($link_document_id)
+    {
+        $this->link_document_id = $link_document_id;
     }
 
     /**
@@ -111,13 +132,16 @@ class Link implements iModel
      */
     public function toArray()
     {
+        // TODO: check with API
         return array(
             'id' => $this->id,
             'text' => $this->text,
             'description' => $this->description,
             'url' => $this->url,
-            'linkTypeId' => $this->link_category_id,
-            'documentVersionId' => $this->document_id);
+            'linkCategoryId' => $this->link_category_id,
+            'documentId' => $this->document_id,
+            'documentTimestamp' => $this->document_timestamp,
+            'linkDocumentId' => $this->document_id);
     }
 
     /**

@@ -38,7 +38,7 @@ class Action implements iModel
     {
         if (strlen($name) > ModelValidation::NAME_MAX_LENGTH) {
             $this->name = ModelValidation::getValidName($name);
-            echo "name is too long, set to: " . $this->name;
+            echo "Name is too long, set to: " . $this->name;
         }
         else {
             $this->name = $name;
@@ -58,7 +58,7 @@ class Action implements iModel
     {
         if (strlen($description) > ModelValidation::DESCRIPTION_MAX_LENGTH) {
             $this->description = ModelValidation::getValidDescription($description);
-            echo "description is too long, set to: " . $this->description;
+            echo "Description is too long, set to: " . $this->description;
         } else {
             $this->description = $description;
         }

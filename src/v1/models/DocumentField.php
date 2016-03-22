@@ -38,9 +38,9 @@ class DocumentField
 
     public function setName($name)
     {
-        if (strlen($name) > ModelValidation::getNameMaxLength($name)) {
+        if (strlen($name) > ModelValidation::NAME_MAX_LENGTH) {
             $this->name = ModelValidation::getValidName($name);
-            return "name is too long. Description set to: " . $this->description;
+            return "Name is too long, set to: " . $this->name;
         }
         else {
             $this->name = $name;
@@ -54,9 +54,9 @@ class DocumentField
 
     public function setDescription($description)
     {
-        if (strlen($description) > ModelValidation::getDescriptionMaxLength($description)) {
+        if (strlen($description) > ModelValidation::DESCRIPTION_MAX_LENGTH) {
             $this->description = ModelValidation::getValidDescription($description);
-            return "description is too long. Description set to: " . $this->description;
+            return "Description is too long, set to: " . $this->description;
         }
         else {
             $this->description = $description;

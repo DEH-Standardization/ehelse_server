@@ -38,7 +38,7 @@ class Mandatory implements iModel
     {
         if (strlen($name) > ModelValidation::NAME_MAX_LENGTH) {
             $this->name = ModelValidation::getValidName($name);
-            echo "name is too long, set to: " . $this->name;
+            echo "Name is too long, set to: " . $this->name;
         }
         else {
             $this->name = $name;

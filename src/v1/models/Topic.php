@@ -32,30 +32,6 @@ class Topic implements iModel
         $this->children = [];
     }
 
-    /**
-     * Returns a new topic with previus inserted id
-     * @param $title
-     * @param $description
-     * @param $number
-     * @param $is_in_catalog
-     * @param $sequence
-     * @param $parent_id
-     * @return DBError|null|string|Topic
-     */
-    /*  NOT IN USE
-    public static function createNewTopic($title, $description, $number, $is_in_catalog, $sequence, $parent_id)
-    {
-
-        $mapper = new TopicDbMapper();
-        $result = $mapper->add(new Topic(null,null,$title, $description, $number, $is_in_catalog, $sequence, $parent_id));
-        if ($result instanceof DBError) {
-            return $result;
-        } else {
-            return $mapper->getTopicById($result);
-        }
-    }
-    */
-
     public static function getLastInsertedTopic()
     {
 
