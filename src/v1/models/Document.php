@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__ . '/ModelValidation.php';
-require_once __DIR__ . '/iModel.php';
+require_once 'ModelValidation.php';
+require_once 'iModel.php';
 
 class Document implements iModel
 {

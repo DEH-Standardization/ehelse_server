@@ -7,6 +7,7 @@ class ModelValidation
     // Max length valid in database
     const NAME_MAX_LENGTH = 128;
     const TITLE_MAX_LENGTH = 128;
+    const TEXT_MAX_LENGTH = 128;
     const DESCRIPTION_MAX_LENGTH = 1024;
     const COMMENT_MAX_LENGTH = 1024;
     const FIELD_VALUE_MAX_LENGTH = 1024;
@@ -28,8 +29,12 @@ class ModelValidation
      */
     public static function getValidDescription($description)
     {
-
         return substr($description, 0, self::DESCRIPTION_MAX_LENGTH);
+    }
+
+    public static function getValidText($text)
+    {
+        return substr($text, 0, self::TEXT_MAX_LENGTH);
     }
 
     /**

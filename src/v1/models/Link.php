@@ -1,10 +1,11 @@
 <?php
 
 require_once 'ModelValidation.php';
+require_once 'iModel.php';
 
-class Link
+class Link implements iModel
 {
-    private $id, $text, $description, $url, $link_type_id, $document_version_id;
+    private $id, $text, $description, $url, $link_category_id, $document_id, $document_timestamp, $link_document_id;
 
     /**
      * Link constructor.
@@ -12,17 +13,17 @@ class Link
      * @param $text
      * @param $description
      * @param $url
-     * @param $link_type_id
+     * @param $link_category_id
      * @param $document_version_id
      */
-    public function __construct($id, $text, $description, $url, $link_type_id, $document_version_id)
+    public function __construct($id, $text, $description, $url, $link_category_id, $document_version_id)
     {
         $this->id = $id;
         $this->text = $text;
         $this->setDescription($description);
         $this->url = $url;
-        $this->link_type_id = $link_type_id;
-        $this->document_version_id = $document_version_id;
+        $this->link_category_id = $link_category_id;
+        $this->document_id = $document_version_id;
     }
 
     public function getId()
@@ -40,14 +41,14 @@ class Link
     }
 
     /**
-     * Sets text if it is valid
-     * @param $description
+     * Sets text if it is valid, return the n first characters if it is too long
+     * @param $text
      */
     public function setText($text)
     {
-        if (strlen($text) > ModelValidation::getDescriptionMaxLength()) {
-            $this->text = ModelValidation::getValidDescription($text);
-            echo "description is too long. Description set to: " . $this->text;
+        if (strlen($text) > ModelValidation::TEXT_MAX_LENGTH()) {
+            $this->text = ModelValidation::getValidText($text);
+            echo "Text is too long, set to: " . $this->text;
         }
         else {
             $this->text = $text;
@@ -60,14 +61,14 @@ class Link
     }
 
     /**
-     * Sets description if it is valid
+     * Sets description if it is valid, return the n first characters if it is too long
      * @param $description
      */
     public function setDescription($description)
     {
-        if (strlen($description) > ModelValidation::getDescriptionMaxLength()) {
+        if (strlen($description) > ModelValidation::DESCRIPTION_MAX_LENGTH) {
             $this->description = ModelValidation::getValidDescription($description);
-            echo "description is too long. Description set to: " . $this->description;
+            echo "Description is too long, set to: " . $this->description;
         }
         else {
             $this->description = $description;
@@ -86,26 +87,26 @@ class Link
 
     public function getLinkTypeId()
     {
-        return $this->link_type_id;
+        return $this->link_category_id;
     }
 
     public function setLinkTypeId($link_type_id)
     {
-        $this->link_type_id = $link_type_id;
+        $this->link_category_id = $link_type_id;
     }
 
     public function getDocumentVersionId()
     {
-        return $this->document_version_id;
+        return $this->document_id;
     }
 
     public function setDocumentVersionId($document_version_id)
     {
-        $this->document_version_id = $document_version_id;
+        $this->document_id = $document_version_id;
     }
 
     /**
-     * Returns associated array
+     * Returns associated array representation of model
      * @return array
      */
     public function toArray()
@@ -115,8 +116,17 @@ class Link
             'text' => $this->text,
             'description' => $this->description,
             'url' => $this->url,
-            'linkTypeId' => $this->link_type_id,
-            'documentVersionId' => $this->document_version_id);
+            'linkTypeId' => $this->link_category_id,
+            'documentVersionId' => $this->document_id);
+    }
+
+    /**
+     * Returns JSON representation of model
+     * @return string
+     */
+    public function toJSON()
+    {
+        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
     }
 
 }
