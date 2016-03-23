@@ -17,6 +17,7 @@ class ModelValidation
      * @param $title
      * @return string
      */
+
     public static function getValidTitle($title)
     {
         return substr($title, 0, self::TITLE_MAX_LENGTH);
@@ -46,6 +47,12 @@ class ModelValidation
     {
         return substr($comment, 0, self::COMMENT_MAX_LENGTH);
     }
+
+    public static function getValidString($value, $max_length)
+    {
+        return substr($value, 0, $max_length);
+    }
+    
 
     /**
      * Returns a valid name, if title is longer than max length, the excess characters are removed
