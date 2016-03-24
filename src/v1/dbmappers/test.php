@@ -1,11 +1,11 @@
 <?php
 
 
-require_once 'StatusDBMapper.php';
-require_once __DIR__.'/../models/Status.php';
+require_once 'LinkCategoryDBMapper.php';
+require_once __DIR__.'/../models/LinkCategory.php';
 
 
-$m = new StatusDBMapper();
+$m = new LinkCategoryDBMapper();
 
-$d = new Status(2, 'test2', 'test');
+$d = new LinkCategory(1,'test', 'test11');
 print_r($m->update($d));

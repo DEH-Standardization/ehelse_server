@@ -1,20 +1,23 @@
 <?php
 
-
 require_once 'DBMapper.php';
 require_once 'DbCommunication.php';
-require_once __DIR__.'/../models/LinkType.php';
+require_once __DIR__.'/../models/LinkCategory.php';
 require_once __DIR__.'/../errors/DBError.php';
-class LinkTypeDBMapper extends DBMapper
+
+class LinkCategoryDBMapper extends DBMapper
 {
+    private $table_name = 'link_category';
+    private $dbName = DbCommunication::DATABASE_NAME;
+
     /**
      * Returns link type
      * @param $id
      * @return DBError|Link
      */
-    public function get($link_type)
+    public function get($link_category)
     {
-        $this->getById($link_type->getId());
+        $this->getById($link_category->getId());
     }
 
     /**
@@ -25,22 +28,21 @@ class LinkTypeDBMapper extends DBMapper
     public function getById($id)
     {
         $response = null;
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
         $sql = "SELECT *
-                FROM $dbName.link_type
+                FROM $this->dbName.$this->table_name
                 WHERE id = ?;";
         $parameters = array($id);
         try {
             $result = $this->queryDB($sql, $parameters);
             if ($result->rowCount() === 1) {
                 $row = $result->fetch();
-                return new LinkType(
+                return new LinkCategory(
                     $row['id'],
                     $row['name'],
                     $row['description']);
             } else {
                 $response = new DBError("Returned " . $result->rowCount() .
-                    " profiles, expected 1");
+                    ", expected 1");
             }
         } catch(PDOException $e) {
             $response = new DBError($e);
@@ -49,19 +51,18 @@ class LinkTypeDBMapper extends DBMapper
     }
 
     /**
-     * Returns all link types
+     * Returns all link categories
      * @return array|DBError
      */
     public function getAll()
     {
         $response = null;
         $link_types= array();
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "select * from $dbName.link_type";
+        $sql = "SELECT * FROM $this->dbName.$this->table_name";
         try {
             $result = $this->queryDB($sql, null);
             foreach ($result as $row) {
-                array_push($link_types, new LinkType(
+                array_push($link_types, new LinkCategory(
                     $row['id'],
                     $row['name'],
                     $row['description']));
@@ -85,8 +86,7 @@ class LinkTypeDBMapper extends DBMapper
     public function add($link_type)
     {
         $response = null;
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "INSERT INTO $db_name.link_type
+        $sql = "INSERT INTO $this->dbName.$this->table_name
                 VALUES (null, ?, ?);";
         $parameters = array(
             $link_type->getName(),
@@ -105,23 +105,22 @@ class LinkTypeDBMapper extends DBMapper
      * @param $document_version
      * @return DBError|string
      */
-    public function update($link_type)
+    public function update($link_category)
     {
-        if(!$this->isValidId($link_type->getId(), "link_type")) {
+        if(!$this->isValidId($link_category->getId(), $this->table_name)) {
             return new DBError("Invalid id");
         }
         $response = null;
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "UPDATE $db_name.link_type
+        $sql = "UPDATE $this->dbName.$this->table_name
                 SET name = ?, description = ?
                 WHERE id = ?;";
         $parameters = array(
-            $link_type->getName(),
-            $link_type->getDescription(),
-            $link_type->getId());
+            $link_category->getName(),
+            $link_category->getDescription(),
+            $link_category->getId());
         try {
             $this->queryDB($sql, $parameters);
-            return $link_type->getId();
+            return $link_category->getId();
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
@@ -129,5 +128,13 @@ class LinkTypeDBMapper extends DBMapper
     }
 
 
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
 
+    public function deleteById($id)
+    {
+        // TODO: Implement deleteById() method.
+    }
 }

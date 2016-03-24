@@ -102,6 +102,11 @@ class StatusDBMapper extends DBMapper
         return $response;
     }
 
+    /**
+     * Updates status in database
+     * @param $status
+     * @return DBError|string
+     */
     public function update($status)
     {
         if(!$this->isValidId($status->getId(), "status")) {
