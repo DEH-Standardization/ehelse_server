@@ -1,11 +1,11 @@
 <?php
 
 
-require_once 'DocumentDBMapper.php';
-require_once __DIR__.'/../models/Document.php';
+require_once 'StatusDBMapper.php';
+require_once __DIR__.'/../models/Status.php';
 
 
-$m = new DocumentDBMapper();
+$m = new StatusDBMapper();
 
-$d = new Document(5, null, 'test3_updated','test3',1,1,'d',1,1);
+$d = new Status(2, 'test2', 'test');
 print_r($m->update($d));
