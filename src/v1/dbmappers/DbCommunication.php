@@ -4,12 +4,13 @@ require_once 'pw.php';
 
 class DbCommunication
 {
+    const DATABASE_NAME = "ehelse_test";
+
     private $connection;
     private static $instance;
     private $server = "refkat.eu";
-    private $username = "ehelse8";
+    private $username = "ehelse_admin";
     private $password;
-    private $database_name = "andrkje_ehelse_db";
 
     /**
      * Returns an instance of the database communication.
@@ -30,7 +31,7 @@ class DbCommunication
     {
         $this->password = DB_PASSWORD;
         try {
-            $this->connection = new PDO("mysql:host=$this->server;dbname=andrkje_ehelse_db;charset=utf8", $this->username, $this->password);
+            $this->connection = new PDO("mysql:host=$this->server;dbname=".DBCommunication::DATABASE_NAME.";charset=utf8", $this->username, $this->password);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // set the PDO error mode to exception
         }
         catch(PDOException $e)
@@ -47,14 +48,6 @@ class DbCommunication
     public function getConnection()
     {
         return $this->connection;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDatabaseName()
-    {
-        return $this->database_name;
     }
 
     /**
