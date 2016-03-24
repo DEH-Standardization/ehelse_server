@@ -28,8 +28,7 @@ class MainController implements iController{
                 $this->controller = new APIV1Controller($path, $method, $body);
                 break;
             default:
-                //TODO handle error
-                $this->controller = new DescriptionController();
+                $this->controller = new ErrorController(new InvalidPathError());
                 break;
         }
     }
