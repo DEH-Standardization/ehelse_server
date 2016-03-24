@@ -6,7 +6,7 @@ require_once __DIR__. "/../errors/DBError.php";
 
 class DocumentDBMapper extends DBMapper
 {
-    private $table_name = 'document';
+    private $table_name = DBCommunication::DATABASE_NAME.'.document';
 
     /**
      * Returns document from database based on model
@@ -26,11 +26,10 @@ class DocumentDBMapper extends DBMapper
     public function getById($id)
     {
         $response = null;
-        $dbName = DBCommunication::DATABASE_NAME;
         $sql = "SELECT *
-                FROM $dbName.$this->table_name WHERE id = ? and (id,timestamp) IN
+                FROM $this->table_name WHERE id = ? and (id,timestamp) IN
                 ( SELECT id, MAX(timestamp)
-                  FROM $dbName.$this->table_name
+                  FROM $this->table_name
                 GROUP BY id)";
         $parameters = array($id);
         try {
@@ -65,11 +64,10 @@ class DocumentDBMapper extends DBMapper
     {
         $response = null;
         $documents = array();
-        $dbName = DbCommunication::DATABASE_NAME;
         $sql = "SELECT *
-                FROM $dbName.$this->table_name WHERE(id,timestamp) IN
+                FROM $this->table_name WHERE(id,timestamp) IN
                 ( SELECT id, MAX(timestamp)
-                  FROM $dbName.$this->table_name
+                  FROM $this->table_name
                   GROUP BY id);";
         try {
             $result = $this->queryDB($sql, array());
@@ -104,8 +102,7 @@ class DocumentDBMapper extends DBMapper
     public function add($document)
     {
         $result = null;
-        $db_name = DbCommunication::DATABASE_NAME;
-        $sql = "INSERT INTO $db_name.$this->table_name
+        $sql = "INSERT INTO $this->table_name
                 VALUES (null, now(), ?, ?, ?, ?, ?, ?, ?);";
         $parameters = array(
             $document->getTitle(),
@@ -132,14 +129,11 @@ class DocumentDBMapper extends DBMapper
      */
     public function update($document)
     {
-
         if(!$this->isValidId($document->getId(), $this->table_name)) {
             return new DBError("Invalid id");
         }
-
         $result = null;
-        $db_name = DbCommunication::DATABASE_NAME;
-        $sql = "INSERT INTO $db_name.$this->table_name
+        $sql = "INSERT INTO $this->table_name
                 VALUES (?, now(), ?, ?, ?, ?, ?, ?, ?);";
         $parameters = array(
             $document->getId(),

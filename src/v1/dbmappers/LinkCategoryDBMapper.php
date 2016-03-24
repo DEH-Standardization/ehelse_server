@@ -7,8 +7,7 @@ require_once __DIR__.'/../errors/DBError.php';
 
 class LinkCategoryDBMapper extends DBMapper
 {
-    private $table_name = 'link_category';
-    private $dbName = DbCommunication::DATABASE_NAME;
+    private $table_name = DbCommunication::DATABASE_NAME.'.link_category';
 
     /**
      * Returns link type
@@ -29,7 +28,7 @@ class LinkCategoryDBMapper extends DBMapper
     {
         $response = null;
         $sql = "SELECT *
-                FROM $this->dbName.$this->table_name
+                FROM $this->table_name
                 WHERE id = ?;";
         $parameters = array($id);
         try {
@@ -58,7 +57,7 @@ class LinkCategoryDBMapper extends DBMapper
     {
         $response = null;
         $link_types= array();
-        $sql = "SELECT * FROM $this->dbName.$this->table_name";
+        $sql = "SELECT * FROM $this->table_name";
         try {
             $result = $this->queryDB($sql, null);
             foreach ($result as $row) {
@@ -86,7 +85,7 @@ class LinkCategoryDBMapper extends DBMapper
     public function add($link_type)
     {
         $response = null;
-        $sql = "INSERT INTO $this->dbName.$this->table_name
+        $sql = "INSERT INTO $this->table_name
                 VALUES (null, ?, ?);";
         $parameters = array(
             $link_type->getName(),
@@ -111,7 +110,7 @@ class LinkCategoryDBMapper extends DBMapper
             return new DBError("Invalid id");
         }
         $response = null;
-        $sql = "UPDATE $this->dbName.$this->table_name
+        $sql = "UPDATE $this->table_name
                 SET name = ?, description = ?
                 WHERE id = ?;";
         $parameters = array(

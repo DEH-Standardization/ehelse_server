@@ -7,7 +7,7 @@ require_once __DIR__.'/../errors/DBError.php';
 
 class StatusDBMapper extends DBMapper
 {
-    private $table_name = 'status';
+    private $table_name = DbCommunication::DATABASE_NAME.'.status';
 
     /**
      * Returns status from database based on model
@@ -29,7 +29,7 @@ class StatusDBMapper extends DBMapper
         $response = null;
         $dbName = DbCommunication::DATABASE_NAME;
         $sql = "SELECT *
-                FROM $dbName.$this->table_name
+                FROM $this->table_name
                 WHERE id = ?;";
         $parameters = array($id);
         try {
@@ -59,7 +59,7 @@ class StatusDBMapper extends DBMapper
         $response = null;
         $statuses= array();
         $dbName = DbCommunication::DATABASE_NAME;
-        $sql = "SELECT * FROM $dbName.$this->table_name";
+        $sql = "SELECT * FROM $this->table_name;";
         try {
             $result = $this->queryDB($sql, null);
             foreach ($result as $row) {
@@ -88,7 +88,7 @@ class StatusDBMapper extends DBMapper
     {
         $response = null;
         $db_name = DbCommunication::DATABASE_NAME;
-        $sql = "INSERT INTO $db_name.$this->table_name
+        $sql = "INSERT INTO $this->table_name
                 VALUES (null, ?, ?);";
         $parameters = array(
             $status->getName(),
@@ -114,7 +114,7 @@ class StatusDBMapper extends DBMapper
         }
         $response = null;
         $db_name = DbCommunication::DATABASE_NAME;
-        $sql = "UPDATE $db_name.status
+        $sql = "UPDATE $this->table_name
                 SET name = ?, description = ?
                 WHERE id = ?;";
         $parameters = array(
