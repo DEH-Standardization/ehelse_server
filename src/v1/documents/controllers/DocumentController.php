@@ -1,6 +1,9 @@
 <?php
 
 require_once  __DIR__ . '/../../responses/ResponseController.php';
+require_once __DIR__ . '/../../models/Document.php';
+require_once __DIR__ . '/../../errors/MalformedJSONFormatError.php';
+require_once __DIR__ . '/../../responses/ErrorResponse.php';
 
 class DocumentController extends ResponseController
 {
@@ -14,22 +17,15 @@ class DocumentController extends ResponseController
         $this->path = $path;
 
         if(count($path) >= 1 && $path[0] == 'fields'){
-            $this->trimPath(1);
-            $this->controller = new DocumentFieldController($this->path,$this->method,$this->body);
+            $this->controller = new DocumentFieldController(array_shift($path),$this->method,$this->body);
         }
-        elseif(count($path) == 1){
-            //check if number, if not return error
+        elseif(count($path) >= 1){
             if(is_numeric($path[0])){
                 $this->id = $path[0];
+                $path = trimPath($path, 1);
+                //TODO document field controller
             }else{
-                $this->controller = new ErrorController(new InvalidPathError());//return error
-            }
-        }elseif(count($path) >= 2){
-            //check if number, if not return error
-            if(is_numeric($path[0])){
-                $this->id = $path[0];
-            }else{
-                $this->controller = new ErrorController(new InvalidPathError());//return error
+                $this->controller = new ErrorController(new InvalidPathError());
             }
         }
     }
@@ -42,6 +38,12 @@ class DocumentController extends ResponseController
     protected function create()
     {
         // TODO: Implement create() method.
+        $missing_fields = ResponseController::validateJSONFormat($this->body,Document::REQUIRED_POST_FIELDS);
+        if( $missing_fields ){
+            $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
+        }
+
+        return $response;
     }
 
     protected function get()

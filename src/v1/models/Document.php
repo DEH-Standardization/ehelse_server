@@ -5,6 +5,7 @@ require_once 'iModel.php';
 
 class Document implements iModel
 {
+    const REQUIRED_POST_FIELDS = ['title','description','status','sequence','documentType','topicId'];
     private $id, $timestamp, $title, $description, $sequence, $topic_id, $comment, $status_id, $document_type_id;
 
     /**
