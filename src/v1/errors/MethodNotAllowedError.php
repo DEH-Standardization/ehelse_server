@@ -3,7 +3,7 @@ require_once 'ApplicationError.php';
 
 class MethodNotAllowedError extends ApplicationError
 {
-    protected $status_code = Response::STATUS_CODE_METHOD_NOT_ALLOWED;
+    protected $response_code = Response::STATUS_CODE_METHOD_NOT_ALLOWED;
 
     /**
      * Constructor for method not allowed errors.

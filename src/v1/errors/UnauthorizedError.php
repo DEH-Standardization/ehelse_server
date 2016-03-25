@@ -3,7 +3,7 @@ require_once 'ApplicationError.php';
 
 class UnauthorizedError extends ApplicationError
 {
-    protected $status_code = Response::STATUS_CODE_UNAUTHORIZED;
+    protected $response_code = Response::STATUS_CODE_UNAUTHORIZED;
 
     public function __construct($method)
     {
