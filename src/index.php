@@ -2,6 +2,7 @@
 require_once "MainController.php";
 require_once "v1/errors/InvalidJSONError.php";
 require_once 'utils.php';
+require_once __DIR__ . '/v1/models/User.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: accept, authorization, content-type");
@@ -16,9 +17,10 @@ $body = json_decode($payload,true);
 
 if( json_last_error() == JSON_ERROR_NONE ){
     if($_SERVER && array_key_exists('PHP_AUTH_USER', $_SERVER)){
-        $user_name = $_SERVER['PHP_AUTH_USER'];
+        $email = $_SERVER['PHP_AUTH_USER'];
         $password = $_SERVER['PHP_AUTH_PW'];
-        if($user_name == $password) { //TODO: add method to authenticate user
+        $user = User::authenticate($email, $password);
+        if($user) {
             define("AUTHENTICATED", true);
         }
         else{

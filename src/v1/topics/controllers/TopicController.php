@@ -5,8 +5,7 @@ require_once __DIR__.'/../../errors/InvalidPathError.php';
 require_once __DIR__.'/../../errors/ErrorController.php';
 require_once __DIR__.'/../../main/controllers/DescriptionController.php';
 require_once __DIR__.'/../../dbmappers/TopicDBMapper.php';
-require_once __DIR__.'/../../models/Standard.php';
-require_once __DIR__.'/../../models/Profile.php';
+require_once __DIR__.'/../../models/Document.php';
 
 class TopicController extends ResponseController
 {
@@ -131,22 +130,7 @@ class TopicController extends ResponseController
      */
     protected function update()
     {
-        $mapper = new TopicDbMapper();
-        $assoc = $this->body;
-        $topic = new Topic(
-            $this->id, null,
-            $assoc['title'],
-            $assoc['description'],
-            $assoc['sequence'],
-            $assoc['parent'],
-            $assoc['comment']);
-        $response = $mapper->update($topic);
-
-        if ($response instanceof DBError) {
-            return new ErrorResponse($response);
-        }
-        $result =  $mapper->getTopicById($response)->toArray();
-        return new Response(json_encode($result, JSON_PRETTY_PRINT));
+        return new ErrorResponse(new MethodNotAllowedError($this->method));
     }
 
     /**

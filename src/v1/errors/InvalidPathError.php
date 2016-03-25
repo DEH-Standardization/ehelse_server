@@ -8,7 +8,7 @@ class InvalidPathError extends ApplicationError
      * Error constructor.
      * @param $method
      */
-    protected $status_code = Response::STATUS_CODE_NOT_FOUND;
+    protected $response_code = Response::STATUS_CODE_NOT_FOUND;
 
     public function __construct()
     {
