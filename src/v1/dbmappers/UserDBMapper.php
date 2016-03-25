@@ -34,12 +34,22 @@ class UserDBMapper extends DBMapper
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
-        print_r($response);
         return $response;
     }
 
     public function getById($id)
     {
-        //TODO
+        $response = null;
+        $sql = "SELECT * FROM user WHERE id = ?";
+        try {
+            $result = $this->queryDB($sql, array($id));
+            $raw = $result->fetch();
+            if($raw){
+                $response = User::fromDBArray($raw);
+            }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 }

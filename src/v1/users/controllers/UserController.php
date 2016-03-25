@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../../dbmappers/UserDBMapper.php';
+require_once __DIR__ . '/../../errors/NotFoundError.php';
 
 class UserController extends ResponseController
 {
@@ -49,7 +50,13 @@ class UserController extends ResponseController
     {
         $mapper = new UserDBMapper();
         $user = $mapper->getById($this->id);
-        return new Response(json_encode($user->toArray(), JSON_PRETTY_PRINT));
+        if($user){
+            $response = new Response(json_encode($user->toArray(), JSON_PRETTY_PRINT));
+        }
+        else{
+            $response = new ErrorResponse(new NotFoundError());
+        }
+        return $response;
     }
 
     protected function update()
