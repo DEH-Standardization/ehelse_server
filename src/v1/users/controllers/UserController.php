@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/../../dbmappers/UserDBMapper.php';
 require_once __DIR__ . '/../../errors/NotFoundError.php';
+require_once __DIR__ . '/../../users/controllers/PasswordController.php';
+require_once __DIR__ . '/../../users/controllers/LoginController.php';
 
 class UserController extends ResponseController
 {
@@ -11,11 +13,21 @@ class UserController extends ResponseController
         $this->body = $body;
         $this->method=$method;
         $this->path = $path;
-
         if(count($this->path) != 0){
             if(count($this->path) == 1 && is_numeric($path[0])){
                 $this->id = $path[0];
-            }else{
+            }
+            elseif(count($this->path) == 2 && is_numeric($path[0]) && $path[1] == "password"){
+                $this->id = $path[0];
+                $path = trimPath($path, 2);
+                $this->controller = new PasswordController($path, $method, $body, $this->id);
+            }
+            elseif(count($this->path) == 1 && $path[0] == "login"){
+                $this->id = $path[0];
+                $path = trimPath($path, 1);
+                $this->controller = new LoginController($path, $method, $body);
+            }
+            else{
                 $this->controller = new ErrorController(new InvalidPathError());
             }
         }
@@ -88,9 +100,7 @@ class UserController extends ResponseController
             $mapper = new UserDBMapper();
             $json = $this->body;
             $json["id"] = $this->id;
-            print_r($json);
             $user=User::fromJSON($json);
-            print_r($user);
             $db_response = $mapper->update($user);
 
             if ($db_response instanceof DBError) {

@@ -72,4 +72,28 @@ class UserDBMapper extends DBMapper
         return $response;
     }
 
+    public function resetPassword($user)
+    {
+        $response = null;
+        try {
+            $this->queryDBWithAssociativeArray(User::SQL_UPDATE_PASSWORD_STATEMENT, $user->toResetPasswordDBArray());
+            $response = $this->connection->lastInsertId();
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
+
+    public function getByEmail($email)
+    {
+        $response = null;
+        try {
+            $result = $this->queryDBWithAssociativeArray(User::SQL_GET_USER_BY_EMAIL, array(":email" => $email));
+            $response = $result->fetch();
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
+
 }

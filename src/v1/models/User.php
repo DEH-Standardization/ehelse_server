@@ -5,8 +5,11 @@ class User
     const MAX_LENGTH_NAME = 128;
     const REQUIRED_POST_FIELDS = ['name', 'email'];
     const REQUIRED_PUT_FIELDS = ['name', 'email'];
+    const REQUIRED_PASSWORD_PUT_FIELD = ['password'];
     const SQL_INSERT_STATEMENT = "INSERT INTO user(name,profile_image,email) VALUES (:name,:profile_image,:email);";
     const SQL_UPDATE_STATEMENT = "UPDATE user SET name=:name,profile_image=:profile_image,email=:email WHERE id = :id;";
+    const SQL_UPDATE_PASSWORD_STATEMENT = "UPDATE user SET password_hash=:password_hash  WHERE id = :id;";
+    const SQL_GET_USER_BY_EMAIL = "SELECT * FROM user WHERE email=:email";
     private
         $id,
         $name,
@@ -20,6 +23,11 @@ class User
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getPasswordHash()
+    {
+        return $this->password_hash;
     }
 
 
@@ -52,6 +60,16 @@ class User
             $db_array[":id"] = $this->id;
         }
         return $db_array;
+    }
+
+    public function toResetPasswordDBArray(){
+        if(! $this->password_hash){
+            die("Missing password");
+        }
+        return array(
+            ":id" => $this->id,
+            ":password_hash" => $this->password_hash
+        );
     }
 
     public function setName($name)
@@ -92,6 +110,20 @@ class User
     }
 
 
+    public static function fromResetPasswordQuery($id, $json)
+    {
+        $password = $json['password'];
+        $password_hash = password_hash($password, PASSWORD_DEFAULT);
+        return new User(
+            $id,
+            null,
+            null,
+            null,
+            $password_hash
+        );
+    }
+
+
     public static function fromDBArray($db_array)
     {
         return new User(
@@ -112,5 +144,17 @@ class User
             $json['profileImage'],
             null
         );
+    }
+
+    public static function authenticate($email, $password)
+    {
+        $response = null;
+        $mapper = new UserDBMapper();
+        $db_array = $mapper->getByEmail($email);
+        $user = User::fromDBArray($db_array);
+        if(password_verify($password, $user->getPasswordHash())){
+            $response = $user;
+        }
+        return $response;
     }
 }

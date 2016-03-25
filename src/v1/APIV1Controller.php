@@ -3,7 +3,6 @@
 require_once 'iController.php';
 require_once 'documents/controllers/DocumentController.php';
 require_once 'topics/controllers/TopicController.php';
-require_once 'login/controllers/LoginController.php';
 require_once 'users/controllers/UserController.php';
 
 class APIV1Controller implements iController
@@ -21,9 +20,6 @@ class APIV1Controller implements iController
                 break;
             case 'topics':
                 $this->controller = new TopicController($path, $method, $body);
-                break;
-            case 'login':
-                $this->controller = new LoginController($path, $method, $body);
                 break;
             case 'users':
                 $this->controller = new UserController($path, $method, $body);
