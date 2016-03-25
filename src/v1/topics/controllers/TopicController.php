@@ -130,22 +130,7 @@ class TopicController extends ResponseController
      */
     protected function update()
     {
-        $mapper = new TopicDbMapper();
-        $assoc = $this->body;
-        $topic = new Topic(
-            $this->id, null,
-            $assoc['title'],
-            $assoc['description'],
-            $assoc['sequence'],
-            $assoc['parent'],
-            $assoc['comment']);
-        $response = $mapper->update($topic);
-
-        if ($response instanceof DBError) {
-            return new ErrorResponse($response);
-        }
-        $result =  $mapper->getTopicById($response)->toArray();
-        return new Response(json_encode($result, JSON_PRETTY_PRINT));
+        return new ErrorResponse(new MethodNotAllowedError($this->method));
     }
 
     /**
