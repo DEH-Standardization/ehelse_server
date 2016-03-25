@@ -5,14 +5,27 @@ require_once __DIR__ . '/../models/User.php';
 class UserDBMapper extends DBMapper
 {
 
-    public function add($model)
+    /**
+     * Adds new topic to database
+     * @param $user
+     * @return DBError|null|string
+     */
+    public function add($user)
     {
-        // TODO: Implement add() method.
+        $response = null;
+        try {
+            $this->queryDB(User::SQL_INSERT_STATEMENT, $user->toDBArray());
+            $response = $this->connection->lastInsertId();
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
     public function update($model)
     {
         // TODO: Implement update() method.
+        throw new Exception("Not implemented");
     }
 
     public function getAll()
@@ -52,4 +65,5 @@ class UserDBMapper extends DBMapper
         }
         return $response;
     }
+
 }

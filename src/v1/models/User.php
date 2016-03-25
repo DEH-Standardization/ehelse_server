@@ -3,7 +3,14 @@
 class User
 {
     const MAX_LENGTH_NAME = 128;
-    private $id, $name, $password_hash, $email, $profile_image;
+    const REQUIRED_POST_FIELDS = ['name', 'email'];
+    const SQL_INSERT_STATEMENT = "INSERT INTO user VALUES (?,?,?,?,?);";
+    private
+        $id,
+        $name,
+        $profile_image,
+        $email,
+        $password_hash;
 
     public function __construct($id, $name, $email, $profile_image, $password_hash)
     {
@@ -21,6 +28,16 @@ class User
             "name" => $this->name,
             "email" => $this->email,
             "profileImage" => $this->profile_image
+        );
+    }
+    public function toDBArray()
+    {
+        return array(
+            $this->id,
+            $this->name,
+            $this->profile_image,
+            $this->email,
+            $this->password_hash
         );
     }
 

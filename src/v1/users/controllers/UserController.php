@@ -43,7 +43,28 @@ class UserController extends ResponseController
 
     protected function create()
     {
-        // TODO: Implement create() method.
+        $missing_fields = UserController::validateJSONFormat($this->body, User::REQUIRED_POST_FIELDS);
+        if( !$missing_fields ){
+            $mapper = new UserDBMapper();
+            $user = User::fromJSON($this->body);
+            $db_response = $mapper->add($user);
+
+            if ($db_response instanceof DBError) {
+                $response = new ErrorResponse($db_response);
+            }
+            elseif(is_numeric($db_response)){
+                $this->id = $db_response;
+                $response = $this->get();
+            }
+            else{
+                //todo not sure how best to handle this
+                throw new Exception("Not implemented error");
+            }
+        }
+        else{
+            $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
+        }
+        return $response;
     }
 
     protected function get()
