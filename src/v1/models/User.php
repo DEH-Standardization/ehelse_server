@@ -2,16 +2,15 @@
 
 class User
 {
-    const MAX_LENGTH_FIRST_NAME = 64;
-    const MAX_LENGTH_LAST_NAME = 64;
-    private $id, $first_name, $last_name, $password_hash, $email, $profile_image;
+    const MAX_LENGTH_NAME = 128;
+    private $id, $name, $password_hash, $email, $profile_image;
 
-    public function __construct($id, $first_name, $last_name, $email, $profile_image, $password_hash)
+    public function __construct($id, $name, $email, $profile_image, $password_hash)
     {
         $this->id=$id;
-        $this->first_name=$first_name;
-        $this->last_name=$last_name;
+        $this->name = $name;
         $this->email=$email;
+        $this->password_hash=$password_hash;
         $this->profile_image=$profile_image;
     }
 
@@ -19,34 +18,29 @@ class User
     {
         return array(
             "id" => $this->id,
-            "firstName" => $this->first_name,
-            "lastName" => $this->last_name,
+            "name" => $this->name,
             "email" => $this->email,
             "profileImage" => $this->profile_image
         );
     }
 
-    public function setFirstName($first_name)
+    public function setName($name)
     {
         return $this->setStringProperty(
-            $field="first_name",
-            $value=$first_name,
-            $max_length=User::MAX_LENGTH_FIRST_NAME,
-            $error_message_field_name="First name");
+            $field="name",
+            $value=$name,
+            $max_length=User::MAX_LENGTH_NAME,
+            $error_message_field_name="Name");
     }
 
-    public function setLastName($last_name)
-    {
-        return $this->setStringProperty(
-            $field="last_name",
-            $value=$last_name,
-            $max_length=User::MAX_LENGTH_LAST_NAME,
-            $error_message_field_name="Last name");
-    }
 
     public function setEmail($email)
     {
-        //todo
+        return $this->setStringProperty(
+            $field="email",
+            $value=$email,
+            $max_length=User::MAX_LENGTH_NAME,
+            $error_message_field_name="Email");
     }
 
     protected function setStringProperty($field, $value, $max_length, $error_massage_field_name)
@@ -72,8 +66,7 @@ class User
     {
         return new User(
             $db_array['id'],
-            $db_array['first_name'],
-            $db_array['last_name'],
+            $db_array['name'],
             $db_array['email'],
             $db_array['profile_image'],
             $db_array['password_hash']
@@ -84,8 +77,7 @@ class User
     {
         return new User(
             null,
-            $json['firstName'],
-            $json['lastName'],
+            $json['name'],
             $json['email'],
             $json['profileImage'],
             null

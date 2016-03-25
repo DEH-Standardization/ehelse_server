@@ -5,8 +5,7 @@ require_once __DIR__.'/../../errors/InvalidPathError.php';
 require_once __DIR__.'/../../errors/ErrorController.php';
 require_once __DIR__.'/../../main/controllers/DescriptionController.php';
 require_once __DIR__.'/../../dbmappers/TopicDBMapper.php';
-require_once __DIR__.'/../../models/Standard.php';
-require_once __DIR__.'/../../models/Profile.php';
+require_once __DIR__.'/../../models/Document.php';
 
 class TopicController extends ResponseController
 {

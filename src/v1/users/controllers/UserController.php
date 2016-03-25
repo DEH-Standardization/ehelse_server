@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../../dbmappers/UserDBMapper.php';
+
 class UserController extends ResponseController
 {
 
@@ -19,9 +21,23 @@ class UserController extends ResponseController
 
     }
 
+    protected static function getArrayFromObjectArray($array){
+        $return_array = [];
+        foreach($array as $item){
+            array_push($return_array, $item->toArray());
+        }
+        return $return_array;
+    }
+
     protected function getAll()
     {
-        // TODO: Implement getAll() method.
+        $mapper = new UserDBMapper();
+        $users = $mapper->getAll();
+        $users_array = UserController::getArrayFromObjectArray($users);
+
+        $json = json_encode(array( "users" => $users_array), JSON_PRETTY_PRINT);
+
+        return new Response($json);
     }
 
     protected function create()
@@ -31,7 +47,9 @@ class UserController extends ResponseController
 
     protected function get()
     {
-        // TODO: Implement get() method.
+        $mapper = new UserDBMapper();
+        $user = $mapper->getById($this->id);
+        return new Response(json_encode($user->toArray(), JSON_PRETTY_PRINT));
     }
 
     protected function update()

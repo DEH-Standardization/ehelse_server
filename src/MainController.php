@@ -11,8 +11,6 @@ class MainController implements iController{
     {
         $this->path = $path;
 
-        print_r($path);
-
         $this->api_version = $path[0];
 
         //check if the url ended with '/', if se delete
