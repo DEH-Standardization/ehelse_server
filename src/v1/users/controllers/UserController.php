@@ -82,11 +82,33 @@ class UserController extends ResponseController
 
     protected function update()
     {
-        // TODO: Implement update() method.
+        $missing_fields = UserController::validateJSONFormat($this->body, User::REQUIRED_PUT_FIELDS);
+
+        if( !$missing_fields ){
+            $mapper = new UserDBMapper();
+            $json = $this->body;
+            $json["id"] = $this->id;
+            print_r($json);
+            $user=User::fromJSON($json);
+            print_r($user);
+            $db_response = $mapper->update($user);
+
+            if ($db_response instanceof DBError) {
+                $response =  new ErrorResponse($db_response);
+            }
+            else{
+                $response=$this->get();
+            }
+        }
+        else{
+            $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
+        }
+        return $response;
     }
 
     protected function delete()
     {
         // TODO: Implement delete() method.
+        throw new Exception("Not implemented");
     }
 }

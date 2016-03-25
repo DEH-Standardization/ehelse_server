@@ -9,10 +9,11 @@ class DBError extends ApplicationError
      * DBError constructor.
      * @param $e
      */
-    public function __construct($e)
+    public function __construct($exception)
     {
+        print_r($exception);
         $this->title = "DB error: ";
-        if (is_a($e, 'PDOException')) {
+        /*if (is_a($e, 'PDOException')) {
             switch ($e->getCode()) {
                 case 23000:
                     $this->title .= "integrity constraint violation";
@@ -28,7 +29,7 @@ class DBError extends ApplicationError
                             break;
 
                     };
-                    */
+
                     break;
                 default:
                     $this->message = $e;
@@ -38,7 +39,9 @@ class DBError extends ApplicationError
         } else {
             $this->title .= "other error";
             $this->message = $e;
-        }
+        }*/
+        $this->title = "Database Error";
+        $this->message = $exception->getMessage();
 
     }
 

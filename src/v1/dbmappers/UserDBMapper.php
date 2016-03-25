@@ -14,7 +14,7 @@ class UserDBMapper extends DBMapper
     {
         $response = null;
         try {
-            $this->queryDB(User::SQL_INSERT_STATEMENT, $user->toDBArray());
+            $this->queryDBWithAssociativeArray(User::SQL_INSERT_STATEMENT, $user->toDBArray());
             $response = $this->connection->lastInsertId();
         } catch(PDOException $e) {
             $response = new DBError($e);
@@ -22,10 +22,16 @@ class UserDBMapper extends DBMapper
         return $response;
     }
 
-    public function update($model)
+    public function update($user)
     {
-        // TODO: Implement update() method.
-        throw new Exception("Not implemented");
+        $response = null;
+        try {
+            $this->queryDBWithAssociativeArray(User::SQL_UPDATE_STATEMENT, $user->toDBArray());
+            $response = $this->connection->lastInsertId();
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
     public function getAll()

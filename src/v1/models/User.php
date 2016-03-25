@@ -4,13 +4,24 @@ class User
 {
     const MAX_LENGTH_NAME = 128;
     const REQUIRED_POST_FIELDS = ['name', 'email'];
-    const SQL_INSERT_STATEMENT = "INSERT INTO user VALUES (?,?,?,?,?);";
+    const REQUIRED_PUT_FIELDS = ['name', 'email'];
+    const SQL_INSERT_STATEMENT = "INSERT INTO user(name,profile_image,email) VALUES (:name,:profile_image,:email);";
+    const SQL_UPDATE_STATEMENT = "UPDATE user SET name=:name,profile_image=:profile_image,email=:email WHERE id = :id;";
     private
         $id,
         $name,
         $profile_image,
         $email,
         $password_hash;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
 
     public function __construct($id, $name, $email, $profile_image, $password_hash)
     {
@@ -32,13 +43,15 @@ class User
     }
     public function toDBArray()
     {
-        return array(
-            $this->id,
-            $this->name,
-            $this->profile_image,
-            $this->email,
-            $this->password_hash
+        $db_array = array(
+            ":name" => $this->name,
+            ":profile_image" => $this->profile_image,
+            ":email" => $this->email
         );
+        if($this->id){
+            $db_array[":id"] = $this->id;
+        }
+        return $db_array;
     }
 
     public function setName($name)
@@ -93,7 +106,7 @@ class User
     public static function fromJSON($json)
     {
         return new User(
-            null,
+            $json['id'],
             $json['name'],
             $json['email'],
             $json['profileImage'],
