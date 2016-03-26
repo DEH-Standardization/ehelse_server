@@ -37,7 +37,13 @@ abstract class DBMapper implements iDbMapper
         for ($i = 0; $i < count($columns); $i++) {
             $stmt->bindParam(($i+1), $columns[$i]);
         }
-        $stmt->execute();
+        try{
+
+            $stmt->execute();
+        }
+        catch(Exception $e){
+            print_r($e);
+        }
 
         return $stmt;
     }
