@@ -2,7 +2,7 @@
 
 require_once 'v1/iController.php';
 require_once 'v1/APIV1Controller.php';
-require_once 'v1/main/controllers/DescriptionController.php';
+require_once 'utils.php';
 
 class MainController implements iController{
     private $controller, $api_version, $path;

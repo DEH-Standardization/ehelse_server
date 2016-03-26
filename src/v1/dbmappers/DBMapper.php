@@ -38,8 +38,6 @@ abstract class DBMapper implements iDbMapper
             $stmt->bindParam(($i+1), $columns[$i]);
         }
         $stmt->execute();
-        //$stmt->errorInfo();
-
 
         return $stmt;
     }
