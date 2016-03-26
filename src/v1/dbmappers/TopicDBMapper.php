@@ -320,11 +320,7 @@ class TopicDbMapper extends DBMapper
             foreach($topics_raw as $topic_raw){
                 array_push($topics, Topic::fromDBArray($topic_raw));
             }
-            if (count($topics) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                $response = $topics;
-            }
+            $response = $topics;
         } catch(PDOException $e) {
             $response = new DBError($e);
         }

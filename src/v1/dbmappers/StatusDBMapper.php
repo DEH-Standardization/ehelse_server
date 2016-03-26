@@ -53,11 +53,7 @@ class StatusDBMapper extends DBMapper
                     $row['name'],
                     $row['description']));
             }
-            if (count($statuses) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                return $statuses;
-            }
+            $response = $statuses;
         } catch(PDOException $e) {
             $response = new DBError($e);
         }

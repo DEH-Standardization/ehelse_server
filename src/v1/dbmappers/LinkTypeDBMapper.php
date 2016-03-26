@@ -66,11 +66,8 @@ class LinkTypeDBMapper extends DBMapper
                     $row['name'],
                     $row['description']));
             }
-            if (count($link_types) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                return $link_types;
-            }
+            $response = $link_types;
+
         } catch(PDOException $e) {
             $response = new DBError($e);
         }

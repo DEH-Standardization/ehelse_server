@@ -45,11 +45,8 @@ class UserDBMapper extends DBMapper
             foreach($raw as $raw_item){
                 array_push($objects, User::fromDBArray($raw_item));
             }
-            if (count($objects) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                $response = $objects;
-            }
+            $response = $objects;
+
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
