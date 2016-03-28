@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../dbmappers/DBMapper.php';
 
 class UserDBMapper extends DBMapper
 {

@@ -18,7 +18,7 @@ class APIV1Controller implements iController
             $user = User::authenticate($email, $password);
             if($user) {
                 define("AUTHENTICATED", true);
-                $GLOBALS["CURRENT_USER"] = $user;
+                User::login($user);
             }
             else{
                 define("AUTHENTICATED", false);

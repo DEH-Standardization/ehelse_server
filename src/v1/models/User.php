@@ -17,6 +17,19 @@ class User
         $email,
         $password_hash;
 
+    public static function login($user)
+    {
+        $GLOBALS["CURRENT_USER"] = $user;
+    }
+
+    public static function byEmail($email)
+    {
+        $mapper = new UserDBMapper();
+        $db_array = $mapper->getByEmail($email);
+        $user = User::fromDBArray($db_array);
+        return $user;
+    }
+
     /**
      * @return mixed
      */
@@ -149,9 +162,7 @@ class User
     public static function authenticate($email, $password)
     {
         $response = null;
-        $mapper = new UserDBMapper();
-        $db_array = $mapper->getByEmail($email);
-        $user = User::fromDBArray($db_array);
+        $user = User::byEmail($email);
         if(password_verify($password, $user->getPasswordHash())){
             $response = $user;
         }

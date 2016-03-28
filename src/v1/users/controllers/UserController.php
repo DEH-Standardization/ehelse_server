@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../../dbmappers/UserDBMapper.php';
 require_once __DIR__ . '/../../errors/NotFoundError.php';
+require_once __DIR__ . '/../../errors/ErrorController.php';
 require_once __DIR__ . '/../../errors/AuthenticationError.php';
 require_once __DIR__ . '/../../errors/AuthorizationError.php';
 require_once __DIR__ . '/../../users/controllers/PasswordController.php';
@@ -34,7 +35,7 @@ class UserController extends ResponseController
             }
         }
 
-        if(!$GLOBALS['CURRENT_USER']){
+        if(!array_key_exists('CURRENT_USER', $GLOBALS)){
             $this->controller = new ErrorController(new AuthenticationError($this->method));
         }
     }

@@ -4,7 +4,8 @@ require_once 'ApplicationError.php';
 
 class NotFoundError extends ApplicationError
 {
-    protected $response_code = Response::STATUS_CODE_NOT_FOUND;
+    protected $response_code = Response::STATUS_CODE_NOT_FOUND,
+        $path = "Undefined";
 
     /**
      * Constructor for method not allowed errors.
@@ -13,6 +14,9 @@ class NotFoundError extends ApplicationError
     public function __construct()
     {
         $this->title = "Error: Not Found";
-        $this->message = "Resource {$_SERVER['PATH_INFO']} not found";
+        if(array_key_exists('PATH_INFO', $_SERVER)){
+            $this->path = $_SERVER['PATH_INFO'];
+        }
+        $this->message = "Resource <{$this->path}> not found";
     }
 }
