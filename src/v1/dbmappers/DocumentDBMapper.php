@@ -6,7 +6,7 @@ require_once __DIR__. "/../errors/DBError.php";
 
 class DocumentDBMapper extends DBMapper
 {
-    private $table_name = DBCommunication::DATABASE_NAME.'.document';
+    private $table_name = 'document';
 
     /**
      * Returns document from database based on model
@@ -25,6 +25,7 @@ class DocumentDBMapper extends DBMapper
      */
     public function getById($id)
     {
+        /*
         $response = null;
         $sql = "SELECT *
                 FROM $this->table_name WHERE id = ? and (id,timestamp) IN
@@ -54,6 +55,24 @@ class DocumentDBMapper extends DBMapper
             $response = new DBError($e);
         }
         return $response;
+        */
+
+        $response = null;
+        $sql = "SELECT *
+                FROM $this->table_name WHERE id = ? and (id,timestamp) IN
+                ( SELECT id, MAX(timestamp)
+                  FROM $this->table_name
+                GROUP BY id)";
+        try {
+            $result = $this->queryDB($sql, array($id));
+            $raw = $result->fetch();
+            if($raw){
+                $response = Document::fromDBArray($raw);
+            }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
     /**
@@ -62,6 +81,7 @@ class DocumentDBMapper extends DBMapper
      */
     public function getAll()
     {
+        /*
         $response = null;
         $documents = array();
         $sql = "SELECT *
@@ -92,6 +112,27 @@ class DocumentDBMapper extends DBMapper
             $response = new DBError($e);
         }
         return $response;
+        */
+
+        $response = null;
+        $sql = "SELECT *
+                FROM $this->table_name WHERE(id,timestamp) IN
+                ( SELECT id, MAX(timestamp)
+                  FROM $this->table_name
+                  GROUP BY id);";
+        try {
+            $result = $this->queryDB($sql, array());
+            $raw = $result->fetchAll();
+            $objects = [];
+            foreach($raw as $raw_item){
+                array_push($objects, Document::fromDBArray($raw_item));
+            }
+            $response = $objects;
+
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
     /**
@@ -101,6 +142,7 @@ class DocumentDBMapper extends DBMapper
      */
     public function add($document)
     {
+        /*
         $result = null;
         $sql = "INSERT INTO $this->table_name
                 VALUES (null, now(), ?, ?, ?, ?, ?, ?, ?);";
@@ -120,6 +162,15 @@ class DocumentDBMapper extends DBMapper
             $result = new DBError($e);  // Sets DBError
         }
         return $result;
+        */
+        $response = null;
+        try {
+            $this->queryDBWithAssociativeArray(Document::SQL_INSERT_STATEMENT, $document->toDBArray());
+            $response = $this->connection->lastInsertId();
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
     /**

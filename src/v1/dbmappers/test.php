@@ -1,11 +1,11 @@
 <?php
 
 
-require_once 'LinkCategoryDBMapper.php';
-require_once __DIR__.'/../models/LinkCategory.php';
+require_once 'DocumentDBMapper.php';
+require_once __DIR__.'/../models/Document.php';
 
 
-$m = new LinkCategoryDBMapper();
+$m = new DocumentDBMapper();
 
-$d = new LinkCategory(1,'test', 'test11');
-print_r($m->getAll());
+$d = new Document(1,null,'test','test',1,1,null,1,1,null,null);
+print_r($m->add($d));
