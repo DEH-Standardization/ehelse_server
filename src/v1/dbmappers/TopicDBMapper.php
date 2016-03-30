@@ -254,7 +254,7 @@ class TopicDbMapper extends DBMapper
     {
         $response = null;
         $sql = "SELECT *
-                FROM $dbName.topic WHERE(id,timestamp) IN
+                FROM topic WHERE(id,timestamp) IN
                 ( SELECT id, MAX(timestamp)
                   FROM topic
                   GROUP BY id);";

@@ -5,6 +5,7 @@ require_once 'utils.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: accept, authorization, content-type");
+header("Access-Control-Allow-Methods: PUT, DELETE, POST, GET, OPTIONS");
 
 $method = $_SERVER['REQUEST_METHOD'];
 $path = explode('/',$_SERVER['PATH_INFO']);
