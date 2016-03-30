@@ -32,7 +32,16 @@ class DocumentController extends ResponseController
 
     protected function getAll()
     {
-        // TODO: Implement getAll() method.
+        $mapper = new DocumentDBMapper();
+        $documents = $mapper->getAll();
+        $topics_array = [];
+        foreach($documents as $document){
+            array_push($topics_array, $document->toArray());
+        }
+
+        $json = json_encode(array( "topics" => $topics_array), JSON_PRETTY_PRINT);
+
+        return new Response($json);
     }
 
     protected function create()
