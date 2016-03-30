@@ -52,11 +52,8 @@ class MandatoryDBMapper extends DBMapper
                     $row['name'],
                     $row['description']));
             }
-            if (count($mandatories) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                return $mandatories;
-            }
+            $response = $mandatories;
+
         } catch(PDOException $e) {
             $response = new DBError($e);
         }

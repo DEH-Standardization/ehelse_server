@@ -16,12 +16,15 @@ class LoginController implements iController
         $response = null;
         if( empty($this->path) ){
             if($this->method == Response::REQUEST_METHOD_GET){
-                $response = new Response(
-                    json_encode(
-                        array(
-                            "authenticated" => AUTHENTICATED
-                        ),
-                        JSON_PRETTY_PRINT));
+                if($GLOBALS['CURRENT_USER']){
+                    $response = new Response(
+                        json_encode(
+                            $GLOBALS['CURRENT_USER']->toArray(),
+                            JSON_PRETTY_PRINT));
+                }
+                else{
+                    $response = new ErrorResponse(new AuthenticationError($this->method));
+                }
             }
             elseif($this->method == Response::REQUEST_METHOD_OPTIONS){
                 $response = new Response("{}");

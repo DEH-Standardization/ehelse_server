@@ -52,11 +52,8 @@ class ActionDBMapper extends DBMapper
                     $row['name'],
                     $row['description']));
             }
-            if (count($actions) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                return $actions;
-            }
+            $response = $actions;
+
         } catch(PDOException $e) {
             $response = new DBError($e);
         }

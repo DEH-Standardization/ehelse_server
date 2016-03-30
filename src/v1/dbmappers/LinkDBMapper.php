@@ -72,11 +72,8 @@ class LinkDBMapper extends DBMapper
                     $row['link_type_id'],
                     $row['document_version_id']));
             }
-            if (count($links) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                return $links;
-            }
+            $response =  $links;
+
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
