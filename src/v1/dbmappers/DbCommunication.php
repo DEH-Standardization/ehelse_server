@@ -4,6 +4,8 @@ require_once 'db_info.php';
 
 class DbCommunication
 {
+    const DATABASE_NAME = "ehelse_test";
+
     private $connection;
     private static $instance;
     private $server;
@@ -33,7 +35,6 @@ class DbCommunication
         $this->database_name = DB_NAME;
         $this->password = DB_PASSWORD;
         try {
-            $this->connection = new PDO("mysql:host={$this->server};dbname={$this->database_name};charset=utf8", $this->username, $this->password);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // set the PDO error mode to exception
         }
         catch(PDOException $e)
@@ -50,14 +51,6 @@ class DbCommunication
     public function getConnection()
     {
         return $this->connection;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDatabaseName()
-    {
-        return $this->database_name;
     }
 
     /**

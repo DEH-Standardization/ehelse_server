@@ -7,18 +7,29 @@ require_once __DIR__.'/../errors/DBError.php';
 
 class StatusDBMapper extends DBMapper
 {
+    private $table_name = DbCommunication::DATABASE_NAME.'.status';
 
+    /**
+     * Returns status from database based on model
+     * @param $id
+     * @return DBError|Status
+     */
     public function get($status)
     {
         $this->getById($status->getId());
     }
 
+    /**
+     * Returns status from database based on id
+     * @param $id
+     * @return DBError|Status
+     */
     public function getById($id)
     {
         $response = null;
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
+        $dbName = DbCommunication::DATABASE_NAME;
         $sql = "SELECT *
-                FROM $dbName.status
+                FROM $this->table_name
                 WHERE id = ?;";
         $parameters = array($id);
         try {
@@ -31,7 +42,7 @@ class StatusDBMapper extends DBMapper
                     $row['description']);
             } else {
                 $response = new DBError("Returned " . $result->rowCount() .
-                    " profiles, expected 1");
+                    ", expected 1");
             }
         } catch(PDOException $e) {
             $response = new DBError($e);
@@ -39,12 +50,16 @@ class StatusDBMapper extends DBMapper
         return $response;
     }
 
+    /**
+     * Returns all statuses
+     * @return array|DBError
+     */
     public function getAll()
     {
         $response = null;
         $statuses= array();
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "select * from $dbName.status";
+        $dbName = DbCommunication::DATABASE_NAME;
+        $sql = "SELECT * FROM $this->table_name;";
         try {
             $result = $this->queryDB($sql, null);
             foreach ($result as $row) {
@@ -60,11 +75,16 @@ class StatusDBMapper extends DBMapper
         return $response;
     }
 
+    /**
+     * Adds new status to database, returns id if success, error otherwise
+     * @param $status
+     * @return DBError|string
+     */
     public function add($status)
     {
         $response = null;
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "INSERT INTO $db_name.status
+        $db_name = DbCommunication::DATABASE_NAME;
+        $sql = "INSERT INTO $this->table_name
                 VALUES (null, ?, ?);";
         $parameters = array(
             $status->getName(),
@@ -78,14 +98,19 @@ class StatusDBMapper extends DBMapper
         return $response;
     }
 
+    /**
+     * Updates status in database
+     * @param $status
+     * @return DBError|string
+     */
     public function update($status)
     {
         if(!$this->isValidId($status->getId(), "status")) {
             return new DBError("Invalid id");
         }
         $response = null;
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "UPDATE $db_name.status
+        $db_name = DbCommunication::DATABASE_NAME;
+        $sql = "UPDATE $this->table_name
                 SET name = ?, description = ?
                 WHERE id = ?;";
         $parameters = array(
@@ -99,5 +124,15 @@ class StatusDBMapper extends DBMapper
             $response = new DBError($e);
         }
         return $response;
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function deleteById($id)
+    {
+        // TODO: Implement deleteById() method.
     }
 }
