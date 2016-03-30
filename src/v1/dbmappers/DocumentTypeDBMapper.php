@@ -1,5 +1,10 @@
 <?php
 
+require_once "DBMapper.php";
+require_once __DIR__. "/../models/DocumentType.php";
+require_once __DIR__. "/../errors/DBError.php";
+
+
 class DocumentTypeDBMapper extends DBMapper
 {
 
@@ -22,7 +27,7 @@ class DocumentTypeDBMapper extends DBMapper
             $result = $this->queryDB($sql, $parameters);
             if ($result->rowCount() === 1) {
                 $row = $result->fetch();
-                return new Status(
+                return new DocumentType(
                     $row['id'],
                     $row['name']);
             } else {
