@@ -53,23 +53,30 @@ class TopicController extends ResponseController
      */
     protected function create()
     {
-        $mapper = new TopicDbMapper();
-        $assoc = $this->body;
-        $topic = new Topic(
-            null,
-            null,
-            $assoc['title'],
-            $assoc['description'],
-            $assoc['sequence'],
-            $assoc['parent'],
-            $assoc['comment']);
-        $response = $mapper->add($topic);
+        $missing_fields = TopicController::validateJSONFormat($this->body, Topic::REQUIRED_POST_FIELDS);
+        if( !$missing_fields ){
+            $mapper = new TopicDbMapper();
+            $assoc = $this->body;
+            $topic = new Topic(
+                null,
+                null,
+                $assoc['title'],
+                $assoc['description'],
+                $assoc['sequence'],
+                $assoc['parent'],
+                $assoc['comment']);
+            $response = $mapper->add($topic);
 
-        if ($response instanceof DBError) {
-            return new ErrorResponse($response);
+            if ($response instanceof DBError) {
+                $response = new ErrorResponse($response);
+            }
+            $this->id = $response;
+            $response = $this->get();
         }
-        $this->id = $response;
-        return $this->get();
+        else{
+            $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
+        }
+        return $response;
     }
 
     /**
@@ -100,20 +107,9 @@ class TopicController extends ResponseController
         }
         $result['children'] = $children;
 
-        $topic_standards = $controller->getStandardsByTopicId($id);
-        $topic_profiles = $controller->getProfileByTopicId($id);
 
         $documents = array();
-        foreach ($topic_standards as $standard) {
-            $standard = $standard->toArray();
-            $standard['document'] = 'standard';
-            array_push($documents, $standard);
-        }
-        foreach ($topic_profiles as $profile) {
-            $profile = $profile->toArray();
-            $profile['document'] = 'profile';
-            array_push($documents, $profile);
-        }
+   
         usort($documents, function ($a, $b)
         {
             return $a['sequence'] - $b['sequence'];

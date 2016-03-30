@@ -42,6 +42,7 @@ abstract class DBMapper implements iDbMapper
             $stmt->execute();
         }
         catch(Exception $e){
+            echo "\n\nDBMapper failed!";
             print_r($e);
         }
 
