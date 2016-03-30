@@ -6,7 +6,8 @@ require_once 'iModel.php';
 class Document implements iModel
 {
     const REQUIRED_POST_FIELDS = ['title','description','status','sequence','documentType','topicId'];
-    private $id, $timestamp, $title, $description, $sequence, $topic_id, $comment, $status_id, $document_type_id;
+    private $id, $timestamp, $title, $description, $sequence, $topic_id, $comment, $status_id, $document_type_id,
+        $target_groups, $links;
 
     /**
      * Document constructor.
@@ -31,6 +32,8 @@ class Document implements iModel
         $this->setComment($comment);
         $this->status_id = $status_id;
         $this->document_type_id = $document_type_id;
+        $this->target_groups = [];
+        $this->links = [];
     }
 
     public function getId()
@@ -160,8 +163,10 @@ class Document implements iModel
             'sequence' => $this->sequence,
             'topicId' => $this->topic_id,
             'comment' => $this->comment,
-            'statusId' => $this->status_id,
-            'documentTypeId' => $this->document_type_id
+            'status' => $this->status_id,
+            'documentType' => $this->document_type_id,
+            'targetGroups' => $this->target_groups,
+            'links' => $this->links
         );
     }
 
