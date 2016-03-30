@@ -4,6 +4,9 @@ require_once  __DIR__ . '/../../responses/ResponseController.php';
 require_once __DIR__ . '/../../models/Document.php';
 require_once __DIR__ . '/../../errors/MalformedJSONFormatError.php';
 require_once __DIR__ . '/../../responses/ErrorResponse.php';
+require_once __DIR__ . '/../../dbmappers/DocumentDBMapper.php';
+require_once __DIR__ . '/../../dbmappers/StatusDBMapper.php';
+require_once __DIR__ . '/../../dbmappers/DocumentTypeDBMapper.php';
 
 class DocumentController extends ResponseController
 {
@@ -32,7 +35,21 @@ class DocumentController extends ResponseController
 
     protected function getAll()
     {
-        // TODO: Implement getAll() method.
+        $document_mapper = new DocumentDBMapper();
+        $status_mapper = new StatusDBMapper();
+        $document_type_mapper = new DocumentTypeDBMapper();
+        $document_models = $document_mapper->getAll();
+        $topics_array = [];
+        foreach($document_models as $document_models){
+            $document = $document_models->toArray();
+            $document['status'] = $status_mapper->getById($document['status'])->getName();
+            $document['documentType'] = $document_type_mapper->getById($document['documentType'])->getName();
+            array_push($topics_array, $document);
+
+        }
+        $json = json_encode(array( "topics" => $topics_array), JSON_PRETTY_PRINT);
+
+        return new Response($json);
     }
 
     protected function create()
@@ -48,7 +65,19 @@ class DocumentController extends ResponseController
 
     protected function get()
     {
-        // TODO: Implement get() method.
+        $document_mapper = new DocumentDBMapper();
+        $status_mapper = new StatusDBMapper();
+        $document_type_mapper = new DocumentTypeDBMapper();
+        $document_model = $document_mapper->getById($this->id);
+
+        $document = $document_model->toArray();
+        $document['status'] = $status_mapper->getById($document['status'])->getName();
+        $document['documentType'] = $document_type_mapper->getById($document['documentType'])->getName();
+
+        $json = json_encode($document, JSON_PRETTY_PRINT);
+
+        return new Response($json);
+
     }
 
     protected function update()
