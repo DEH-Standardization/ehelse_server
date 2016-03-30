@@ -253,11 +253,10 @@ class TopicDbMapper extends DBMapper
     public function getAll()
     {
         $response = null;
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
         $sql = "SELECT *
                 FROM $dbName.topic WHERE(id,timestamp) IN
                 ( SELECT id, MAX(timestamp)
-                  FROM $dbName.topic
+                  FROM topic
                   GROUP BY id);";
         try {
             $result = $this->queryDB($sql, array());
