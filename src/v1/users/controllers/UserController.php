@@ -35,7 +35,7 @@ class UserController extends ResponseController
             }
         }
 
-        if(!array_key_exists('CURRENT_USER', $GLOBALS)){
+        if(!array_key_exists('CURRENT_USER', $GLOBALS) && $this->method != Response::REQUEST_METHOD_OPTIONS){
             $this->controller = new ErrorController(new AuthenticationError($this->method));
         }
     }
