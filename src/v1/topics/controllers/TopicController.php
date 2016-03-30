@@ -63,7 +63,7 @@ class TopicController extends ResponseController
                 $assoc['title'],
                 $assoc['description'],
                 $assoc['sequence'],
-                $assoc['parent'],
+                $assoc['parentId'],
                 $assoc['comment']);
             $response = $mapper->add($topic);
 
@@ -109,7 +109,7 @@ class TopicController extends ResponseController
 
 
         $documents = array();
-   
+
         usort($documents, function ($a, $b)
         {
             return $a['sequence'] - $b['sequence'];

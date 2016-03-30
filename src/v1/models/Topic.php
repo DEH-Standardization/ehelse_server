@@ -8,7 +8,7 @@ require_once __DIR__ . '/iModel.php';
 class Topic implements iModel
 {
     private $id, $timestamp, $title, $description, $sequence, $parent_id, $comment, $children, $documents;
-    const REQUIRED_POST_FIELDS = ['title', 'description','sequence','parent_id','comment'];
+    const REQUIRED_POST_FIELDS = ['title', 'description','sequence','parentId','comment'];
     /**
      * Topic constructor.
      * @param $id
