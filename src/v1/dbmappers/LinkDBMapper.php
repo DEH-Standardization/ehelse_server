@@ -26,34 +26,6 @@ class LinkDBMapper extends DBMapper
      */
     public function getById($id)
     {
-        /*
-        $response = null;
-        $sql = "SELECT *
-                FROM $this->table_name
-                WHERE id = ?;";
-        $parameters = array($id);
-        try {
-            $result = $this->queryDB($sql, $parameters);
-            if ($result->rowCount() === 1) {
-                $row = $result->fetch();
-                return new Link(
-                    $row['id'],
-                    $row['text'],
-                    $row['description'],
-                    $row['url'],
-                    $row['link_category_id'],
-                    $row['document_id'],
-                    $row['document_timestamp'],
-                    $row['link_document_id']);
-            } else {
-                $response = new DBError("Returned " . $result->rowCount() .
-                    ", expected 1");
-            }
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-        */
         $response = null;
         $sql = $sql = "SELECT * FROM $this->table_name WHERE id = ?;";
         try {
@@ -124,9 +96,9 @@ class LinkDBMapper extends DBMapper
         }
         return $response;
     }
-
-    public function getLinksByDocumentVersionIdAndLinkTypeId($link_type_id, $document_version_id)
+    public function getLinksByDocumentIdAndLinkCategoryId($link_category_id, $document_id)
     {
+        /*
         $response = null;
         $sql = "select *
                 from $this->table_name
@@ -148,6 +120,23 @@ class LinkDBMapper extends DBMapper
             } else {
                 return $links;
             }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+        */
+        try {
+            $result = $this->queryDBWithAssociativeArray(Link::SQL_GET_LINKS_BY_DOCUMENT_ID_AND_LINK_CATEGORY_ID, array(
+                ':link_category_id' => $link_category_id,
+                ':document_id' => $document_id
+            ));
+            $raw = $result->fetchAll();
+            $objects = [];
+            foreach($raw as $raw_item){
+                array_push($objects, Link::fromDBArray($raw_item));
+            }
+            $response = $objects;
+
         } catch(PDOException $e) {
             $response = new DBError($e);
         }

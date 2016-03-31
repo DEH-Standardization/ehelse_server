@@ -16,7 +16,6 @@ class Link implements iModel
         :document_id,
         :document_timestamp,
         :link_document_id);";
-
     const SQL_UPDATE_STATEMENT = "
       UPDATE link SET
       text=:text,
@@ -27,6 +26,8 @@ class Link implements iModel
       document_timestamp=:document_timestamp,
       link_document_id=:link_document_id
       WHERE id=:id";
+    const SQL_GET_LINKS_BY_DOCUMENT_ID_AND_LINK_CATEGORY_ID =
+        "SELECT * FROM link WHERE link_category_id=:link_category_id AND document_id=:document_id;";
     private
         $id,
         $text,
