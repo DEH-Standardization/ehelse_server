@@ -7,7 +7,7 @@ require_once __DIR__.'/../errors/DBError.php';
 
 class LinkCategoryDBMapper extends DBMapper
 {
-    private $table_name = DbCommunication::DATABASE_NAME.'.link_category';
+    private $table_name = 'link_category';
 
     /**
      * Returns link type
@@ -26,6 +26,7 @@ class LinkCategoryDBMapper extends DBMapper
      */
     public function getById($id)
     {
+        /*
         $response = null;
         $sql = "SELECT *
                 FROM $this->table_name
@@ -47,6 +48,19 @@ class LinkCategoryDBMapper extends DBMapper
             $response = new DBError($e);
         }
         return $response;
+        */
+        $response = null;
+        $sql = $sql = "SELECT * FROM $this->table_name WHERE id = ?;";
+        try {
+            $result = $this->queryDB($sql, array($id));
+            $raw = $result->fetch();
+            if($raw){
+                $response =  LinkCategory::fromDBArray($raw);
+            }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
     /**
@@ -55,6 +69,7 @@ class LinkCategoryDBMapper extends DBMapper
      */
     public function getAll()
     {
+        /*
         $response = null;
         $link_types= array();
         $sql = "SELECT * FROM $this->table_name";
@@ -67,6 +82,22 @@ class LinkCategoryDBMapper extends DBMapper
                     $row['description']));
             }
             $response = $link_types;
+
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+        */
+        $response = null;
+        $sql = "SELECT * FROM $this->table_name";
+        try {
+            $result = $this->queryDB($sql, array());
+            $raw = $result->fetchAll();
+            $objects = [];
+            foreach($raw as $raw_item){
+                array_push($objects, LinkCategory::fromDBArray($raw_item));
+            }
+            $response = $objects;
 
         } catch(PDOException $e) {
             $response = new DBError($e);
