@@ -5,9 +5,9 @@ require_once 'iModel.php';
 
 class TargetGroup implements iModel
 {
-    const REQUIRED_POST_FIELDS = ['name', 'description', 'parentId'];
-    private $id, $name, $description, $parent_id;
-const SQL_INSERT_STATEMENT = "INSERT INTO target_group(name, description, parent_id) VALUES (:name, :description, :parent_id);";
+    const REQUIRED_POST_FIELDS = ['name', 'description', 'parentId', 'abbreviation'];
+    private $id, $name, $description, $parent_id, $abbreviation;
+const SQL_INSERT_STATEMENT = "INSERT INTO target_group(name, description, parent_id, abbreviation) VALUES (:name, :description, :parent_id, :abbreviation);";
 
 
     /**
@@ -16,13 +16,15 @@ const SQL_INSERT_STATEMENT = "INSERT INTO target_group(name, description, parent
      * @param $name
      * @param $description
      * @param $parent_id
+     * @param $abbreviation
      */
-    public function __construct($id, $name, $description, $parent_id)
+    public function __construct($id, $name, $description, $parent_id, $abbreviation)
     {
         $this->id = $id;
         $this->setName($name);
         $this->setDescription($description);
         $this->parent_id = $parent_id;
+        $this->abbreviation = $abbreviation;
     }
 
     public static function fromJSON($json)
@@ -31,7 +33,8 @@ const SQL_INSERT_STATEMENT = "INSERT INTO target_group(name, description, parent
             $json['id'],
             $json['name'],
             $json['description'],
-            $json['parentId']
+            $json['parentId'],
+            $json['abbreviation']
         );
     }
 
@@ -41,7 +44,8 @@ const SQL_INSERT_STATEMENT = "INSERT INTO target_group(name, description, parent
             $row['id'],
             $row['name'],
             $row['description'],
-            $row['parent_id']);
+            $row['parent_id'],
+            $row['abbreviation']);
     }
 
     public function toDBArray($row)
@@ -49,7 +53,8 @@ const SQL_INSERT_STATEMENT = "INSERT INTO target_group(name, description, parent
         $db_array = array(
             ":name" => $this->name,
             ":description" => $this->description,
-            ":parent_id" => $this->parent_id
+            ":parent_id" => $this->parent_id,
+            ":abbreviation" => $this->abbreviation
         );
         if($this->id){
             $db_array[":id"] = $this->id;
@@ -112,7 +117,8 @@ const SQL_INSERT_STATEMENT = "INSERT INTO target_group(name, description, parent
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'parentId' => $this->parent_id);
+            'parentId' => $this->parent_id,
+            'abbreviation' => $this->abbreviation);
     }
 
     /**
