@@ -31,8 +31,16 @@ class TargetGroupController extends ResponseController
 
     protected function getAll()
     {
-        // TODO: Implement getAll() method.
-        throw new Exception("Not implemented error");
+        $mapper = new TargetGroupDBMapper();
+        $target_groups = $mapper->getAll();
+        $target_groups_array = [];
+        foreach($target_groups as $target_group){
+            array_push($target_groups_array, $target_group->toArray());
+        }
+
+        $json = json_encode(array( "targetGroups" => $target_groups_array), JSON_PRETTY_PRINT);
+
+        return new Response($json);
     }
 
     protected function create()

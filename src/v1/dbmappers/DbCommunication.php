@@ -54,6 +54,11 @@ class DbCommunication
         return $this->connection;
     }
 
+    public function getDatabaseName()
+    {
+        return $this->database_name;
+    }
+
     /**
      * Overrides the Clone function to prevent multiple instances of DbCommunication
      */
