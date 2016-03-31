@@ -24,10 +24,7 @@ class TargetGroupDBMapper extends DBMapper
             $result = $this->queryDB($sql, $parameters);
             if ($result->rowCount() === 1) {
                 $row = $result->fetch();
-                return new TargetGroup(
-                    $row['id'],
-                    $row['name'],
-                    $row['description']);
+                return TargetGroup::fromDBArray($row);
             } else {
                 $response = new DBError("Returned " . $result->rowCount() .
                     " profiles, expected 1");
@@ -47,10 +44,7 @@ class TargetGroupDBMapper extends DBMapper
         try {
             $result = $this->queryDB($sql, null);
             foreach ($result as $row) {
-                array_push($target_groups, new TargetGroup(
-                    $row['id'],
-                    $row['name'],
-                    $row['description']));
+                array_push($target_groups, TargetGroup::fromDBArray($row));
             }
             $response = $target_groups;
 
@@ -64,13 +58,9 @@ class TargetGroupDBMapper extends DBMapper
     {
         $response = null;
         $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "INSERT INTO $db_name.target_group
-                VALUES (null, ?, ?);";
-        $parameters = array(
-            $target_group->getName(),
-            $target_group->getDescription());
+
         try {
-            $this->queryDB($sql, $parameters);
+            $this->queryDBWithAssociativeArray(TargetGroup::SQL_INSERT_STATEMENT, $target_group->toDBArray());
             $response = $this->connection->lastInsertId();
         } catch(PDOException $e) {
             $response = new DBError($e);

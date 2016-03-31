@@ -45,14 +45,41 @@ class TargetGroupController extends ResponseController
 
     protected function create()
     {
-        // TODO: Implement create() method.
-        throw new Exception("Not implemented error");
+        $missing_fields = TargetGroupController::validateJSONFormat($this->body, TargetGroup::REQUIRED_POST_FIELDS);
+        if( !$missing_fields ){
+            $mapper = new TargetGroupDBMapper();
+            $target_group = TargetGroup::fromJSON($this->body);
+            $db_response = $mapper->add($target_group);
+
+            if ($db_response instanceof DBError) {
+                $response = new ErrorResponse($db_response);
+            }
+            elseif(is_numeric($db_response)){
+                $this->id = $db_response;
+                $response = $this->get();
+            }
+            else{
+                //todo not sure how best to handle this
+                throw new Exception("Not implemented error");
+            }
+        }
+        else{
+            $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
+        }
+        return $response;
     }
 
     protected function get()
     {
-        // TODO: Implement get() method.
-        throw new Exception("Not implemented error");
+        $mapper = new TargetGroupDBMapper();
+        $target_group = $mapper->getById($this->id);
+        if($target_group){
+            $response = new Response(json_encode($target_group->toArray(), JSON_PRETTY_PRINT));
+        }
+        else{
+            $response = new ErrorResponse(new NotFoundError());
+        }
+        return $response;
     }
 
     protected function update()
