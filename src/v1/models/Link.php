@@ -5,7 +5,37 @@ require_once 'iModel.php';
 
 class Link implements iModel
 {
-    private $id, $text, $description, $url, $link_category_id, $document_id, $document_timestamp, $link_document_id;
+    const REQUIRED_POST_FIELDS = ['text','url','link_category_id','document_id','document_timestamp'];
+    const SQL_INSERT_STATEMENT = "
+        INSERT INTO link(id,text,description,url,link_category_id,document_id,document_timestamp,link_document_id)
+        VALUES (null,
+        :text,
+        :description,
+        :url,
+        :link_category_id,
+        :document_id,
+        :document_timestamp,
+        :link_document_id);";
+
+    const SQL_UPDATE_STATEMENT = "
+      UPDATE link SET
+      text=:text,
+      description=:description,
+      url=:url,
+      link_category_id=:link_category_id,
+      document_id=:document_id,
+      document_timestamp=:document_timestamp,
+      link_document_id=:link_document_id
+      WHERE id=:id";
+    private
+        $id,
+        $text,
+        $description,
+        $url,
+        $link_category_id,
+        $document_id,
+        $document_timestamp,
+        $link_document_id;
 
     /**
      * Link constructor.
@@ -155,16 +185,46 @@ class Link implements iModel
 
     public static function fromDBArray($db_array)
     {
-        // TODO: Implement fromDBArray() method.
+        return new Link(
+            $db_array['id'],
+            $db_array['text'],
+            $db_array['description'],
+            $db_array['url'],
+            $db_array['link_category_id'],
+            $db_array['document_id'],
+            $db_array['document_timestamp'],
+            $db_array['link_document_id']
+        );
     }
 
     public static function fromJSON($json)
     {
-        // TODO: Implement fromJSON() method.
+        return new Link(
+            $json['id'],
+            $json['text'],
+            $json['description'],
+            $json['url'],
+            $json['link_categoryId'],
+            $json['documentId'],
+            $json['documentTimestamp'],
+            $json['linkDocumentId']
+        );
     }
 
     public function toDBArray()
     {
-        // TODO: Implement toDBArray() method.
+        $db_array = array(
+            ':text' => $this->text,
+            ':description' => $this->description,
+            ':url' => $this->url,
+            ':link_category_id' => $this->link_category_id,
+            ':document_id' => $this->document_id,
+            ':document_timestamp' => $this->document_timestamp,
+            ':link_document_id' => $this->link_document_id
+        );
+        if($this->id){
+            $db_array[":id"] = $this->id;
+        }
+        return $db_array;
     }
 }

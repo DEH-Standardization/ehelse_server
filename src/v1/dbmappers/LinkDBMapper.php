@@ -7,7 +7,7 @@ require_once __DIR__.'/../errors/DBError.php';
 
 class LinkDBMapper extends DBMapper
 {
-    private $table_name = DBCommunication::DATABASE_NAME.'.link';
+    private $table_name = 'link';
 
     /**
      * Returns link
@@ -26,6 +26,7 @@ class LinkDBMapper extends DBMapper
      */
     public function getById($id)
     {
+        /*
         $response = null;
         $sql = "SELECT *
                 FROM $this->table_name
@@ -52,6 +53,19 @@ class LinkDBMapper extends DBMapper
             $response = new DBError($e);
         }
         return $response;
+        */
+        $response = null;
+        $sql = $sql = "SELECT * FROM $this->table_name WHERE id = ?;";
+        try {
+            $result = $this->queryDB($sql, array($id));
+            $raw = $result->fetch();
+            if($raw){
+                $response =  Link::fromDBArray($raw);
+            }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
     /**
@@ -60,6 +74,7 @@ class LinkDBMapper extends DBMapper
      */
     public function getAll()
     {
+        /*
         $response = null;
         $links= array();
         $sql = "SELECT * FROM $this->table_name;";
@@ -82,6 +97,22 @@ class LinkDBMapper extends DBMapper
             $response = new DBError($e);
         }
         return $response;
+        */
+        $response = null;
+        $sql = "SELECT * FROM $this->table_name";
+        try {
+            $result = $this->queryDB($sql, array());
+            $raw = $result->fetchAll();
+            $objects = [];
+            foreach($raw as $raw_item){
+                array_push($objects, Link::fromDBArray($raw_item));
+            }
+            $response = $objects;
+
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
     /**
@@ -91,7 +122,7 @@ class LinkDBMapper extends DBMapper
      */
     public function add($link)
     {
-        $link = new Link(null,null,null,null,null,null,null,null);
+        /*
         $response = null;
         $sql = "INSERT INTO $this->table_name
                 VALUES (null, ?, ?, ?, ?, ?, ?, ?);";
@@ -110,6 +141,15 @@ class LinkDBMapper extends DBMapper
             $response = new DBError($e);
         }
         return $response;
+        */
+        $response = null;
+        try {
+            $this->queryDBWithAssociativeArray(Link::SQL_INSERT_STATEMENT, $link->toDBArray());
+            $response = $this->connection->lastInsertId();
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
     /**
@@ -119,7 +159,8 @@ class LinkDBMapper extends DBMapper
      */
     public function update($link)
     {
-        if(!$this->isValidId($link->getId(), "link")) {
+        /*
+        if(!$this->isValidId($link->getId(), 'link')) {
             return new DBError("Invalid id");
         }
         $response = null;
@@ -139,6 +180,15 @@ class LinkDBMapper extends DBMapper
         try {
             $this->queryDB($sql, $parameters);
             return $link->getId();
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+        */
+        $response = null;
+        try {
+            $this->queryDBWithAssociativeArray($link::SQL_UPDATE_STATEMENT, $link->toDBArray());
+            $response = $link->getId();
         } catch(PDOException $e) {
             $response = new DBError($e);
         }

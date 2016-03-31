@@ -1,12 +1,12 @@
 <?php
 
 
-require_once 'LinkCategoryDBMapper.php';
-require_once __DIR__.'/../models/LinkCategory.php';
+require_once 'LinkDBMapper.php';
+require_once __DIR__.'/../models/Link.php';
 
 
-$m = new LinkCategoryDBMapper();
+$m = new LinkDBMapper();
 
-$d = new LinkCategory(7,'test', 'sdffd');
+$d = new Link(12,'test','test','url',1,10,'2016-03-30 04:31:06',null);
     //new Document(1,null,'test','test',1,1,null,1,1,null,null);
-echo($m->update($d));
+print_r($m->update($d));
