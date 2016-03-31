@@ -98,33 +98,6 @@ class LinkDBMapper extends DBMapper
     }
     public function getLinksByDocumentIdAndLinkCategoryId($link_category_id, $document_id)
     {
-        /*
-        $response = null;
-        $sql = "select *
-                from $this->table_name
-                where link_type_id = ? and document_version_id = ?";
-        $links = array();
-        try {
-            $result = $this->queryDB($sql, array($link_type_id, $document_version_id));
-            foreach ($result as $row) {
-                array_push($links, new Link(
-                    $row['id'],
-                    $row['text'],
-                    $row['description'],
-                    $row['url'],
-                    $row['link_type_id'],
-                    $row['document_version_id']));
-            }
-            if (count($links) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                return $links;
-            }
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-        */
         try {
             $result = $this->queryDBWithAssociativeArray(Link::SQL_GET_LINKS_BY_DOCUMENT_ID_AND_LINK_CATEGORY_ID, array(
                 ':link_category_id' => $link_category_id,
@@ -143,23 +116,19 @@ class LinkDBMapper extends DBMapper
         return $response;
     }
 
-    public function getLinkTypeIdByDocumentVersionId($id)
+    public function getLinkCategoriesIdByDocumentId($document_id)
     {
-        $response = null;
-        $sql = "SELECT distinct link_type_id
-                FROM $this->table_name
-                WHERE document_version_id = ?;";
-        $links_type_ids = array();
         try {
-            $result = $this->queryDB($sql, array($id));
-            foreach ($result as $row) {
-                array_push($links_type_ids, $row['link_type_id']);
+            $result = $this->queryDBWithAssociativeArray(Link::GET_LINK_CATEGORIES_BY_DOCUMENT_ID, array(
+                ':document_id' => $document_id
+            ));
+            $raw = $result->fetchAll();
+            $objects = [];
+            foreach($raw as $raw_item){
+                array_push($objects, $raw_item);
             }
-            if (count($links_type_ids) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                return $links_type_ids;
-            }
+            $response = $objects;
+
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
