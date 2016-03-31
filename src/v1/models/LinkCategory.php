@@ -5,6 +5,9 @@ require_once 'iModel.php';
 
 class LinkCategory implements iModel
 {
+    const REQUIRED_POST_FIELDS = ['name'];
+    const SQL_INSERT_STATEMENT = "INSERT INTO link_category(id,name,description) VALUES (null,:name,:description);";
+    const SQL_UPDATE_STATEMENT = "UPDATE link_category SET name=:name,description=:description WHERE id=:id";
     private $id, $name, $description;
 
     /**
@@ -82,4 +85,33 @@ class LinkCategory implements iModel
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
     }
 
+    public static function fromDBArray($db_array)
+    {
+        return new LinkCategory(
+            $db_array['id'],
+            $db_array['name'],
+            $db_array['description']
+        );
+    }
+
+    public static function fromJSON($json)
+    {
+        return new LinkCategory(
+            $json['id'],
+            $json['name'],
+            $json['description']
+        );
+    }
+
+    public function toDBArray()
+    {
+        $db_array = array(
+            ':name' => $this->name,
+            ':description' => $this->description
+        );
+        if($this->id){
+            $db_array[":id"] = $this->id;
+        }
+        return $db_array;
+    }
 }

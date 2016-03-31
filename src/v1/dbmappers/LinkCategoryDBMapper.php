@@ -7,7 +7,7 @@ require_once __DIR__.'/../errors/DBError.php';
 
 class LinkCategoryDBMapper extends DBMapper
 {
-    private $table_name = DbCommunication::DATABASE_NAME.'.link_category';
+    private $table_name = 'link_category';
 
     /**
      * Returns link type
@@ -27,21 +27,12 @@ class LinkCategoryDBMapper extends DBMapper
     public function getById($id)
     {
         $response = null;
-        $sql = "SELECT *
-                FROM $this->table_name
-                WHERE id = ?;";
-        $parameters = array($id);
+        $sql = $sql = "SELECT * FROM $this->table_name WHERE id = ?;";
         try {
-            $result = $this->queryDB($sql, $parameters);
-            if ($result->rowCount() === 1) {
-                $row = $result->fetch();
-                return new LinkCategory(
-                    $row['id'],
-                    $row['name'],
-                    $row['description']);
-            } else {
-                $response = new DBError("Returned " . $result->rowCount() .
-                    ", expected 1");
+            $result = $this->queryDB($sql, array($id));
+            $raw = $result->fetch();
+            if($raw){
+                $response =  LinkCategory::fromDBArray($raw);
             }
         } catch(PDOException $e) {
             $response = new DBError($e);
@@ -56,17 +47,15 @@ class LinkCategoryDBMapper extends DBMapper
     public function getAll()
     {
         $response = null;
-        $link_types= array();
         $sql = "SELECT * FROM $this->table_name";
         try {
-            $result = $this->queryDB($sql, null);
-            foreach ($result as $row) {
-                array_push($link_types, new LinkCategory(
-                    $row['id'],
-                    $row['name'],
-                    $row['description']));
+            $result = $this->queryDB($sql, array());
+            $raw = $result->fetchAll();
+            $objects = [];
+            foreach($raw as $raw_item){
+                array_push($objects, LinkCategory::fromDBArray($raw_item));
             }
-            $response = $link_types;
+            $response = $objects;
 
         } catch(PDOException $e) {
             $response = new DBError($e);
@@ -82,13 +71,8 @@ class LinkCategoryDBMapper extends DBMapper
     public function add($link_type)
     {
         $response = null;
-        $sql = "INSERT INTO $this->table_name
-                VALUES (null, ?, ?);";
-        $parameters = array(
-            $link_type->getName(),
-            $link_type->getDescription());
         try {
-            $this->queryDB($sql, $parameters);
+            $this->queryDBWithAssociativeArray(LinkCategory::SQL_INSERT_STATEMENT, $link_type->toDBArray());
             $response = $this->connection->lastInsertId();
         } catch(PDOException $e) {
             $response = new DBError($e);
@@ -103,20 +87,10 @@ class LinkCategoryDBMapper extends DBMapper
      */
     public function update($link_category)
     {
-        if(!$this->isValidId($link_category->getId(), $this->table_name)) {
-            return new DBError("Invalid id");
-        }
         $response = null;
-        $sql = "UPDATE $this->table_name
-                SET name = ?, description = ?
-                WHERE id = ?;";
-        $parameters = array(
-            $link_category->getName(),
-            $link_category->getDescription(),
-            $link_category->getId());
         try {
-            $this->queryDB($sql, $parameters);
-            return $link_category->getId();
+            $this->queryDBWithAssociativeArray($link_category::SQL_UPDATE_STATEMENT, $link_category->toDBArray());
+            $response = $link_category->getId();
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
