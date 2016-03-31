@@ -47,7 +47,7 @@ class DocumentController extends ResponseController
             array_push($topics_array, $document);
 
         }
-        $json = json_encode(array( "topics" => $topics_array), JSON_PRETTY_PRINT);
+        $json = json_encode(array( "documents" => $topics_array), JSON_PRETTY_PRINT);
 
         return new Response($json);
     }
