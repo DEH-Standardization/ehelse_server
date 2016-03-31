@@ -7,6 +7,7 @@ require_once __DIR__ . '/../../responses/ErrorResponse.php';
 require_once __DIR__ . '/../../dbmappers/DocumentDBMapper.php';
 require_once __DIR__ . '/../../dbmappers/StatusDBMapper.php';
 require_once __DIR__ . '/../../dbmappers/DocumentTypeDBMapper.php';
+require_once __DIR__ . '/../../responses/Response.php';
 
 class DocumentController extends ResponseController
 {
