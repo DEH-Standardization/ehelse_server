@@ -3,12 +3,12 @@
 require_once 'ModelValidation.php';
 require_once 'iModel.php';
 
-class Action implements iModel
+class LinkCategory implements iModel
 {
     private $id, $name, $description;
 
     /**
-     * Status constructor.
+     * LinkCategory constructor.
      * @param $id
      * @param $name
      * @param $description
@@ -16,8 +16,8 @@ class Action implements iModel
     public function __construct($id, $name, $description)
     {
         $this->id = $id;
-        $this->setName($name);
-        $this->setDescription($description);
+        $this->name = $name;
+        $this->description = $description;
     }
 
     public function getId()
@@ -64,12 +64,9 @@ class Action implements iModel
         }
     }
 
-    /**
-     * Returns associated array representation of model
-     * @return array
-     */
     public function toArray()
     {
+        // TODO: check with API description
         return array(
             'id' => $this->id,
             'name' => $this->name,
@@ -84,4 +81,5 @@ class Action implements iModel
     {
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
     }
+
 }

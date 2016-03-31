@@ -66,11 +66,8 @@ class DocumentVersionDBMapper extends DBMapper
                     $row['description'],
                     $row['status_id']));
             }
-            if (count($document_versions) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                return $document_versions;
-            }
+            $response = $document_versions;
+
         } catch(PDOException $e) {
             $response = new DBError($e);
         }

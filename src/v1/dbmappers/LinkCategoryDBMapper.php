@@ -2,35 +2,46 @@
 
 require_once 'DBMapper.php';
 require_once 'DbCommunication.php';
-require_once __DIR__.'/../models/Mandatory.php';
+require_once __DIR__.'/../models/LinkCategory.php';
 require_once __DIR__.'/../errors/DBError.php';
 
-class MandatoryDBMapper extends DBMapper
+class LinkCategoryDBMapper extends DBMapper
 {
-    public function get($mandatory)
+    private $table_name = DbCommunication::DATABASE_NAME.'.link_category';
+
+    /**
+     * Returns link type
+     * @param $id
+     * @return DBError|Link
+     */
+    public function get($link_category)
     {
-        $this->getById($mandatory->getId());
+        $this->getById($link_category->getId());
     }
 
+    /**
+     * Returns link type based on id
+     * @param $id
+     * @return DBError|Link
+     */
     public function getById($id)
     {
         $response = null;
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
         $sql = "SELECT *
-                FROM $dbName.mandatory
+                FROM $this->table_name
                 WHERE id = ?;";
         $parameters = array($id);
         try {
             $result = $this->queryDB($sql, $parameters);
             if ($result->rowCount() === 1) {
                 $row = $result->fetch();
-                return new Mandatory(
+                return new LinkCategory(
                     $row['id'],
                     $row['name'],
                     $row['description']);
             } else {
                 $response = new DBError("Returned " . $result->rowCount() .
-                    " profiles, expected 1");
+                    ", expected 1");
             }
         } catch(PDOException $e) {
             $response = new DBError($e);
@@ -38,21 +49,24 @@ class MandatoryDBMapper extends DBMapper
         return $response;
     }
 
+    /**
+     * Returns all link categories
+     * @return array|DBError
+     */
     public function getAll()
     {
         $response = null;
-        $mandatories= array();
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "select * from $dbName.mandatory";
+        $link_types= array();
+        $sql = "SELECT * FROM $this->table_name";
         try {
             $result = $this->queryDB($sql, null);
             foreach ($result as $row) {
-                array_push($mandatories, new Mandatory(
+                array_push($link_types, new LinkCategory(
                     $row['id'],
                     $row['name'],
                     $row['description']));
             }
-            $response = $mandatories;
+            $response = $link_types;
 
         } catch(PDOException $e) {
             $response = new DBError($e);
@@ -60,15 +74,19 @@ class MandatoryDBMapper extends DBMapper
         return $response;
     }
 
-    public function add($mandatory)
+    /**
+     * Adds element to database, and returns id of inserted element
+     * @param $document_version
+     * @return DBError|string
+     */
+    public function add($link_type)
     {
         $response = null;
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "INSERT INTO $db_name.mandatory
+        $sql = "INSERT INTO $this->table_name
                 VALUES (null, ?, ?);";
         $parameters = array(
-            $mandatory->getName(),
-            $mandatory->getDescription());
+            $link_type->getName(),
+            $link_type->getDescription());
         try {
             $this->queryDB($sql, $parameters);
             $response = $this->connection->lastInsertId();
@@ -78,27 +96,41 @@ class MandatoryDBMapper extends DBMapper
         return $response;
     }
 
-    public function update($mandatory)
+    /**
+     * Updates element in database, and returns id of updated element
+     * @param $document_version
+     * @return DBError|string
+     */
+    public function update($link_category)
     {
-        if(!$this->isValidId($mandatory->getId(), "mandatory")) {
+        if(!$this->isValidId($link_category->getId(), $this->table_name)) {
             return new DBError("Invalid id");
         }
         $response = null;
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "UPDATE $db_name.mandatory
+        $sql = "UPDATE $this->table_name
                 SET name = ?, description = ?
                 WHERE id = ?;";
         $parameters = array(
-            $mandatory->getName(),
-            $mandatory->getDescription(),
-            $mandatory->getId());
+            $link_category->getName(),
+            $link_category->getDescription(),
+            $link_category->getId());
         try {
             $this->queryDB($sql, $parameters);
-            return $mandatory->getId();
+            return $link_category->getId();
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
     }
 
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function deleteById($id)
+    {
+        // TODO: Implement deleteById() method.
+    }
 }

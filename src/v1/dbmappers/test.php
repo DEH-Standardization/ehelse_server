@@ -1,26 +1,11 @@
 <?php
 
 
-require_once 'LinkDBMapper.php';
-require_once __DIR__.'/../models/Link.php';
+require_once 'DocumentDBMapper.php';
+require_once __DIR__.'/../models/Document.php';
 
 
-$tm = new LinkDBMapper();
+$m = new DocumentDBMapper();
 
-
-print_r($tm->getLinkTypeIdByDocumentVersionId(3));
-//($tm->update(new Link(3, 'link 3', 'link 3', 'google.com',1,2)));
-echo "_____________- <br><br>";
-
-//print_r($tm->getAll());
-
-echo "_____________- <br><br>";
-
-/*
-
-print_r($tm->update(new DocumentVersion(3, 'three', 1)));
-
-echo "_____________- <br><br>";
-
-print_r($tm->getAll());
-*/
+$d = new Document(1,null,'test','test',1,1,null,1,1,null,null);
+echo($m->add($d));

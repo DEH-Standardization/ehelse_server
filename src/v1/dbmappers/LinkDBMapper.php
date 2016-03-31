@@ -7,6 +7,8 @@ require_once __DIR__.'/../errors/DBError.php';
 
 class LinkDBMapper extends DBMapper
 {
+    private $table_name = DBCommunication::DATABASE_NAME.'.link';
+
     /**
      * Returns link
      * @param $id
@@ -25,9 +27,8 @@ class LinkDBMapper extends DBMapper
     public function getById($id)
     {
         $response = null;
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
         $sql = "SELECT *
-                FROM $dbName.link
+                FROM $this->table_name
                 WHERE id = ?;";
         $parameters = array($id);
         try {
@@ -39,8 +40,10 @@ class LinkDBMapper extends DBMapper
                     $row['text'],
                     $row['description'],
                     $row['url'],
-                    $row['link_type_id'],
-                    $row['document_version_id']);
+                    $row['link_category_id'],
+                    $row['document_id'],
+                    $row['document_timestamp'],
+                    $row['link_document_id']);
             } else {
                 $response = new DBError("Returned " . $result->rowCount() .
                     ", expected 1");
@@ -59,24 +62,22 @@ class LinkDBMapper extends DBMapper
     {
         $response = null;
         $links= array();
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "select * from $dbName.link";
+        $sql = "SELECT * FROM $this->table_name;";
         try {
             $result = $this->queryDB($sql, null);
             foreach ($result as $row) {
-                array_push($links, new Link(
+                array_push($links, Link(
                     $row['id'],
                     $row['text'],
                     $row['description'],
                     $row['url'],
-                    $row['link_type_id'],
-                    $row['document_version_id']));
+                    $row['link_category_id'],
+                    $row['document_id'],
+                    $row['document_timestamp'],
+                    $row['link_document_id']));
             }
-            if (count($links) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                return $links;
-            }
+            $response =  $links;
+
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
@@ -90,16 +91,18 @@ class LinkDBMapper extends DBMapper
      */
     public function add($link)
     {
+        $link = new Link(null,null,null,null,null,null,null,null);
         $response = null;
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "INSERT INTO $db_name.link
-                VALUES (null, ?, ?, ?, ?, ?);";
+        $sql = "INSERT INTO $this->table_name
+                VALUES (null, ?, ?, ?, ?, ?, ?, ?);";
         $parameters = array(
             $link->getText(),
             $link->getDescription(),
             $link->getUrl(),
-            $link->getLinkTypeId(),
-            $link->getDocumentVersionId());
+            $link->getLinkCategoryId(),
+            $link->getDocumentId(),
+            $link->getDocumentTimestamp(),
+            $link->getLinkDocumentId());
         try {
             $this->queryDB($sql, $parameters);
             $response = $this->connection->lastInsertId();
@@ -120,16 +123,18 @@ class LinkDBMapper extends DBMapper
             return new DBError("Invalid id");
         }
         $response = null;
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "UPDATE $db_name.link
-                SET text = ?, description = ?, url = ?, link_type_id = ?, document_version_id = ?
+        $sql = "UPDATE $this->table_name
+                SET text = ?, description = ?, url = ?, link_category_id = ?, document_id = ?,
+                  document_timestamp = ?, link_document_id = ?
                 WHERE id = ?;";
         $parameters = array(
             $link->getText(),
             $link->getDescription(),
             $link->getUrl(),
-            $link->getLinkTypeId(),
-            $link->getDocumentVersionId(),
+            $link->getLinkCategoryId(),
+            $link->getDocumentId(),
+            $link->getDocumentTimestamp(),
+            $link->getLinkDocumentId(),
             $link->getId());
         try {
             $this->queryDB($sql, $parameters);
@@ -143,9 +148,8 @@ class LinkDBMapper extends DBMapper
     public function getLinksByDocumentVersionIdAndLinkTypeId($link_type_id, $document_version_id)
     {
         $response = null;
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
         $sql = "select *
-                from $dbName.link
+                from $this->table_name
                 where link_type_id = ? and document_version_id = ?";
         $links = array();
         try {
@@ -173,9 +177,8 @@ class LinkDBMapper extends DBMapper
     public function getLinkTypeIdByDocumentVersionId($id)
     {
         $response = null;
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
         $sql = "SELECT distinct link_type_id
-                FROM $dbName.link
+                FROM $this->table_name
                 WHERE document_version_id = ?;";
         $links_type_ids = array();
         try {
@@ -195,4 +198,13 @@ class LinkDBMapper extends DBMapper
     }
 
 
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function deleteById($id)
+    {
+        // TODO: Implement deleteById() method.
+    }
 }

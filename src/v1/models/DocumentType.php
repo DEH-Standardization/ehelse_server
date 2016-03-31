@@ -1,22 +1,21 @@
 <?php
+
 require_once __DIR__ . '/ModelValidation.php';
 require_once __DIR__ . '/iModel.php';
 
-class Status implements iModel
+class DocumentType implements iModel
 {
-    private $id, $name, $description;
+    private $id, $name;
 
     /**
-     * Status constructor.
+     * DocumentType constructor.
      * @param $id
      * @param $name
-     * @param $description
      */
-    public function __construct($id, $name, $description)
+    public function __construct($id, $name)
     {
         $this->id = $id;
-        $this->setName($name);
-        $this->setDescription($description);
+        $this->name = $name;
     }
 
     public function getId()
@@ -31,7 +30,7 @@ class Status implements iModel
 
     /**
      * Sets name if it is valid, return the n first characters if it is too long
-     * @param $description
+     * @param $name
      */
     public function setName($name)
     {
@@ -44,36 +43,16 @@ class Status implements iModel
         }
     }
 
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
     /**
-     * Sets description if it is valid, return the n first characters if it is too long
-     * @param $description
-     */
-    public function setDescription($description)
-    {
-        if (strlen($description) > ModelValidation::DESCRIPTION_MAX_LENGTH) {
-            $this->description = ModelValidation::getValidDescription($description);
-            echo "Description is too long, set to: " . $this->description;
-        }
-        else {
-            $this->description = $description;
-        }
-    }
-
-    /**
-     * Returns associated array
+     * Returns associated array representation of model
      * @return array
      */
     public function toArray()
     {
+        // TODO: check with API
         return array(
             'id' => $this->id,
-            'name' => $this->name,
-            'description' => $this->description);
+            'name' => $this->name);
     }
 
     /**

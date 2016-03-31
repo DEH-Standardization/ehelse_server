@@ -52,11 +52,8 @@ class TargetGroupDBMapper extends DBMapper
                     $row['name'],
                     $row['description']));
             }
-            if (count($target_groups) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                return $target_groups;
-            }
+            $response = $target_groups;
+
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
