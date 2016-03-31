@@ -146,7 +146,7 @@ class DocumentDBMapper extends DBMapper
 
         $result = null;
         $sql = "INSERT INTO $this->table_name
-                VALUES (null, now(), ?, ?, ?, ?, ?, ?, ?);";
+                VALUES (null, now(), ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         $parameters = array(
             $document->getTitle(),
             $document->getDescription(),
@@ -154,7 +154,9 @@ class DocumentDBMapper extends DBMapper
             $document->getTopicId(),
             $document->getComment(),
             $document->getStatusId(),
-            $document->getDocumentTypeId());
+            $document->getDocumentTypeId(),
+            $document->getNextDocumentId(),
+            $document->getPrevDocumentId());
         try {
             if($this->queryDB($sql, $parameters)) {
                 $result = $this->connection->lastInsertId();    // Sets id of the updated standard version
