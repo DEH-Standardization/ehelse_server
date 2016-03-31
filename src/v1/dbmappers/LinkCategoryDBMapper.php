@@ -112,6 +112,7 @@ class LinkCategoryDBMapper extends DBMapper
      */
     public function add($link_type)
     {
+        /*
         $response = null;
         $sql = "INSERT INTO $this->table_name
                 VALUES (null, ?, ?);";
@@ -120,6 +121,15 @@ class LinkCategoryDBMapper extends DBMapper
             $link_type->getDescription());
         try {
             $this->queryDB($sql, $parameters);
+            $response = $this->connection->lastInsertId();
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+        */
+        $response = null;
+        try {
+            $this->queryDBWithAssociativeArray(LinkCategory::SQL_INSERT_STATEMENT, $link_type->toDBArray());
             $response = $this->connection->lastInsertId();
         } catch(PDOException $e) {
             $response = new DBError($e);
@@ -134,6 +144,7 @@ class LinkCategoryDBMapper extends DBMapper
      */
     public function update($link_category)
     {
+        /*
         if(!$this->isValidId($link_category->getId(), $this->table_name)) {
             return new DBError("Invalid id");
         }
@@ -148,6 +159,15 @@ class LinkCategoryDBMapper extends DBMapper
         try {
             $this->queryDB($sql, $parameters);
             return $link_category->getId();
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+        */
+        $response = null;
+        try {
+            $this->queryDBWithAssociativeArray($link_category::SQL_UPDATE_STATEMENT, $link_category->toDBArray());
+            $response = $link_category->getId();
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
