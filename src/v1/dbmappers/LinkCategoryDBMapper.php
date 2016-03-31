@@ -26,29 +26,6 @@ class LinkCategoryDBMapper extends DBMapper
      */
     public function getById($id)
     {
-        /*
-        $response = null;
-        $sql = "SELECT *
-                FROM $this->table_name
-                WHERE id = ?;";
-        $parameters = array($id);
-        try {
-            $result = $this->queryDB($sql, $parameters);
-            if ($result->rowCount() === 1) {
-                $row = $result->fetch();
-                return new LinkCategory(
-                    $row['id'],
-                    $row['name'],
-                    $row['description']);
-            } else {
-                $response = new DBError("Returned " . $result->rowCount() .
-                    ", expected 1");
-            }
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-        */
         $response = null;
         $sql = $sql = "SELECT * FROM $this->table_name WHERE id = ?;";
         try {
@@ -69,25 +46,6 @@ class LinkCategoryDBMapper extends DBMapper
      */
     public function getAll()
     {
-        /*
-        $response = null;
-        $link_types= array();
-        $sql = "SELECT * FROM $this->table_name";
-        try {
-            $result = $this->queryDB($sql, null);
-            foreach ($result as $row) {
-                array_push($link_types, new LinkCategory(
-                    $row['id'],
-                    $row['name'],
-                    $row['description']));
-            }
-            $response = $link_types;
-
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-        */
         $response = null;
         $sql = "SELECT * FROM $this->table_name";
         try {
@@ -112,21 +70,6 @@ class LinkCategoryDBMapper extends DBMapper
      */
     public function add($link_type)
     {
-        /*
-        $response = null;
-        $sql = "INSERT INTO $this->table_name
-                VALUES (null, ?, ?);";
-        $parameters = array(
-            $link_type->getName(),
-            $link_type->getDescription());
-        try {
-            $this->queryDB($sql, $parameters);
-            $response = $this->connection->lastInsertId();
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-        */
         $response = null;
         try {
             $this->queryDBWithAssociativeArray(LinkCategory::SQL_INSERT_STATEMENT, $link_type->toDBArray());
@@ -144,26 +87,6 @@ class LinkCategoryDBMapper extends DBMapper
      */
     public function update($link_category)
     {
-        /*
-        if(!$this->isValidId($link_category->getId(), $this->table_name)) {
-            return new DBError("Invalid id");
-        }
-        $response = null;
-        $sql = "UPDATE $this->table_name
-                SET name = ?, description = ?
-                WHERE id = ?;";
-        $parameters = array(
-            $link_category->getName(),
-            $link_category->getDescription(),
-            $link_category->getId());
-        try {
-            $this->queryDB($sql, $parameters);
-            return $link_category->getId();
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-        */
         $response = null;
         try {
             $this->queryDBWithAssociativeArray($link_category::SQL_UPDATE_STATEMENT, $link_category->toDBArray());
