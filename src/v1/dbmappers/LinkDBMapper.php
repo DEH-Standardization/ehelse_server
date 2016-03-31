@@ -74,30 +74,6 @@ class LinkDBMapper extends DBMapper
      */
     public function getAll()
     {
-        /*
-        $response = null;
-        $links= array();
-        $sql = "SELECT * FROM $this->table_name;";
-        try {
-            $result = $this->queryDB($sql, null);
-            foreach ($result as $row) {
-                array_push($links, Link(
-                    $row['id'],
-                    $row['text'],
-                    $row['description'],
-                    $row['url'],
-                    $row['link_category_id'],
-                    $row['document_id'],
-                    $row['document_timestamp'],
-                    $row['link_document_id']));
-            }
-            $response =  $links;
-
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-        */
         $response = null;
         $sql = "SELECT * FROM $this->table_name";
         try {
@@ -122,26 +98,6 @@ class LinkDBMapper extends DBMapper
      */
     public function add($link)
     {
-        /*
-        $response = null;
-        $sql = "INSERT INTO $this->table_name
-                VALUES (null, ?, ?, ?, ?, ?, ?, ?);";
-        $parameters = array(
-            $link->getText(),
-            $link->getDescription(),
-            $link->getUrl(),
-            $link->getLinkCategoryId(),
-            $link->getDocumentId(),
-            $link->getDocumentTimestamp(),
-            $link->getLinkDocumentId());
-        try {
-            $this->queryDB($sql, $parameters);
-            $response = $this->connection->lastInsertId();
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-        */
         $response = null;
         try {
             $this->queryDBWithAssociativeArray(Link::SQL_INSERT_STATEMENT, $link->toDBArray());
@@ -159,32 +115,6 @@ class LinkDBMapper extends DBMapper
      */
     public function update($link)
     {
-        /*
-        if(!$this->isValidId($link->getId(), 'link')) {
-            return new DBError("Invalid id");
-        }
-        $response = null;
-        $sql = "UPDATE $this->table_name
-                SET text = ?, description = ?, url = ?, link_category_id = ?, document_id = ?,
-                  document_timestamp = ?, link_document_id = ?
-                WHERE id = ?;";
-        $parameters = array(
-            $link->getText(),
-            $link->getDescription(),
-            $link->getUrl(),
-            $link->getLinkCategoryId(),
-            $link->getDocumentId(),
-            $link->getDocumentTimestamp(),
-            $link->getLinkDocumentId(),
-            $link->getId());
-        try {
-            $this->queryDB($sql, $parameters);
-            return $link->getId();
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-        */
         $response = null;
         try {
             $this->queryDBWithAssociativeArray($link::SQL_UPDATE_STATEMENT, $link->toDBArray());
