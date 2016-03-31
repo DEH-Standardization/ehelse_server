@@ -8,7 +8,6 @@ class LinkCategory implements iModel
     const REQUIRED_POST_FIELDS = ['name'];
     const SQL_INSERT_STATEMENT = "INSERT INTO link_category(id,name,description) VALUES (null,:name,:description);";
     const SQL_UPDATE_STATEMENT = "UPDATE link_category SET name=:name,description=:description WHERE id=:id";
-//"UPDATE user SET name=:name,profile_image=:profile_image,email=:email WHERE id = :id;";
     private $id, $name, $description;
 
     /**
