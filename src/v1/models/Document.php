@@ -2,14 +2,33 @@
 
 require_once 'ModelValidation.php';
 require_once 'iModel.php';
+require_once 'TargetGroup.php';
+require_once 'Link.php';
 
 class Document implements iModel
 {
     const REQUIRED_POST_FIELDS = ['title','description','status','sequence','documentType','topicId'];
-    private $id, $timestamp, $title, $description, $sequence, $topic_id, $comment, $status_id, $document_type_id,
-        $target_groups, $links;
+    const SQL_INSERT_STATEMENT = "INSERT INTO document(title,description,status_id,sequence,document_type_id,topic_id,
+                                  comment,next_document_id,prev_document_id)
+                                  VALUES (:title,:description,:status_id,:sequence,:document_type_id,:topicId,
+                                  :comment,:next_document_id,:prev_document_id);";
+    private
+        $id,
+        $timestamp,
+        $title,
+        $description,
+        $sequence,
+        $topic_id,
+        $comment,
+        $status_id,
+        $document_type_id,
+        $next_document_id,
+        $prev_document_id,
+        $target_groups,
+        $links;
 
     /**
+     * Document constructor.
      * Document constructor.
      * @param $id
      * @param $timestamp
@@ -20,8 +39,12 @@ class Document implements iModel
      * @param $comment
      * @param $status_id
      * @param $document_type_id
+     * @param $next_document_id
+     * @param $prev_document_id
      */
-    public function __construct($id, $timestamp, $title, $description, $sequence, $topic_id, $comment, $status_id, $document_type_id)
+    public function __construct($id, $timestamp, $title, $description, $sequence,
+                                $topic_id, $comment, $status_id, $document_type_id,
+                                $next_document_id, $prev_document_id)
     {
         $this->id = $id;
         $this->timestamp = $timestamp;
@@ -32,6 +55,8 @@ class Document implements iModel
         $this->setComment($comment);
         $this->status_id = $status_id;
         $this->document_type_id = $document_type_id;
+        $this->next_document_id = $next_document_id;
+        $this->prev_document_id = $prev_document_id;
         $this->target_groups = [];
         $this->links = [];
     }
@@ -148,6 +173,27 @@ class Document implements iModel
         $this->document_type_id = $document_type_id;
     }
 
+    public function getNextDocumentId()
+    {
+        return $this->next_document_id;
+    }
+
+    public function setNextDocumentId($next_document_id)
+    {
+        $this->next_document_id = $next_document_id;
+    }
+
+    public function getPrevDocumentId()
+    {
+        return $this->prev_document_id;
+    }
+
+    public function setPrevDocumentId($prev_document_id)
+    {
+        $this->prev_document_id = $prev_document_id;
+    }
+
+
     /**
      * Returns associated array representation of model
      * @return array
@@ -177,5 +223,46 @@ class Document implements iModel
     public function toJSON()
     {
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+    }
+
+    public static function fromDBArray($db_array)
+    {
+        return new Document(
+            $db_array['id'],
+            $db_array['timestamp'],
+            $db_array['title'],
+            $db_array['description'],
+            $db_array['sequence'],
+            $db_array['topic_id'],
+            $db_array['comment'],
+            $db_array['status_id'],
+            $db_array['document_type_id'],
+            $db_array['next_document_id'],
+            $db_array['prev_document_id']
+        );
+    }
+
+    public static function fromJSON($json)
+    {
+        // TODO: Implement fromJSON() method.
+    }
+
+    public function toDBArray()
+    {
+        $db_array = array(
+            ":title" => $this->title,
+            ":description" => $this->description,
+            ":status_id" => $this->status_id,
+            ":sequence" => $this->sequence,
+            ":document_type_id" => $this->document_type_id,
+            ":topic_id" => $this->topic_id,
+            ":comment" => $this->comment,
+            ":next_document_id" => $this->next_document_id,
+            ":prev_document_id" => $this->prev_document_id
+        );
+        if($this->id){
+            $db_array[":id"] = $this->id;
+        }
+        return $db_array;
     }
 }

@@ -205,4 +205,13 @@ class Topic implements iModel
         array_push($this->documents, $document);
     }
 
+    public static function fromJSON($json)
+    {
+        // TODO: Implement fromJSON() method.
+    }
+
+    public function toDBArray()
+    {
+        // TODO: Implement toDBArray() method.
+    }
 }

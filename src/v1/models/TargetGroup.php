@@ -86,4 +86,18 @@ class TargetGroup implements iModel
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
     }
 
+    public static function fromDBArray($db_array)
+    {
+        // TODO: Implement fromDBArray() method.
+    }
+
+    public static function fromJSON($json)
+    {
+        // TODO: Implement fromJSON() method.
+    }
+
+    public function toDBArray()
+    {
+        // TODO: Implement toDBArray() method.
+    }
 }
