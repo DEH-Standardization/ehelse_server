@@ -8,10 +8,10 @@ require_once 'Link.php';
 class Document implements iModel
 {
     const REQUIRED_POST_FIELDS = ['title','description','status','sequence','documentType','topicId'];
-    const SQL_INSERT_STATEMENT = "INSERT INTO document(title,description,status,sequence,documentType,topicId,
-                                  comment,status_id,document_type_id,next_document_id,prev_document_id)
-                                  VALUES (:title,:description,:status,:sequence,:documentType,:topicId,
-                                  :comment,:status_id,:document_type_id,:next_document_id,:prev_document_id);";
+    const SQL_INSERT_STATEMENT = "INSERT INTO document(title,description,status_id,sequence,document_type_id,topic_id,
+                                  comment,next_document_id,prev_document_id)
+                                  VALUES (:title,:description,:status_id,:sequence,:document_type_id,:topicId,
+                                  :comment,:next_document_id,:prev_document_id);";
     private
         $id,
         $timestamp,
@@ -252,13 +252,13 @@ class Document implements iModel
         $db_array = array(
             ":title" => $this->title,
             ":description" => $this->description,
+            ":status_id" => $this->status_id,
             ":sequence" => $this->sequence,
+            ":document_type_id" => $this->document_type_id,
             ":topic_id" => $this->topic_id,
             ":comment" => $this->comment,
-            ":status_id" => $this->status_id,
-            ":document_type_id" => $this->document_type_id,
             ":next_document_id" => $this->next_document_id,
-            ":prev_document_id" => $this->prev_document_id,
+            ":prev_document_id" => $this->prev_document_id
         );
         if($this->id){
             $db_array[":id"] = $this->id;

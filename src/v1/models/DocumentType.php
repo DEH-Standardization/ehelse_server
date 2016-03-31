@@ -73,4 +73,9 @@ class DocumentType implements iModel
     {
         // TODO: Implement fromJSON() method.
     }
+
+    public function toDBArray()
+    {
+        // TODO: Implement toDBArray() method.
+    }
 }

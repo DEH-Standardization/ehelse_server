@@ -57,6 +57,7 @@ class DocumentDBMapper extends DBMapper
         return $response;
         */
 
+
         $response = null;
         $sql = "SELECT *
                 FROM $this->table_name WHERE id = ? and (id,timestamp) IN
@@ -142,7 +143,7 @@ class DocumentDBMapper extends DBMapper
      */
     public function add($document)
     {
-        /*
+
         $result = null;
         $sql = "INSERT INTO $this->table_name
                 VALUES (null, now(), ?, ?, ?, ?, ?, ?, ?);";
@@ -162,7 +163,7 @@ class DocumentDBMapper extends DBMapper
             $result = new DBError($e);  // Sets DBError
         }
         return $result;
-        */
+        /*
         $response = null;
         try {
             $this->queryDBWithAssociativeArray(Document::SQL_INSERT_STATEMENT, $document->toDBArray());
@@ -171,6 +172,8 @@ class DocumentDBMapper extends DBMapper
             $response = new DBError($e);
         }
         return $response;
+        */
+
     }
 
     /**
