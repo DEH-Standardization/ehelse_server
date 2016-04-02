@@ -84,8 +84,27 @@ class TargetGroupController extends ResponseController
 
     protected function update()
     {
-        // TODO: Implement update() method.
-        throw new Exception("Not implemented error");
+        $missing_fields = TargetGroupController::validateJSONFormat($this->body, TargetGroup::REQUIRED_PUT_FIELDS);
+
+        if( !$missing_fields ){
+            $mapper = new TargetGroupDBMapper();
+            $json = $this->body;
+            $json["id"] = $this->id;
+            $target_group=TargetGroup::fromJSON($json);
+            $db_response = $mapper->update($target_group);
+
+            if ($db_response instanceof DBError) {
+                $response =  new ErrorResponse($db_response);
+            }
+            else{
+                $response=$this->get();
+            }
+        }
+        else{
+            $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
+        }
+        return $response;
+
     }
 
     protected function delete()

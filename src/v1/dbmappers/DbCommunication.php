@@ -4,7 +4,6 @@ require_once 'db_info.php';
 
 class DbCommunication
 {
-    const DATABASE_NAME = "ehelse_test";
 
     private $connection;
     private static $instance;

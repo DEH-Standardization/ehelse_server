@@ -15,19 +15,13 @@ class TargetGroupDBMapper extends DBMapper
     public function getById($id)
     {
         $response = null;
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "SELECT *
-                FROM $dbName.target_group
-                WHERE id = ?;";
+        $sql = "SELECT * FROM target_group WHERE id = ?;";
         $parameters = array($id);
         try {
             $result = $this->queryDB($sql, $parameters);
-            if ($result->rowCount() === 1) {
-                $row = $result->fetch();
-                return TargetGroup::fromDBArray($row);
-            } else {
-                $response = new DBError("Returned " . $result->rowCount() .
-                    " profiles, expected 1");
+            $row = $result->fetch();
+            if ($row) {
+                $response = TargetGroup::fromDBArray($row);
             }
         } catch(PDOException $e) {
             $response = new DBError($e);
@@ -70,20 +64,10 @@ class TargetGroupDBMapper extends DBMapper
 
     public function update($target_group)
     {
-        if(!$this->isValidId($target_group->getId(), "target_group")) {
-            return new DBError("Invalid id");
-        }
         $response = null;
         $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "UPDATE $db_name.target_group
-                SET name = ?, description = ?
-                WHERE id = ?;";
-        $parameters = array(
-            $target_group->getName(),
-            $target_group->getDescription(),
-            $target_group->getId());
         try {
-            $this->queryDB($sql, $parameters);
+            $this->queryDBWithAssociativeArray(TargetGroup::SQL_UPDATE_STATEMENT, $target_group->toDBArray());
             return $target_group->getId();
         } catch(PDOException $e) {
             $response = new DBError($e);
