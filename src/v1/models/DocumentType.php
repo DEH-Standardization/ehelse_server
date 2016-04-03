@@ -5,8 +5,10 @@ require_once __DIR__ . '/iModel.php';
 
 class DocumentType implements iModel
 {
-    const SQL_INSERT_STATEMENT = "INSERT INTO user(name) VALUES (:name);";
-    const SQL_UPDATE_STATEMENT = "UPDATE user SET name=:name WHERE id = :id;";
+    const REQUIRED_POST_FIELDS = ['name'];
+    const REQUIRED_PUT_FIELDS = ['name'];
+    const SQL_INSERT_STATEMENT = "INSERT INTO document_type(name) VALUES (:name);";
+    const SQL_UPDATE_STATEMENT = "UPDATE document_type SET name=:name WHERE id = :id;";
 
 
     private $id, $name;
@@ -53,7 +55,6 @@ class DocumentType implements iModel
      */
     public function toArray()
     {
-        // TODO: check with API
         return array(
             'id' => $this->id,
             'name' => $this->name);

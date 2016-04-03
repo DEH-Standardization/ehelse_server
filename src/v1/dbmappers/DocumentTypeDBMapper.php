@@ -69,7 +69,7 @@ class DocumentTypeDBMapper extends DBMapper
         $response = null;
         try {
             $this->queryDBWithAssociativeArray(DocumentType::SQL_UPDATE_STATEMENT, $document_type->toDBArray());
-            $response = $this->connection->lastInsertId();
+            $response = $document_type->getId();
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
