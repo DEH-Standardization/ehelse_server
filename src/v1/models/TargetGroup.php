@@ -50,7 +50,7 @@ class TargetGroup implements iModel
             $row['abbreviation']);
     }
 
-    public function toDBArray($row)
+    public function toDBArray()
     {
         $db_array = array(
             ":name" => $this->name,

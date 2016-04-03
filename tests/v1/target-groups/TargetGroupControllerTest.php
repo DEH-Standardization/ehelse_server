@@ -10,15 +10,14 @@ require_once __DIR__ . "/../../../src/v1/errors/AuthorizationError.php";
 
 class TargetGroupControllerTest extends EHelseDatabaseTestCase
 {
+
     public function test_get_all_topics_on_empty_table_returns_empty_array()
     {
         $this->mySetup(__DIR__ . "/empty_target_group_table.xml");
         $controller = new TargetGroupController([], Response::REQUEST_METHOD_GET,array());
         $response = $controller->getResponse();
 
-        self::assertTrue(get_class($response) == Response::class);
-        self::assertTrue($response->getResponseCode() == Response::STATUS_CODE_OK);
-        self::assertTrue($this->isValidJSONTargetGroupList($response->getBody()));
+        self::assertIsValidResponse($response, Response::STATUS_CODE_OK, "TargetGroupControllerTest::isValidTargetGroupListJSON");
     }
 
     public function test_get_topic_on_empty_table_returns_not_found_error()
@@ -27,71 +26,57 @@ class TargetGroupControllerTest extends EHelseDatabaseTestCase
         $controller = new TargetGroupController(["1"], Response::REQUEST_METHOD_GET,array());
         $response = $controller->getResponse();
 
-        self::assertTrue(get_class($response) == ErrorResponse::class);
-        self::assertTrue($response->getResponseCode() == Response::STATUS_CODE_NOT_FOUND);
-        self::assertTrue($this->validateJSONErrorResponse($response->getBody()));
+        self::assertIsValidErrorResponse($response, Response::STATUS_CODE_NOT_FOUND);
     }
 
-    protected function isValidJSONTargetGroupList($body)
+    public function test_get_topic_returns_topic()
+    {
+        $this->mySetup(__DIR__ . "/basic_target_group_table.xml");
+        $controller = new TargetGroupController(["1"], Response::REQUEST_METHOD_GET,array());
+        $response = $controller->getResponse();
+
+        $topic_data = array(
+            'id' => 1,
+            'name' => 'Apotek',
+            'description' => 'desc',
+            'abbreviation' => 'A',
+            'parentId' => null);
+
+        self::assertIsValidResponse($response, Response::STATUS_CODE_OK, "TargetGroupControllerTest::isValidTargetGroupJSON");
+        self::assertIsCorrectResponseData($response->getBody(), $topic_data);
+    }
+
+    public function test_put_topic_updates_topic()
+    {
+        $this->mySetup(__DIR__ . "/basic_target_group_table.xml");
+        $topic_data = array(
+            'id' => 1,
+            'name' => 'Apotek2',
+            'description' => 'desc2',
+            'abbreviation' => 'B',
+            'parentId' => 2);
+
+        $controller = new TargetGroupController(["1"], Response::REQUEST_METHOD_PUT, $topic_data);
+        $response = $controller->getResponse();
+
+        self::assertIsValidResponse($response, Response::STATUS_CODE_OK, "TargetGroupControllerTest::isValidTargetGroupJSON");
+        self::assertIsCorrectResponseData($response->getBody(), $topic_data);
+    }
+
+
+    protected function isValidTargetGroupListJSON($body)
     {
         $json =  json_decode($body, true);
-        $valid = true;
-        try{
-            $target_groups = $json['targetGroups'];
-            if(is_array($target_groups)){
-                foreach( $target_groups as $target_group){
-                    if( !$this->validateJSONTargetGroup($target_group)){
-                        $valid = false;
-                        break;
-                    }
-                }
-            }
-            else{
-                $valid = false;
-            }
-        }
-        catch(Exception $e){
-            $valid = false;
-        }
-
-        return $valid;
+        return self::isValidJSONList($json, "targetGroups", "TargetGroupControllerTest::isValidTargetGroupListJSON");
     }
 
-    private function validateJSONTopic($topic)
+    protected function isValidTargetGroupJSON($body)
     {
-        if(is_string($topic)){
-            $topic = json_decode($topic, true);
-        }
-        $valid = true;
-        try{
-            $topic['id'];
-            $topic['timestamp'];
-            $topic['title'];
-            $topic['description'];
-            $topic['parent'];
-            $topic['isInCatalog'];
-            $topic['sequence'];
-            $topic['children'];
-            $topic['documents'];
-        }
-        catch(Exception $e){
-            $valid = false;
-        }
-        return $valid;
+        $json = json_decode($body, true);
+        return self::isValidJSON($json,['id', 'name', 'description', 'parentId', 'abbreviation']);
     }
 
-    protected function validateJSONErrorResponse($error)
-    {
-        $json =  json_decode($error, true);
-        $valid = true;
-        try{
-            $json['title'];
-            $json['message'];
-        }
-        catch(Exception $e){
-            $valid = false;
-        }
-        return $valid;
-    }
+
+
 
 }
