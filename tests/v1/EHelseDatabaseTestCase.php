@@ -5,6 +5,7 @@ class EHelseDatabaseTestCase extends PHPUnit_Extensions_Database_TestCase
 {
 // only instantiate pdo once for test clean-up/fixture load
     static private $pdo = null;
+    protected $databaseTester;
 
     // only instantiate PHPUnit_Extensions_Database_DB_IDatabaseConnection once per test
     private $conn = null;
@@ -23,13 +24,26 @@ class EHelseDatabaseTestCase extends PHPUnit_Extensions_Database_TestCase
     }
     private $db;
 
-    protected function setUp(){
-        parent::setUp();
-        $this->db = null;
+    protected function mySetup($dataSet){
+        PHPUnit_Framework_TestCase::SetUp();
+
+        $this->databaseTester = NULL;
+
+        $this->getDatabaseTester()->setSetUpOperation(
+            $this->getSetUpOperation()
+        );
+
+        $this->getDatabaseTester()->setDataSet(
+            $this->createFlatXmlDataSet($dataSet));
+        $this->getDatabaseTester()->onSetUp();
+    }
+
+    protected function getTearDownOperation() {
+        return PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL();
     }
 
     public function getDataSet(){
-        return $this->createFlatXmlDataSet(dirname(__FILE__) . $this->file);
+        return $this->createFlatXmlDataSet(dirname(__FILE__) . "/empty.xml");
     }
 
     public static function assertEquals($a, $b){
@@ -44,5 +58,6 @@ class EHelseDatabaseTestCase extends PHPUnit_Extensions_Database_TestCase
         return parent::assertTrue($a, debug_backtrace()[1]['function']);
 
     }
+
 
 }
