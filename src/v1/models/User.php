@@ -10,6 +10,7 @@ class User
     const SQL_UPDATE_STATEMENT = "UPDATE user SET name=:name,profile_image=:profile_image,email=:email WHERE id = :id;";
     const SQL_UPDATE_PASSWORD_STATEMENT = "UPDATE user SET password_hash=:password_hash  WHERE id = :id;";
     const SQL_GET_USER_BY_EMAIL = "SELECT * FROM user WHERE email=:email";
+    const SQL_DELETE_USER_BY_ID = "DELETE FROM user WHERE id=:id";
     private
         $id,
         $name,

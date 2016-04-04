@@ -7,7 +7,7 @@ require_once __DIR__.'/../errors/DBError.php';
 
 class StatusDBMapper extends DBMapper
 {
-    private $table_name = DbCommunication::DATABASE_NAME.'.status';
+    private $table_name = 'status';
 
     /**
      * Returns status from database based on model
