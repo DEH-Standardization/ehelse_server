@@ -46,7 +46,25 @@ class LinkCategoryController extends ResponseController
 
     protected function create()
     {
-        // TODO: Implement create() method.
+        $missing_fields = ResponseController::validateJSONFormat($this->body, LinkCategory::REQUIRED_POST_FIELDS);
+        if( !$missing_fields ) {
+            $mapper = new LinkCategoryDBMapper();
+            $link_category = LinkCategory::fromJSON($this->body);
+            $db_response = $mapper->add($link_category);
+
+            if ($db_response instanceof DBError) {
+                $response = new ErrorResponse($db_response);
+            } elseif (is_numeric($db_response)) {
+                $this->id = $db_response;
+                $response = $this->get();
+            } else {
+                //todo not sure how best to handle this
+                throw new Exception("Not implemented error");
+            }
+        } else {
+            $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
+        }
+        return $response;
     }
 
     protected function get()
@@ -65,7 +83,26 @@ class LinkCategoryController extends ResponseController
 
     protected function update()
     {
-        // TODO: Implement update() method.
+        $missing_fields = ResponseController::validateJSONFormat($this->body, LinkCategory::REQUIRED_PUT_FIELDS);
+
+        if( !$missing_fields ){
+            $mapper = new LinkCategoryDBMapper();
+            $json = $this->body;
+            $json["id"] = $this->id;
+            $link_category = LinkCategory::fromJSON($json);
+            $db_response = $mapper->update($link_category);
+
+            if ($db_response instanceof DBError) {
+                $response =  new ErrorResponse($db_response);
+            }
+            else{
+                $response=$this->get();
+            }
+        }
+        else{
+            $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
+        }
+        return $response;
     }
 
     protected function delete()
