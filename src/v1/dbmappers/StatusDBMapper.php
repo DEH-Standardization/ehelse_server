@@ -27,7 +27,6 @@ class StatusDBMapper extends DBMapper
     public function getById($id)
     {
         $response = null;
-        $dbName = DbCommunication::DATABASE_NAME;
         $sql = "SELECT *
                 FROM $this->table_name
                 WHERE id = ?;";
