@@ -105,6 +105,13 @@ class LinkCategoryDBMapper extends DBMapper
 
     public function deleteById($id)
     {
-        // TODO: Implement deleteById() method.
+        $response = null;
+        try {
+            $this->queryDBWithAssociativeArray(LinkCategory::SQL_DELETE_LINK_CATEGORY_BY_ID,array(":id"=>$id));
+            $response = array();
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 }

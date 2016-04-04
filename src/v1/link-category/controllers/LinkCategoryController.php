@@ -49,7 +49,9 @@ class LinkCategoryController extends ResponseController
         $missing_fields = ResponseController::validateJSONFormat($this->body, LinkCategory::REQUIRED_POST_FIELDS);
         if( !$missing_fields ) {
             $mapper = new LinkCategoryDBMapper();
-            $link_category = LinkCategory::fromJSON($this->body);
+            $json = $this->body;
+            $json['id'] = null;
+            $link_category = LinkCategory::fromJSON($json);
             $db_response = $mapper->add($link_category);
 
             if ($db_response instanceof DBError) {
@@ -107,6 +109,7 @@ class LinkCategoryController extends ResponseController
 
     protected function delete()
     {
-        // TODO: Implement delete() method.
+        $mapper = new LinkCategoryDBMapper();
+        return new Response(json_encode($mapper->deleteById($this->id), JSON_PRETTY_PRINT));
     }
 }
