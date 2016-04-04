@@ -10,8 +10,12 @@ class MainController implements iController{
     public function __construct($path, $method, $body)
     {
         $this->path = $path;
+        if (count($path)){
+            $this->api_version = $path[0];
+        }else{
+            $this->api_version = "";
+        }
 
-        $this->api_version = $path[0];
 
         //check if the url ended with '/', if se delete
         if(end($path) == ''){

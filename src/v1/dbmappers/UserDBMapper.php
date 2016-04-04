@@ -102,13 +102,19 @@ class UserDBMapper extends DBMapper
 
     public function delete($model)
     {
-        // TODO: Implement delete() method.
-        throw new Exception("Not implemented error");
+        /*// TODO: Implement delete() method.
+        throw new Exception("Not implemented error");*/
     }
 
     public function deleteById($id)
     {
-        // TODO: Implement deleteById() method.
-        throw new Exception("Not implemented error");
+        $response = null;
+        try {
+            $this->queryDBWithAssociativeArray(User::SQL_DELETE_USER_BY_ID,array(":id"=>$id));
+            $response = array();
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 }

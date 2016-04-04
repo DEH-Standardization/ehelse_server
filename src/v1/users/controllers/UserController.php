@@ -131,7 +131,8 @@ class UserController extends ResponseController
 
     protected function delete()
     {
-        // TODO: Implement delete() method.
-        throw new Exception("Not implemented");
+        $user_db_mapper = new UserDBMapper();
+        return new Response(json_encode($user_db_mapper->deleteById($this->id),JSON_PRETTY_PRINT));
+
     }
 }
