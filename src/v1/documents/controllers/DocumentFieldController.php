@@ -42,6 +42,7 @@ class DocumentFieldController extends ResponseController
 
     protected function delete()
     {
-        // TODO: Implement delete() method.
+        $document_field_db_mapper = new DocumentFieldDBMapper();
+        return new Response(json_encode($document_field_db_mapper->deleteById($this->id),JSON_PRETTY_PRINT));
     }
 }

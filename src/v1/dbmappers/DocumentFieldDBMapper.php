@@ -122,4 +122,20 @@ class DocumentFieldDBMapper extends DBMapper
     }
 
 
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function deleteById($id)
+    {
+        $response = null;
+        try {
+            $this->queryDBWithAssociativeArray(DocumentField::SQL_DELETE_DOCUMENT_FIELD_BY_ID,array(":id"=>$id));
+            $response = array();
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
 }
