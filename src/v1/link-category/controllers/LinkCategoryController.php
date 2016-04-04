@@ -51,7 +51,16 @@ class LinkCategoryController extends ResponseController
 
     protected function get()
     {
-        // TODO: Implement get() method.
+        $response = null;
+        $mapper = new LinkCategoryDBMapper();
+        $link_category = $mapper->getById($this->id);
+        if($link_category) {
+            $response = new Response($link_category->toJSON());
+
+        } else {
+            $response = new ErrorResponse(new NotFoundError());
+        }
+        return $response;
     }
 
     protected function update()
