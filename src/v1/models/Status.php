@@ -11,6 +11,7 @@ class Status implements iModel
 
     const REQUIRED_POST_FIELDS = ['name', 'description'];
     const REQUIRED_PUT_FIELDS = ['name', 'description'];
+    const SQL_DELETE = "DELETE FROM status WHERE id = :id;";
 
     private $id, $name, $description;
 

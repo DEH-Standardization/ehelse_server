@@ -5,6 +5,7 @@
  */
 interface iDBMapper
 {
+
     public function get($model);        // Get element by model (picks id) from DB.
     public function getById($id);       // Get element by id from DB.
 

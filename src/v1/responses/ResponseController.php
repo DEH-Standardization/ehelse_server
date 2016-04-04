@@ -90,7 +90,13 @@ abstract class ResponseController implements iController
 
         return $response;
     }
-    abstract protected function delete();
+
+    protected function delete()
+    {
+        $db_mapper = new $this->db_mapper();
+        $response = $db_mapper->deleteById($this->id);
+        return new Response(json_encode("{}",JSON_PRETTY_PRINT),Response::STATUS_CODE_NO_CONTENT);
+    }
 
 
     protected function handleRequest()

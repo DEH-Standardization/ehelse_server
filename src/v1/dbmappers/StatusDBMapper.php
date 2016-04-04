@@ -15,26 +15,5 @@ class StatusDBMapper extends DBMapper
         $this->model = 'Status';
     }
 
-    /**
-     * Returns status from database based on model
-     * @param $id
-     * @return DBError|Status
-     */
-    public function get($status)
-    {
-        $this->getById($status->getId());
-    }
 
-
-
-
-    public function delete($model)
-    {
-        // TODO: Implement delete() method.
-    }
-
-    public function deleteById($id)
-    {
-        // TODO: Implement deleteById() method.
-    }
 }

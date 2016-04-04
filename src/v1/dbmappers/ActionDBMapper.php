@@ -13,21 +13,4 @@ class ActionDBMapper extends DBMapper
         $this->model = 'Action';
     }
 
-    public function get($action)
-    {
-        $this->getById($action->getId());
-    }
-
-
-    public function delete($model)
-    {
-        // TODO: Implement delete() method.
-        throw new Exception("Not implemented error");
-    }
-
-    public function deleteById($id)
-    {
-        // TODO: Implement deleteById() method.
-        throw new Exception("Not implemented error");
-    }
 }

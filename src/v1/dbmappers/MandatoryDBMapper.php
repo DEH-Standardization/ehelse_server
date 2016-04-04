@@ -13,23 +13,4 @@ class MandatoryDBMapper extends DBMapper
         parent::__construct();
         $this->model = 'Mandatory';
     }
-
-    public function get($mandatory)
-    {
-        $this->getById($mandatory->getId());
-    }
-
-
-
-    public function delete($model)
-    {
-        // TODO: Implement delete() method.
-        throw new Exception("Not implemented error");
-    }
-
-    public function deleteById($id)
-    {
-        // TODO: Implement deleteById() method.
-        throw new Exception("Not implemented error");
-    }
 }

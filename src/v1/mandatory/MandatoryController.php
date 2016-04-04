@@ -18,11 +18,4 @@ class MandatoryController extends ResponseController
         $this->list_name = 'mandatory';
         $this->model = 'Mandatory';
     }
-
-
-    protected function delete()
-    {
-        // TODO: Implement delete() method.
-        throw new Exception("Not implemented error");
-    }
 }

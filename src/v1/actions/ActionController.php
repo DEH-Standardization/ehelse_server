@@ -17,10 +17,4 @@ class ActionController extends ResponseController
         $this->list_name = 'actions';
         $this->model = 'Action';
     }
-
-    protected function delete()
-    {
-        // TODO: Implement delete() method.
-        throw new Exception("Not implemented error");
-    }
 }

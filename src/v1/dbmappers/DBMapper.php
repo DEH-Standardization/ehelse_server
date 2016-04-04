@@ -144,4 +144,29 @@ abstract class DBMapper implements iDbMapper
         return $response;
     }
 
+    public function get($object)
+    {
+        $this->getById($object->getId());
+    }
+
+
+
+    public function delete($object)
+    {
+        return $this->deleteById($object->getId());
+    }
+
+    public function deleteById($id)
+    {
+        $response = null;
+        $model = $this->model;
+        try {
+            $this->queryDBWithAssociativeArray($model::SQL_DELETE,array(":id"=>$id));
+            $response = array();
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
+
 }
