@@ -8,8 +8,10 @@ class Action implements iModel
     const SQL_GET_ALL = "SELECT * FROM action;";
     const SQL_GET_BY_ID = "SELECT * FROM action WHERE id = :id;";
     const SQL_INSERT = "INSERT INTO action VALUES (null, :name, :description);";
+    const SQL_UPDATE = "UPDATE action SET name = :name, description = :description WHERE id = :id;";
 
     const REQUIRED_POST_FIELDS = ['name', 'description'];
+    const REQUIRED_PUT_FIELDS = ['name', 'description'];
 
     private $id, $name, $description;
 

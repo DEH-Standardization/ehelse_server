@@ -18,13 +18,6 @@ class ActionController extends ResponseController
         $this->model = 'Action';
     }
 
-
-    protected function update()
-    {
-        // TODO: Implement update() method.
-        throw new Exception("Not implemented error");
-    }
-
     protected function delete()
     {
         // TODO: Implement delete() method.

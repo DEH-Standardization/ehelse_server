@@ -20,28 +20,6 @@ class MandatoryDBMapper extends DBMapper
     }
 
 
-    public function update($mandatory)
-    {
-        if(!$this->isValidId($mandatory->getId(), "mandatory")) {
-            return new DBError("Invalid id");
-        }
-        $response = null;
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "UPDATE $db_name.mandatory
-                SET name = ?, description = ?
-                WHERE id = ?;";
-        $parameters = array(
-            $mandatory->getName(),
-            $mandatory->getDescription(),
-            $mandatory->getId());
-        try {
-            $this->queryDB($sql, $parameters);
-            return $mandatory->getId();
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
 
     public function delete($model)
     {

@@ -19,11 +19,6 @@ class MandatoryController extends ResponseController
         $this->model = 'Mandatory';
     }
 
-    protected function update()
-    {
-        // TODO: Implement update() method.
-        throw new Exception("Not implemented error");
-    }
 
     protected function delete()
     {

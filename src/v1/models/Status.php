@@ -7,8 +7,10 @@ class Status implements iModel
     const SQL_GET_ALL = "SELECT * FROM status;";
     const SQL_GET_BY_ID = "SELECT * FROM status WHERE id = :id;";
     const SQL_INSERT = "INSERT INTO status VALUES (null, :name, :description);";
+    const SQL_UPDATE = "UPDATE status SET name = :name, description = :description WHERE id = :id;";
 
     const REQUIRED_POST_FIELDS = ['name', 'description'];
+    const REQUIRED_PUT_FIELDS = ['name', 'description'];
 
     private $id, $name, $description;
 

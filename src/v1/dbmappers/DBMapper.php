@@ -131,4 +131,17 @@ abstract class DBMapper implements iDbMapper
         return $response;
     }
 
+    public function update($object)
+    {
+        $response = null;
+        $model = $this->model;
+        try {
+            $this->queryDBWithAssociativeArray($model::SQL_UPDATE, $object->toDBArray());
+            return $object->getId();
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
+
 }

@@ -28,34 +28,6 @@ class StatusDBMapper extends DBMapper
 
 
 
-    /**
-     * Updates status in database
-     * @param $status
-     * @return DBError|string
-     */
-    public function update($status)
-    {
-        if(!$this->isValidId($status->getId(), "status")) {
-            return new DBError("Invalid id");
-        }
-        $response = null;
-        $db_name = DbCommunication::DATABASE_NAME;
-        $sql = "UPDATE $this->table_name
-                SET name = ?, description = ?
-                WHERE id = ?;";
-        $parameters = array(
-            $status->getName(),
-            $status->getDescription(),
-            $status->getId());
-        try {
-            $this->queryDB($sql, $parameters);
-            return $status->getId();
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-
     public function delete($model)
     {
         // TODO: Implement delete() method.

@@ -64,7 +64,32 @@ abstract class ResponseController implements iController
         }
         return $response;
     }
-    abstract protected function update();
+
+    protected function update()
+    {
+        $model = $this->model;
+        $missing_fields = self::validateJSONFormat($this->body, $model::REQUIRED_PUT_FIELDS);
+
+        if( !$missing_fields ){
+            $mapper = new $this->db_mapper();
+            $json = $this->body;
+            $json["id"] = $this->id;
+            $object = $model::fromJSON($json);
+            $db_response = $mapper->update($object);
+
+            if ($db_response instanceof DBError) {
+                $response =  new ErrorResponse($db_response);
+            }
+            else{
+                $response=$this->get();
+            }
+        }
+        else{
+            $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
+        }
+
+        return $response;
+    }
     abstract protected function delete();
 
 
