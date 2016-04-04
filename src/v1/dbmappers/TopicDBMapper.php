@@ -22,11 +22,10 @@ class TopicDbMapper extends DBMapper
      */
     public function getTopicById($id)
     {
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
         $sql = "SELECT *
-                FROM andrkje_ehelse_db.topic WHERE id = ? and (id,timestamp) IN
+                FROM topic WHERE id = ? and (id,timestamp) IN
                 ( SELECT id, MAX(timestamp)
-                  FROM andrkje_ehelse_db.topic
+                  FROM topic
                   GROUP BY id)";
         $result = $this->queryDB($sql, array($id));
         if ($result->rowCount() == 1) {
@@ -45,62 +44,20 @@ class TopicDbMapper extends DBMapper
         return null;
     }
 
-    /**
-     * Returns list of standards based on id
-     * @param $id
-     * @return array|DBError|null
-     */
-    public function getStandardsByTopicId($id)
-    {
-        $response = null;
-        $standards = array();
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        /*$sql = "select * from $db_name.standard
-                where topic_id = ?;";
-        */
-        $sql = "SELECT *
-                FROM andrkje_ehelse_db.standard WHERE topic_id = ? and (id,timestamp) IN
-                ( SELECT id, MAX(timestamp)
-                  FROM andrkje_ehelse_db.standard
-                  GROUP BY id);";
-
-        try {
-            $result = $this->queryDB($sql, array($id));
-            foreach($result as $row) {
-                array_push($standards, new Standard(
-                    $row['id'],
-                    $row['timestamp'],
-                    $row['title'],
-                    $row['description'],
-                    $row['sequence'],
-                    $row['topic_id'],
-                    $row['comment']));
-            }
-            if (count($standards) == 0) {
-                $response = new DBError("Did not return any results on id: ".$id);
-            } else {
-                return $standards;
-            }
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
 
     /**
      * Returns list of standards based on id
      * @param $id
      * @return array|DBError|null
      */
-    public function getProfileByTopicId($id)
+   /* public function getProfileByTopicId($id)
     {
         $response = null;
         $profiles = array();
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
         $sql = "SELECT *
-                FROM andrkje_ehelse_db.profile WHERE topic_id = ? and (id,timestamp) IN
+                FROM profile WHERE topic_id = ? and (id,timestamp) IN
                 ( SELECT id, MAX(timestamp)
-                  FROM andrkje_ehelse_db.profile
+                  FROM profile
                   GROUP BY id);";
 
         try {
@@ -124,7 +81,7 @@ class TopicDbMapper extends DBMapper
             $response = new DBError($e);
         }
         return $response;
-    }
+    }*/
 
     /**
      * Returns list of standards
@@ -145,13 +102,11 @@ class TopicDbMapper extends DBMapper
     {
         $response = null;
         $topics = array();
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        //$sql = "select * from $db_name.topic where parent_id = ?";
 
         $sql = "SELECT *
-                FROM andrkje_ehelse_db.topic WHERE parent_id = ? and (id,timestamp) IN
+                FROM topic WHERE parent_id = ? and (id,timestamp) IN
                 ( SELECT id, MAX(timestamp)
-                  FROM andrkje_ehelse_db.topic
+                  FROM topic
                   GROUP BY id);";
 
         try {
@@ -166,11 +121,7 @@ class TopicDbMapper extends DBMapper
                     $row['parent_id'],
                     $row['comment']));
             }
-            if (count($topics) == 0) {
-                $response = new DBError("Did not return any results on id: ".$id);
-            } else {
-                return $topics;
-            }
+            $response = $topics;
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
@@ -201,11 +152,7 @@ class TopicDbMapper extends DBMapper
                     $row['parent_id'],
                     $row['comment']));
             }
-            if (count($topics) == 0) {
-                $response = new DBError("Did not return any results on id: ".$id);
-            } else {
-                return $topics;
-            }
+                $response = $topics;
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
@@ -230,8 +177,7 @@ class TopicDbMapper extends DBMapper
     public function add($topic)
     {
         $response = null;
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "INSERT INTO $db_name.topic
+        $sql = "INSERT INTO topic
                 VALUES (null, now(), ?, ?, ?, ?, ?);";
         $parameters = array(
             $topic->getTitle(),
@@ -307,11 +253,10 @@ class TopicDbMapper extends DBMapper
     public function getAll()
     {
         $response = null;
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
         $sql = "SELECT *
-                FROM $dbName.topic WHERE(id,timestamp) IN
+                FROM topic WHERE(id,timestamp) IN
                 ( SELECT id, MAX(timestamp)
-                  FROM $dbName.topic
+                  FROM topic
                   GROUP BY id);";
         try {
             $result = $this->queryDB($sql, array());
@@ -320,11 +265,7 @@ class TopicDbMapper extends DBMapper
             foreach($topics_raw as $topic_raw){
                 array_push($topics, Topic::fromDBArray($topic_raw));
             }
-            if (count($topics) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                $response = $topics;
-            }
+            $response = $topics;
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
@@ -356,4 +297,27 @@ class TopicDbMapper extends DBMapper
         return $topic_three;
     }
 
+    public function get($model)
+    {
+        // TODO: Implement get() method.
+        throw new Exception("Not implemented error");
+    }
+
+    public function getById($id)
+    {
+        // TODO: Implement getById() method.
+        throw new Exception("Not implemented error");
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+        throw new Exception("Not implemented error");
+    }
+
+    public function deleteById($id)
+    {
+        // TODO: Implement deleteById() method.
+        throw new Exception("Not implemented error");
+    }
 }

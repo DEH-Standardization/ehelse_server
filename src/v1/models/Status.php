@@ -1,6 +1,8 @@
 <?php
+require_once __DIR__ . '/ModelValidation.php';
+require_once __DIR__ . '/iModel.php';
 
-class Status
+class Status implements iModel
 {
     private $id, $name, $description;
 
@@ -28,14 +30,14 @@ class Status
     }
 
     /**
-     * Sets name if it is valid
+     * Sets name if it is valid, return the n first characters if it is too long
      * @param $description
      */
     public function setName($name)
     {
-        if (strlen($name) > ModelValidation::getNameMaxLength()) {
-            $this->name = ModelValidation::getValidDescription($name);
-            echo "name is too long. Description set to: " . $this->description;
+        if (strlen($name) > ModelValidation::NAME_MAX_LENGTH) {
+            $this->name = ModelValidation::getValidName($name);
+            echo "Name is too long, set to: " . $this->name;
         }
         else {
             $this->name = $name;
@@ -48,14 +50,14 @@ class Status
     }
 
     /**
-     * Sets description if it is valid
+     * Sets description if it is valid, return the n first characters if it is too long
      * @param $description
      */
     public function setDescription($description)
     {
-        if (strlen($description) > ModelValidation::getDescriptionMaxLength()) {
+        if (strlen($description) > ModelValidation::DESCRIPTION_MAX_LENGTH) {
             $this->description = ModelValidation::getValidDescription($description);
-            echo "description is too long. Description set to: " . $this->description;
+            echo "Description is too long, set to: " . $this->description;
         }
         else {
             $this->description = $description;
@@ -72,5 +74,29 @@ class Status
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description);
+    }
+
+    /**
+     * Returns JSON representation of model
+     * @return string
+     */
+    public function toJSON()
+    {
+        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+    }
+
+    public static function fromDBArray($db_array)
+    {
+        // TODO: Implement fromDBArray() method.
+    }
+
+    public static function fromJSON($json)
+    {
+        // TODO: Implement fromJSON() method.
+    }
+
+    public function toDBArray()
+    {
+        // TODO: Implement toDBArray() method.
     }
 }

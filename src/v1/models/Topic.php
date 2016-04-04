@@ -1,12 +1,14 @@
 <?php
-require_once __DIR__.'/../dbmappers/TopicDBMapper.php';
+require_once __DIR__ . '/../dbmappers/TopicDBMapper.php';
+require_once __DIR__ . '/iModel.php';
 
 /**
  * Class Topic Model
  */
-class Topic{
+class Topic implements iModel
+{
     private $id, $timestamp, $title, $description, $sequence, $parent_id, $comment, $children, $documents;
-
+    const REQUIRED_POST_FIELDS = ['title', 'description','sequence','parentId','comment'];
     /**
      * Topic constructor.
      * @param $id
@@ -29,30 +31,6 @@ class Topic{
         $this->documents = [];
         $this->children = [];
     }
-
-    /**
-     * Returns a new topic with previus inserted id
-     * @param $title
-     * @param $description
-     * @param $number
-     * @param $is_in_catalog
-     * @param $sequence
-     * @param $parent_id
-     * @return DBError|null|string|Topic
-     */
-    /*  NOT IN USE
-    public static function createNewTopic($title, $description, $number, $is_in_catalog, $sequence, $parent_id)
-    {
-
-        $mapper = new TopicDbMapper();
-        $result = $mapper->add(new Topic(null,null,$title, $description, $number, $is_in_catalog, $sequence, $parent_id));
-        if ($result instanceof DBError) {
-            return $result;
-        } else {
-            return $mapper->getTopicById($result);
-        }
-    }
-    */
 
     public static function getLastInsertedTopic()
     {
@@ -85,9 +63,9 @@ class Topic{
      */
     public function  setTitle($title)
     {
-        if (strlen($title) > ModelValidation::getTitleMaxLength()) {
+        if (strlen($title) > ModelValidation::TITLE_MAX_LENGTH) {
             $this->title = ModelValidation::getValidTitle($title);
-            echo "Title is too long. Title set to: " . $this->title;
+            echo "Title is too long, set to: " . $this->title;
         } else {
             $this->title = $title;
         }
@@ -104,9 +82,9 @@ class Topic{
      */
     public function setDescription($description)
     {
-        if (strlen($description) > ModelValidation::getDescriptionMaxLength($description)) {
+        if (strlen($description) > ModelValidation::DESCRIPTION_MAX_LENGTH) {
             $this->description = ModelValidation::getValidDescription($description);
-            echo "description is too long. Description set to: " . $this->description;
+            echo "Description is too long, set to: " . $this->description;
         }
         else {
             $this->description = $description;
@@ -135,9 +113,9 @@ class Topic{
 
     public function setComment($comment)
     {
-        if (strlen($comment) > ModelValidation::getCommentMaxLength($comment)) {
+        if (strlen($comment) > ModelValidation::COMMENT_MAX_LENGTH) {
             $this->description = ModelValidation::getValidComment($comment);
-            echo "comment is too long, set to: " . $this->comment;
+            echo "Comment is too long, set to: " . $this->comment;
         }
         else {
             $this->comment = $comment;
@@ -149,13 +127,17 @@ class Topic{
         return $this->comment;
     }
 
+    /**
+     * Returns JSON representation of model
+     * @return string
+     */
     public function toJSON()
     {
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
     }
 
     /**
-     * Returns associated array
+     * Returns associated array representation of model
      * @return array
      */
     public function toArray()
@@ -223,4 +205,13 @@ class Topic{
         array_push($this->documents, $document);
     }
 
+    public static function fromJSON($json)
+    {
+        // TODO: Implement fromJSON() method.
+    }
+
+    public function toDBArray()
+    {
+        // TODO: Implement toDBArray() method.
+    }
 }
