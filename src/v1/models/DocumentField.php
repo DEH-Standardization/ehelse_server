@@ -4,6 +4,7 @@ require_once __DIR__.'/ModelValidation.php';
 
 class DocumentField
 {
+    const SQL_DELETE_DOCUMENT_FIELD_BY_ID = "DELETE FROM document_field WHERE id=:id";
     private $id, $name, $description, $sequence, $mandatory, $document_type_id;
 
     /**
