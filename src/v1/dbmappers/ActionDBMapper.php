@@ -101,4 +101,15 @@ class ActionDBMapper extends DBMapper
         return $response;
     }
 
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+        throw new Exception("Not implemented error");
+    }
+
+    public function deleteById($id)
+    {
+        // TODO: Implement deleteById() method.
+        throw new Exception("Not implemented error");
+    }
 }

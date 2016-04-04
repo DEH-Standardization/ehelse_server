@@ -64,15 +64,16 @@ abstract class DBMapper implements iDbMapper
     protected function isValidId($id, $table_name)
     {
         $valid = false;
-        $db_name = DbCommunication::DATABASE_NAME;
-        $sql = "select * from $db_name.$table_name where id = $id";
-
+        $db_name = DbCommunication::getInstance()->getDatabaseName();
+        $sql = "select * from $db_name.$table_name where id = ?";
         try {
-            $result = $this->queryDB($sql, array(2));
-            $result->fetch();
-            if ($result->rowCount() > 0)
+            $result = $this->queryDB($sql, array($id));
+            $r = $result->fetch();
+            if ($result->rowCount() > 0){
                 $valid = true;
+            }
         } catch(PDOException $e) {
+            print_r($e);
             echo new DBError($e);
         }
         return $valid;
