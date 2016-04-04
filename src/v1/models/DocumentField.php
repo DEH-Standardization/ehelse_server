@@ -15,7 +15,6 @@ class DocumentField
      * @param $sequence
      * @param $mandatory
      * @param $document_type_id
-     * @param $is_profiles_field
      */
     public function __construct($id, $name, $description, $sequence, $mandatory, $document_type_id)
     {

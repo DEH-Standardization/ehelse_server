@@ -4,6 +4,8 @@ require_once __DIR__ . '/iModel.php';
 
 class Status implements iModel
 {
+    const SQL_GET_ALL = "SELECT * FROM status;";
+    const SQL_GET_BY_ID = "SELECT * FROM status WHERE id = :id;";
     private $id, $name, $description;
 
     /**
@@ -87,7 +89,10 @@ class Status implements iModel
 
     public static function fromDBArray($db_array)
     {
-        // TODO: Implement fromDBArray() method.
+        return new Action(
+            $db_array['id'],
+            $db_array['name'],
+            $db_array['description']);
     }
 
     public static function fromJSON($json)

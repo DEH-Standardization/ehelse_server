@@ -9,6 +9,12 @@ class StatusDBMapper extends DBMapper
 {
     private $table_name = 'status';
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->model = 'Status';
+    }
+
     /**
      * Returns status from database based on model
      * @param $id
@@ -19,60 +25,8 @@ class StatusDBMapper extends DBMapper
         $this->getById($status->getId());
     }
 
-    /**
-     * Returns status from database based on id
-     * @param $id
-     * @return DBError|Status
-     */
-    public function getById($id)
-    {
-        $response = null;
-        $sql = "SELECT *
-                FROM $this->table_name
-                WHERE id = ?;";
-        $parameters = array($id);
-        try {
-            $result = $this->queryDB($sql, $parameters);
-            if ($result->rowCount() === 1) {
-                $row = $result->fetch();
-                return new Status(
-                    $row['id'],
-                    $row['name'],
-                    $row['description']);
-            } else {
-                $response = new DBError("Returned " . $result->rowCount() .
-                    ", expected 1");
-            }
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
 
-    /**
-     * Returns all statuses
-     * @return array|DBError
-     */
-    public function getAll()
-    {
-        $response = null;
-        $statuses= array();
-        $dbName = DbCommunication::DATABASE_NAME;
-        $sql = "SELECT * FROM $this->table_name;";
-        try {
-            $result = $this->queryDB($sql, null);
-            foreach ($result as $row) {
-                array_push($statuses, new Status(
-                    $row['id'],
-                    $row['name'],
-                    $row['description']));
-            }
-            $response = $statuses;
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
+
 
     /**
      * Adds new status to database, returns id if success, error otherwise

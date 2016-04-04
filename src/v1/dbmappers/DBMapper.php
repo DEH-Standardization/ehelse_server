@@ -7,7 +7,7 @@ require_once "DbCommunication.php";
  */
 abstract class DBMapper implements iDbMapper
 {
-    protected $connection;
+    protected $connection, $model;
 
     /**
      * TopicDbMapper constructor.
@@ -28,6 +28,9 @@ abstract class DBMapper implements iDbMapper
      */
     protected function queryDB($sql, $columns)
     {
+        if(isAssoc($columns)){
+            throw new Exception("Assosiative array. Use other query");
+        }
         $sql_query = $sql;
         $stmt = $this->connection->prepare($sql_query);
         if(!$stmt) {
@@ -79,5 +82,40 @@ abstract class DBMapper implements iDbMapper
         return $valid;
     }
 
+
+    public function getById($id)
+    {
+        $response = null;
+        $parameters = array(
+            'id' => $id);
+        $model = $this->model;
+        try {
+            $result = $this->queryDBWithAssociativeArray($model::SQL_GET_BY_ID, $parameters);
+            $raw = $result->fetch();
+            if($raw){
+                $response = $model::fromDBArray($raw);
+            }
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
+
+    public function getAll()
+    {
+        $response = null;
+        $array= array();
+        $model = $this->model;
+        try {
+            $result = $this->queryDBWithAssociativeArray($model::SQL_GET_ALL, array());
+            foreach ($result as $row) {
+                array_push($array, $model::fromDBArray($row));
+            }
+            $response = $array;
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
 
 }

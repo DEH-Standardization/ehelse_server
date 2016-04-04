@@ -5,18 +5,45 @@ require_once __DIR__."/ErrorResponse.php";
 
 abstract class ResponseController implements iController
 {
-    protected  $method, $body, $path, $controller, $id;
+    protected  $method, $body, $path, $controller, $id, $db_mapper, $list_name;
 
     abstract protected function getAll();
+
+    protected function getAllHelper()
+    {
+        $mapper = new $this->db_mapper();
+        $objects = $mapper->getAll();
+        $object_array = [];
+        foreach($objects as $object){
+            array_push($object_array, $object->toArray());
+        }
+
+        $json = json_encode(array( $this->list_name => $object_array), JSON_PRETTY_PRINT);
+
+        return new Response($json);
+    }
+
     abstract protected function create();
 
     protected function getOptions(){
         return new Response("{}");
     }
 
-    abstract protected function get();
+    protected function get()
+    {
+        $mapper = new $this->db_mapper();
+        $object = $mapper->getById($this->id);
+        if($object){
+            $response = new Response(json_encode($object->toArray(), JSON_PRETTY_PRINT));
+        }
+        else{
+            $response = new ErrorResponse(new NotFoundError());
+        }
+        return $response;
+    }
     abstract protected function update();
     abstract protected function delete();
+
 
     protected function handleRequest()
     {
@@ -64,6 +91,21 @@ abstract class ResponseController implements iController
             }
         }
         return $response;
+    }
+
+    protected function init($path, $method, $body)
+    {
+        $this->method = $method;
+        $this->body = $body;
+        $this->path = $path;
+
+        if(count($this->path) != 0){
+            if(count($this->path) == 1 && is_numeric($path[0])){
+                $this->id = $path[0];
+            }else{
+                $this->controller = new ErrorController(new InvalidPathError());
+            }
+        }
     }
 
     protected static function validateJSONFormat($json, $required_fields)

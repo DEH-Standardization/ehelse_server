@@ -5,3 +5,8 @@ function trimPath($path, $number){
     }
     return array_values($path);
 }
+
+function isAssoc($arr)
+{
+    return array_keys($arr) !== range(0, count($arr) - 1) && count($arr);
+}

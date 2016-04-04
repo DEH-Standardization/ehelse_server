@@ -5,6 +5,8 @@ require_once 'iModel.php';
 
 class Action implements iModel
 {
+    const SQL_GET_ALL = "SELECT * FROM action;";
+    const SQL_GET_BY_ID = "SELECT * FROM action WHERE id = :id;";
     private $id, $name, $description;
 
     /**
@@ -83,5 +85,25 @@ class Action implements iModel
     public function toJSON()
     {
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+    }
+
+    public static function fromDBArray($db_array)
+    {
+        return new Action(
+            $db_array['id'],
+            $db_array['name'],
+            $db_array['description']);
+    }
+
+    public static function fromJSON($json)
+    {
+        // TODO: Implement fromJSON() method.
+        throw new Exception("Not implemented error");
+    }
+
+    public function toDBArray()
+    {
+        // TODO: Implement toDBArray() method.
+        throw new Exception("Not implemented error");
     }
 }

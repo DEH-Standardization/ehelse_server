@@ -7,35 +7,15 @@ require_once __DIR__.'/../errors/DBError.php';
 
 class ActionDBMapper extends DBMapper
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->model = 'Action';
+    }
+
     public function get($action)
     {
         $this->getById($action->getId());
-    }
-
-    public function getById($id)
-    {
-        $response = null;
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "SELECT *
-                FROM $dbName.action
-                WHERE id = ?;";
-        $parameters = array($id);
-        try {
-            $result = $this->queryDB($sql, $parameters);
-            if ($result->rowCount() === 1) {
-                $row = $result->fetch();
-                return new Action(
-                    $row['id'],
-                    $row['name'],
-                    $row['description']);
-            } else {
-                $response = new DBError("Returned " . $result->rowCount() .
-                    " profiles, expected 1");
-            }
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
     }
 
     public function getAll()
