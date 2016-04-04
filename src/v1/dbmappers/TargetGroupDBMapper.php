@@ -83,7 +83,13 @@ class TargetGroupDBMapper extends DBMapper
 
     public function deleteById($id)
     {
-        // TODO: Implement deleteById() method.
-        throw new Exception("Not implemented error");
+        $response = null;
+        try {
+            $this->queryDBWithAssociativeArray(TargetGroup::SQL_DELETE_TARGET_GROUP_BY_ID,array(":id"=>$id));
+            $response = array();
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 }
