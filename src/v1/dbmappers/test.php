@@ -1,11 +1,11 @@
 <?php
 
 
-require_once 'LinkDBMapper.php';
-require_once __DIR__.'/../models/Link.php';
+require_once 'LinkCategoryDBMapper.php';
+require_once __DIR__.'/../models/LinkCategory.php';
 
 
-$m = new LinkDBMapper();
+$m = new LinkCategoryDBMapper();
+$d = new LinkCategory(8,'oOoOoOoO', 'oOoOoOoO');
 
-$d = new Link(12,'test','test','url',1,10,'2016-03-30 04:31:06',null);
-print_r($m->getLinkCategoriesIdByDocumentId(10));
+print_r($m->add($d));

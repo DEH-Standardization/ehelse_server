@@ -5,6 +5,7 @@ require_once 'documents/controllers/DocumentController.php';
 require_once 'topics/controllers/TopicController.php';
 require_once 'users/controllers/UserController.php';
 require_once 'target-groups/controllers/TargetGroupController.php';
+require_once 'link-category/controllers/LinkCategoryController.php';
 require_once __DIR__ . '/models/User.php';
 
 class APIV1Controller implements iController
@@ -45,6 +46,9 @@ class APIV1Controller implements iController
                 break;
             case 'target-groups':
                 $this->controller = new TargetGroupController($path, $method, $body);
+                break;
+            case 'link-categories':
+                $this->controller = new LinkCategoryController($path, $method, $body);
                 break;
             default:
                 $this->controller = new ErrorController(new InvalidPathError());

@@ -6,8 +6,14 @@ require_once 'iModel.php';
 class LinkCategory implements iModel
 {
     const REQUIRED_POST_FIELDS = ['name'];
-    const SQL_INSERT_STATEMENT = "INSERT INTO link_category(id,name,description) VALUES (null,:name,:description);";
+    const REQUIRED_PUT_FIELDS = ['name'];
+
+
+    const SQL_INSERT_STATEMENT = "INSERT INTO link_category(name,description) VALUES (:name,:description);";
+
+
     const SQL_UPDATE_STATEMENT = "UPDATE link_category SET name=:name,description=:description WHERE id=:id";
+    const SQL_DELETE_LINK_CATEGORY_BY_ID = "DELETE FROM link_category WHERE id=:id";
     private $id, $name, $description;
 
     /**
