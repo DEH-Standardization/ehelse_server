@@ -109,7 +109,7 @@ class TargetGroupController extends ResponseController
 
     protected function delete()
     {
-        // TODO: Implement delete() method.
-        throw new Exception("Not implemented error");
+        $target_group_db_mapper = new TargetGroupDBMapper();
+        return new Response(json_encode($target_group_db_mapper->deleteById($this->id),JSON_PRETTY_PRINT));
     }
 }
