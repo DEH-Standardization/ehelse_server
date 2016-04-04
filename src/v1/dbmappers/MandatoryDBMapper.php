@@ -20,47 +20,6 @@ class MandatoryDBMapper extends DBMapper
     }
 
 
-
-    public function getAll()
-    {
-        $response = null;
-        $mandatories= array();
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "select * from $dbName.mandatory";
-        try {
-            $result = $this->queryDB($sql, null);
-            foreach ($result as $row) {
-                array_push($mandatories, new Mandatory(
-                    $row['id'],
-                    $row['name'],
-                    $row['description']));
-            }
-            $response = $mandatories;
-
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-
-    public function add($mandatory)
-    {
-        $response = null;
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "INSERT INTO $db_name.mandatory
-                VALUES (null, ?, ?);";
-        $parameters = array(
-            $mandatory->getName(),
-            $mandatory->getDescription());
-        try {
-            $this->queryDB($sql, $parameters);
-            $response = $this->connection->lastInsertId();
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-
     public function update($mandatory)
     {
         if(!$this->isValidId($mandatory->getId(), "mandatory")) {

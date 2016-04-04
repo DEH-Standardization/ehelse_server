@@ -18,45 +18,8 @@ class ActionDBMapper extends DBMapper
         $this->getById($action->getId());
     }
 
-    public function getAll()
-    {
-        $response = null;
-        $actions= array();
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "select * from $dbName.action";
-        try {
-            $result = $this->queryDB($sql, null);
-            foreach ($result as $row) {
-                array_push($actions, new Action(
-                    $row['id'],
-                    $row['name'],
-                    $row['description']));
-            }
-            $response = $actions;
 
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
 
-    public function add($action)
-    {
-        $response = null;
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "INSERT INTO $db_name.action
-                VALUES (null, ?, ?);";
-        $parameters = array(
-            $action->getName(),
-            $action->getDescription());
-        try {
-            $this->queryDB($sql, $parameters);
-            $response = $this->connection->lastInsertId();
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
 
     public function update($action)
     {

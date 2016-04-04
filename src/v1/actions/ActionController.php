@@ -15,18 +15,9 @@ class ActionController extends ResponseController
         $this->init($path, $method, $body);
         $this->db_mapper = 'ActionDBMapper';
         $this->list_name = 'actions';
+        $this->model = 'Action';
     }
 
-    protected function getAll()
-    {
-        return $this->getAllHelper();
-    }
-
-    protected function create()
-    {
-        // TODO: Implement create() method.
-        throw new Exception("Not implemented error");
-    }
 
     protected function update()
     {

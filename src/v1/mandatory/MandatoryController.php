@@ -16,20 +16,8 @@ class MandatoryController extends ResponseController
         $this->init($path, $method, $body);
         $this->db_mapper = 'MandatoryDBMapper';
         $this->list_name = 'mandatory';
+        $this->model = 'Mandatory';
     }
-
-    protected function getAll()
-    {
-        return $this->getAllHelper();
-    }
-
-    protected function create()
-    {
-        // TODO: Implement create() method.
-        throw new Exception("Not implemented error");
-    }
-
-
 
     protected function update()
     {

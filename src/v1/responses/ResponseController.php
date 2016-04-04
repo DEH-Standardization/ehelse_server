@@ -5,11 +5,9 @@ require_once __DIR__."/ErrorResponse.php";
 
 abstract class ResponseController implements iController
 {
-    protected  $method, $body, $path, $controller, $id, $db_mapper, $list_name;
+    protected  $method, $body, $path, $controller, $id, $db_mapper, $list_name, $model;
 
-    abstract protected function getAll();
-
-    protected function getAllHelper()
+    protected function getAll()
     {
         $mapper = new $this->db_mapper();
         $objects = $mapper->getAll();
@@ -23,7 +21,32 @@ abstract class ResponseController implements iController
         return new Response($json);
     }
 
-    abstract protected function create();
+    protected function create()
+    {
+        $model = $this->model;
+        $missing_fields = self::validateJSONFormat($this->body, $model::REQUIRED_POST_FIELDS);
+        if( !$missing_fields ){
+            $mapper = new $this->db_mapper();
+            $object = $model::fromJSON($this->body);
+            $db_response = $mapper->add($object);
+
+            if ($db_response instanceof DBError) {
+                $response = new ErrorResponse($db_response);
+            }
+            elseif(is_numeric($db_response)){
+                $this->id = $db_response;
+                $response = $this->get();
+            }
+            else{
+                //todo not sure how best to handle this
+                throw new Exception("Not implemented error");
+            }
+        }
+        else{
+            $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
+        }
+        return $response;
+    }
 
     protected function getOptions(){
         return new Response("{}");

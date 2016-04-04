@@ -29,29 +29,6 @@ class StatusDBMapper extends DBMapper
 
 
     /**
-     * Adds new status to database, returns id if success, error otherwise
-     * @param $status
-     * @return DBError|string
-     */
-    public function add($status)
-    {
-        $response = null;
-        $db_name = DbCommunication::DATABASE_NAME;
-        $sql = "INSERT INTO $this->table_name
-                VALUES (null, ?, ?);";
-        $parameters = array(
-            $status->getName(),
-            $status->getDescription());
-        try {
-            $this->queryDB($sql, $parameters);
-            $response = $this->connection->lastInsertId();
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-
-    /**
      * Updates status in database
      * @param $status
      * @return DBError|string

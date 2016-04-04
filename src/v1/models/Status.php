@@ -6,6 +6,10 @@ class Status implements iModel
 {
     const SQL_GET_ALL = "SELECT * FROM status;";
     const SQL_GET_BY_ID = "SELECT * FROM status WHERE id = :id;";
+    const SQL_INSERT = "INSERT INTO status VALUES (null, :name, :description);";
+
+    const REQUIRED_POST_FIELDS = ['name', 'description'];
+
     private $id, $name, $description;
 
     /**
@@ -97,11 +101,21 @@ class Status implements iModel
 
     public static function fromJSON($json)
     {
-        // TODO: Implement fromJSON() method.
+        return new Action(
+            $json['id'],
+            $json['name'],
+            $json['description']);
     }
 
     public function toDBArray()
     {
-        // TODO: Implement toDBArray() method.
+        $db_array = array(
+            ':name' => $this->name,
+            ':description' => $this->description
+        );
+        if($this->id){
+            $db_array[':id'] = $this->id;
+        }
+        return $db_array;
     }
 }

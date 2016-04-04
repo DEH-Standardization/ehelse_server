@@ -13,18 +13,8 @@ class StatusController extends ResponseController
         $this->init($path, $method, $body);
         $this->db_mapper = 'StatusDBMapper';
         $this->list_name = 'status';
+        $this->model = 'Status';
 
-    }
-
-    protected function getAll()
-    {
-        return $this->getAllHelper();
-    }
-
-    protected function create()
-    {
-        // TODO: Implement create() method.
-        throw new Exception("Not implemented error");
     }
 
     protected function update()

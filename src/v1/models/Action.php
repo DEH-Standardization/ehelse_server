@@ -7,6 +7,10 @@ class Action implements iModel
 {
     const SQL_GET_ALL = "SELECT * FROM action;";
     const SQL_GET_BY_ID = "SELECT * FROM action WHERE id = :id;";
+    const SQL_INSERT = "INSERT INTO action VALUES (null, :name, :description);";
+
+    const REQUIRED_POST_FIELDS = ['name', 'description'];
+
     private $id, $name, $description;
 
     /**
@@ -97,13 +101,21 @@ class Action implements iModel
 
     public static function fromJSON($json)
     {
-        // TODO: Implement fromJSON() method.
-        throw new Exception("Not implemented error");
+        return new Action(
+            $json['id'],
+            $json['name'],
+            $json['description']);
     }
 
     public function toDBArray()
     {
-        // TODO: Implement toDBArray() method.
-        throw new Exception("Not implemented error");
+        $db_array = array(
+            ':name' => $this->name,
+            ':description' => $this->description
+        );
+        if($this->id){
+            $db_array[':id'] = $this->id;
+        }
+        return $db_array;
     }
 }
