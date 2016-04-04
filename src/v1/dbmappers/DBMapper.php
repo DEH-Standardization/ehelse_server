@@ -37,9 +37,26 @@ abstract class DBMapper implements iDbMapper
         for ($i = 0; $i < count($columns); $i++) {
             $stmt->bindParam(($i+1), $columns[$i]);
         }
-        $stmt->execute();
-        //$stmt->errorInfo();
+        try{
 
+            $stmt->execute();
+        }
+        catch(Exception $e){
+            echo "\n\nDBMapper failed!";
+            print_r($e);
+        }
+
+        return $stmt;
+    }
+
+    protected function queryDBWithAssociativeArray($sql, $associative_array)
+    {
+        $stmt = $this->connection->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        if(!$stmt) {
+            trigger_error("Could not prepare the SQL query: " . $sql . ", " . $this->connection->errorInfo(), E_USER_ERROR);
+        }
+
+        $stmt->execute($associative_array);
 
         return $stmt;
     }
@@ -48,14 +65,15 @@ abstract class DBMapper implements iDbMapper
     {
         $valid = false;
         $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "select * from $db_name.$table_name where id = $id";
-
+        $sql = "select * from $db_name.$table_name where id = ?";
         try {
-            $result = $this->queryDB($sql, array(2));
-            $result->fetch();
-            if ($result->rowCount() > 0)
+            $result = $this->queryDB($sql, array($id));
+            $r = $result->fetch();
+            if ($result->rowCount() > 0){
                 $valid = true;
+            }
         } catch(PDOException $e) {
+            print_r($e);
             echo new DBError($e);
         }
         return $valid;

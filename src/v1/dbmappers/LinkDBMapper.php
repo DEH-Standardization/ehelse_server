@@ -7,6 +7,8 @@ require_once __DIR__.'/../errors/DBError.php';
 
 class LinkDBMapper extends DBMapper
 {
+    private $table_name = 'link';
+
     /**
      * Returns link
      * @param $id
@@ -25,25 +27,12 @@ class LinkDBMapper extends DBMapper
     public function getById($id)
     {
         $response = null;
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "SELECT *
-                FROM $dbName.link
-                WHERE id = ?;";
-        $parameters = array($id);
+        $sql = $sql = "SELECT * FROM $this->table_name WHERE id = ?;";
         try {
-            $result = $this->queryDB($sql, $parameters);
-            if ($result->rowCount() === 1) {
-                $row = $result->fetch();
-                return new Link(
-                    $row['id'],
-                    $row['text'],
-                    $row['description'],
-                    $row['url'],
-                    $row['link_type_id'],
-                    $row['document_version_id']);
-            } else {
-                $response = new DBError("Returned " . $result->rowCount() .
-                    ", expected 1");
+            $result = $this->queryDB($sql, array($id));
+            $raw = $result->fetch();
+            if($raw){
+                $response =  Link::fromDBArray($raw);
             }
         } catch(PDOException $e) {
             $response = new DBError($e);
@@ -58,25 +47,16 @@ class LinkDBMapper extends DBMapper
     public function getAll()
     {
         $response = null;
-        $links= array();
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "select * from $dbName.link";
+        $sql = "SELECT * FROM $this->table_name";
         try {
-            $result = $this->queryDB($sql, null);
-            foreach ($result as $row) {
-                array_push($links, new Link(
-                    $row['id'],
-                    $row['text'],
-                    $row['description'],
-                    $row['url'],
-                    $row['link_type_id'],
-                    $row['document_version_id']));
+            $result = $this->queryDB($sql, array());
+            $raw = $result->fetchAll();
+            $objects = [];
+            foreach($raw as $raw_item){
+                array_push($objects, Link::fromDBArray($raw_item));
             }
-            if (count($links) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                return $links;
-            }
+            $response = $objects;
+
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
@@ -91,17 +71,8 @@ class LinkDBMapper extends DBMapper
     public function add($link)
     {
         $response = null;
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "INSERT INTO $db_name.link
-                VALUES (null, ?, ?, ?, ?, ?);";
-        $parameters = array(
-            $link->getText(),
-            $link->getDescription(),
-            $link->getUrl(),
-            $link->getLinkTypeId(),
-            $link->getDocumentVersionId());
         try {
-            $this->queryDB($sql, $parameters);
+            $this->queryDBWithAssociativeArray(Link::SQL_INSERT_STATEMENT, $link->toDBArray());
             $response = $this->connection->lastInsertId();
         } catch(PDOException $e) {
             $response = new DBError($e);
@@ -116,78 +87,48 @@ class LinkDBMapper extends DBMapper
      */
     public function update($link)
     {
-        if(!$this->isValidId($link->getId(), "link")) {
-            return new DBError("Invalid id");
-        }
         $response = null;
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "UPDATE $db_name.link
-                SET text = ?, description = ?, url = ?, link_type_id = ?, document_version_id = ?
-                WHERE id = ?;";
-        $parameters = array(
-            $link->getText(),
-            $link->getDescription(),
-            $link->getUrl(),
-            $link->getLinkTypeId(),
-            $link->getDocumentVersionId(),
-            $link->getId());
         try {
-            $this->queryDB($sql, $parameters);
-            return $link->getId();
+            $this->queryDBWithAssociativeArray($link::SQL_UPDATE_STATEMENT, $link->toDBArray());
+            $response = $link->getId();
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
     }
-
-    public function getLinksByDocumentVersionIdAndLinkTypeId($link_type_id, $document_version_id)
+    public function getLinksByDocumentIdAndLinkCategoryId($link_category_id, $document_id)
     {
-        $response = null;
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "select *
-                from $dbName.link
-                where link_type_id = ? and document_version_id = ?";
-        $links = array();
         try {
-            $result = $this->queryDB($sql, array($link_type_id, $document_version_id));
-            foreach ($result as $row) {
-                array_push($links, new Link(
-                    $row['id'],
-                    $row['text'],
-                    $row['description'],
-                    $row['url'],
-                    $row['link_type_id'],
-                    $row['document_version_id']));
+            $result = $this->queryDBWithAssociativeArray(Link::SQL_GET_LINKS_BY_DOCUMENT_ID_AND_LINK_CATEGORY_ID, array(
+                ':link_category_id' => $link_category_id,
+                ':document_id' => $document_id
+            ));
+            $raw = $result->fetchAll();
+            $objects = [];
+            foreach($raw as $raw_item){
+                array_push($objects, Link::fromDBArray($raw_item));
             }
-            if (count($links) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                return $links;
-            }
+            $response = $objects;
+
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
     }
 
-    public function getLinkTypeIdByDocumentVersionId($id)
+    public function getLinkCategoriesIdByDocumentId($document_id)
     {
-        $response = null;
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "SELECT distinct link_type_id
-                FROM $dbName.link
-                WHERE document_version_id = ?;";
-        $links_type_ids = array();
         try {
-            $result = $this->queryDB($sql, array($id));
-            foreach ($result as $row) {
-                array_push($links_type_ids, $row['link_type_id']);
+            $result = $this->queryDBWithAssociativeArray(Link::GET_LINK_CATEGORIES_BY_DOCUMENT_ID, array(
+                ':document_id' => $document_id
+            ));
+            $raw = $result->fetchAll();
+            $objects = [];
+            foreach($raw as $raw_item){
+                array_push($objects, $raw_item);
             }
-            if (count($links_type_ids) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                return $links_type_ids;
-            }
+            $response = $objects;
+
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
@@ -195,4 +136,13 @@ class LinkDBMapper extends DBMapper
     }
 
 
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function deleteById($id)
+    {
+        // TODO: Implement deleteById() method.
+    }
 }

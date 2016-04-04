@@ -3,7 +3,8 @@ require_once 'ApplicationError.php';
 
 class MethodNotAllowedError extends ApplicationError
 {
-    protected $status_code = Response::STATUS_CODE_METHOD_NOT_ALLOWED;
+    protected $response_code = Response::STATUS_CODE_METHOD_NOT_ALLOWED,
+        $path = "Undefined";
 
     /**
      * Constructor for method not allowed errors.
@@ -12,6 +13,9 @@ class MethodNotAllowedError extends ApplicationError
     public function __construct($method)
     {
         $this->title = "Error: Method not allowed";
-        $this->message = "Method <{$method}> not allowed at " . $_SERVER['PATH_INFO'];
+        if(array_key_exists('PATH_INFO', $_SERVER)){
+            $this->path = $_SERVER['PATH_INFO'];
+        }
+        $this->message = 'Method <{$method}> not allowed at <{$this->path}>';
     }
 }

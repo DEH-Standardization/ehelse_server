@@ -8,7 +8,13 @@ class ErrorResponse extends Response
 
     public function __construct($error)
     {
+        $this->error=$error;
         $this->body = $error->toJSON();
         $this->response_code = $error->getResponseCode();
+    }
+
+    public function getError()
+    {
+        return $this->error;
     }
 }

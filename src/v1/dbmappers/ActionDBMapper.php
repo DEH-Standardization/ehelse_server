@@ -52,11 +52,8 @@ class ActionDBMapper extends DBMapper
                     $row['name'],
                     $row['description']));
             }
-            if (count($actions) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                return $actions;
-            }
+            $response = $actions;
+
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
@@ -104,4 +101,15 @@ class ActionDBMapper extends DBMapper
         return $response;
     }
 
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+        throw new Exception("Not implemented error");
+    }
+
+    public function deleteById($id)
+    {
+        // TODO: Implement deleteById() method.
+        throw new Exception("Not implemented error");
+    }
 }

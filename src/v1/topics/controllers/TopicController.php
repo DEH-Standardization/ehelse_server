@@ -3,10 +3,8 @@ require_once __DIR__.'/../../responses/Response.php';
 require_once __DIR__.'/../../responses/ResponseController.php';
 require_once __DIR__.'/../../errors/InvalidPathError.php';
 require_once __DIR__.'/../../errors/ErrorController.php';
-require_once __DIR__.'/../../main/controllers/DescriptionController.php';
 require_once __DIR__.'/../../dbmappers/TopicDBMapper.php';
-require_once __DIR__.'/../../models/Standard.php';
-require_once __DIR__.'/../../models/Profile.php';
+require_once __DIR__.'/../../models/Document.php';
 
 class TopicController extends ResponseController
 {
@@ -55,23 +53,30 @@ class TopicController extends ResponseController
      */
     protected function create()
     {
-        $mapper = new TopicDbMapper();
-        $assoc = $this->body;
-        $topic = new Topic(
-            null,
-            null,
-            $assoc['title'],
-            $assoc['description'],
-            $assoc['sequence'],
-            $assoc['parent'],
-            $assoc['comment']);
-        $response = $mapper->add($topic);
+        $missing_fields = TopicController::validateJSONFormat($this->body, Topic::REQUIRED_POST_FIELDS);
+        if( !$missing_fields ){
+            $mapper = new TopicDbMapper();
+            $assoc = $this->body;
+            $topic = new Topic(
+                null,
+                null,
+                $assoc['title'],
+                $assoc['description'],
+                $assoc['sequence'],
+                $assoc['parentId'],
+                $assoc['comment']);
+            $response = $mapper->add($topic);
 
-        if ($response instanceof DBError) {
-            return new ErrorResponse($response);
+            if ($response instanceof DBError) {
+                $response = new ErrorResponse($response);
+            }
+            $this->id = $response;
+            $response = $this->get();
         }
-        $this->id = $response;
-        return $this->get();
+        else{
+            $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
+        }
+        return $response;
     }
 
     /**
@@ -102,20 +107,9 @@ class TopicController extends ResponseController
         }
         $result['children'] = $children;
 
-        $topic_standards = $controller->getStandardsByTopicId($id);
-        $topic_profiles = $controller->getProfileByTopicId($id);
 
         $documents = array();
-        foreach ($topic_standards as $standard) {
-            $standard = $standard->toArray();
-            $standard['document'] = 'standard';
-            array_push($documents, $standard);
-        }
-        foreach ($topic_profiles as $profile) {
-            $profile = $profile->toArray();
-            $profile['document'] = 'profile';
-            array_push($documents, $profile);
-        }
+
         usort($documents, function ($a, $b)
         {
             return $a['sequence'] - $b['sequence'];
@@ -131,22 +125,7 @@ class TopicController extends ResponseController
      */
     protected function update()
     {
-        $mapper = new TopicDbMapper();
-        $assoc = $this->body;
-        $topic = new Topic(
-            $this->id, null,
-            $assoc['title'],
-            $assoc['description'],
-            $assoc['sequence'],
-            $assoc['parent'],
-            $assoc['comment']);
-        $response = $mapper->update($topic);
-
-        if ($response instanceof DBError) {
-            return new ErrorResponse($response);
-        }
-        $result =  $mapper->getTopicById($response)->toArray();
-        return new Response(json_encode($result, JSON_PRETTY_PRINT));
+        return new ErrorResponse(new MethodNotAllowedError($this->method));
     }
 
     /**

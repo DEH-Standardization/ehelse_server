@@ -1,3 +1,3 @@
 <?php
 
-define('DB_PASSWORD', 'pliz_d0nt_pu5h_th1z_2_git');
+define('DB_PASSWORD', 'Xekz4muFu4X8ZgbX');
