@@ -5,6 +5,15 @@ require_once 'iModel.php';
 
 class Action implements iModel
 {
+    const SQL_GET_ALL = "SELECT * FROM action;";
+    const SQL_GET_BY_ID = "SELECT * FROM action WHERE id = :id;";
+    const SQL_INSERT = "INSERT INTO action VALUES (null, :name, :description);";
+    const SQL_UPDATE = "UPDATE action SET name = :name, description = :description WHERE id = :id;";
+    const SQL_DELETE = "DELETE FROM action WHERE id = :id;";
+
+    const REQUIRED_POST_FIELDS = ['name', 'description'];
+    const REQUIRED_PUT_FIELDS = ['name', 'description'];
+
     private $id, $name, $description;
 
     /**
@@ -83,5 +92,33 @@ class Action implements iModel
     public function toJSON()
     {
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+    }
+
+    public static function fromDBArray($db_array)
+    {
+        return new Action(
+            $db_array['id'],
+            $db_array['name'],
+            $db_array['description']);
+    }
+
+    public static function fromJSON($json)
+    {
+        return new Action(
+            $json['id'],
+            $json['name'],
+            $json['description']);
+    }
+
+    public function toDBArray()
+    {
+        $db_array = array(
+            ':name' => $this->name,
+            ':description' => $this->description
+        );
+        if($this->id){
+            $db_array[':id'] = $this->id;
+        }
+        return $db_array;
     }
 }

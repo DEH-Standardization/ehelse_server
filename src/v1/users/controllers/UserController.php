@@ -133,6 +133,5 @@ class UserController extends ResponseController
     {
         $user_db_mapper = new UserDBMapper();
         return new Response(json_encode($user_db_mapper->deleteById($this->id),JSON_PRETTY_PRINT));
-
     }
 }

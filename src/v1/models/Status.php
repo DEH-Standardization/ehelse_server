@@ -4,6 +4,15 @@ require_once __DIR__ . '/iModel.php';
 
 class Status implements iModel
 {
+    const SQL_GET_ALL = "SELECT * FROM status;";
+    const SQL_GET_BY_ID = "SELECT * FROM status WHERE id = :id;";
+    const SQL_INSERT = "INSERT INTO status VALUES (null, :name, :description);";
+    const SQL_UPDATE = "UPDATE status SET name = :name, description = :description WHERE id = :id;";
+
+    const REQUIRED_POST_FIELDS = ['name', 'description'];
+    const REQUIRED_PUT_FIELDS = ['name', 'description'];
+    const SQL_DELETE = "DELETE FROM status WHERE id = :id;";
+
     private $id, $name, $description;
 
     /**
@@ -87,16 +96,29 @@ class Status implements iModel
 
     public static function fromDBArray($db_array)
     {
-        // TODO: Implement fromDBArray() method.
+        return new Action(
+            $db_array['id'],
+            $db_array['name'],
+            $db_array['description']);
     }
 
     public static function fromJSON($json)
     {
-        // TODO: Implement fromJSON() method.
+        return new Action(
+            $json['id'],
+            $json['name'],
+            $json['description']);
     }
 
     public function toDBArray()
     {
-        // TODO: Implement toDBArray() method.
+        $db_array = array(
+            ':name' => $this->name,
+            ':description' => $this->description
+        );
+        if($this->id){
+            $db_array[':id'] = $this->id;
+        }
+        return $db_array;
     }
 }
