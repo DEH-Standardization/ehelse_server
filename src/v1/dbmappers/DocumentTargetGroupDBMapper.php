@@ -2,6 +2,7 @@
 
 require_once 'DBMapper.php';
 require_once __DIR__.'/../errors/DBError.php';
+require_once __DIR__.'/../models/DocumentTargetGroup.php';
 
 class DocumentTargetGroupDBMapper extends DBMapper
 {
@@ -16,7 +17,7 @@ class DocumentTargetGroupDBMapper extends DBMapper
         $response = null;
         $dbName = DbCommunication::getInstance()->getDatabaseName();
         $sql = "SELECT *
-                FROM $dbName.dokument_version_target_group
+                FROM document_target_group
                 WHERE id = ?;";
         $parameters = array($id);
         try {
@@ -47,16 +48,19 @@ class DocumentTargetGroupDBMapper extends DBMapper
      * @param $id
      * @return array|DBError
      */
+
     public function getAllTargetGroupIdsByDocumentVersionId($id)
     {
+        /*
         $response = null;
         $target_group_ids = array();
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
+        //$dbName = DbCommunication::getInstance()->getDatabaseName();
         $sql = "select target_group_id
-                from $dbName.dokument_version_target_group
-                where document_version_id = ?;";
+                from document_target_group
+                where document_id = 2;";
         try {
             $result = $this->queryDB($sql, array($id));
+            print_r($result);
             foreach ($result as $row) {
                 array_push($target_group_ids,
                     $row['target_group_id']);
@@ -70,5 +74,30 @@ class DocumentTargetGroupDBMapper extends DBMapper
             $response = new DBError($e);
         }
         return $response;
+        */
+
+        echo "/n id = $id ";
+        $response = null;
+        try {
+            $result = $this->queryDBWithAssociativeArray("select * from document_target_group", array());
+                //DocumentTargetGroup::SQL_GET_ALL_TARGET_GROUPS_BY_DOCUMENT_ID,
+                //array(":document_id" => $id));
+            print_r($result->fetchAll());
+            echo gettype($result);
+            $response = $result->fetch();
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function deleteById($id)
+    {
+        // TODO: Implement deleteById() method.
     }
 }

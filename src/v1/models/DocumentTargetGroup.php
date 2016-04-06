@@ -5,6 +5,9 @@ require_once 'iModel.php';
 
 class DocumentTargetGroup implements iModel
 {
+    const SQL_GET_ALL_TARGET_GROUPS_BY_DOCUMENT_ID = "SELECT target_group_id
+                FROM document_target_group
+                WHERE document_id = :document_id;";
     private $target_group_id, $deadline, $description, $action_id, $mandatory_id, $document_id, $document_timestamp;
 
     /**
@@ -132,4 +135,18 @@ class DocumentTargetGroup implements iModel
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
     }
 
+    public static function fromDBArray($db_array)
+    {
+        // TODO: Implement fromDBArray() method.
+    }
+
+    public static function fromJSON($json)
+    {
+        // TODO: Implement fromJSON() method.
+    }
+
+    public function toDBArray()
+    {
+        // TODO: Implement toDBArray() method.
+    }
 }

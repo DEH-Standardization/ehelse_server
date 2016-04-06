@@ -7,6 +7,9 @@ require_once __DIR__ . '/../../responses/ErrorResponse.php';
 require_once __DIR__ . '/../../dbmappers/DocumentDBMapper.php';
 require_once __DIR__ . '/../../dbmappers/StatusDBMapper.php';
 require_once __DIR__ . '/../../dbmappers/DocumentTypeDBMapper.php';
+require_once __DIR__ . '/../../dbmappers/LinkDBMapper.php';
+require_once __DIR__ . '/../../dbmappers/DocumentTypeDBMapper.php';
+require_once __DIR__ . '/../../dbmappers/DocumentVersionTargetGroupDBMapper.php';
 require_once __DIR__ . '/../../responses/Response.php';
 
 class DocumentController extends ResponseController
@@ -39,18 +42,45 @@ class DocumentController extends ResponseController
         $document_mapper = new DocumentDBMapper();
         $status_mapper = new StatusDBMapper();
         $document_type_mapper = new DocumentTypeDBMapper();
+
+        $links_db_mapper = new LinkDBMapper();
         $document_models = $document_mapper->getAll();
         $topics_array = [];
-        foreach($document_models as $document_models){
-            $document = $document_models->toArray();
-            $document['status'] = $status_mapper->getById($document['status'])->getName();
-            $document['documentType'] = $document_type_mapper->getById($document['documentType'])->getName();
+
+        /*
+        foreach($document_models as $document){
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            $document = new Document(null,null,null,null,null,null,null,null,null,null,null);
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+            //$document->setLinks();
+            $target_group =
+
+            $document->setTargetGroups($this->getTargetGroups());
+
+            $document_array = $document->toArray();
+            $document_array['status'] = $status_mapper->getById($document->getStatusId())->getName();
+            $document_array['documentType'] = $document_type_mapper->getById($document->getDocumentTypeId())->getName();
+
             array_push($topics_array, $document);
 
         }
         $json = json_encode(array( "documents" => $topics_array), JSON_PRETTY_PRINT);
 
         return new Response($json);
+        */
+
+        $target_group_mapper = new DocumentVersionTargetGroupDBMapper();
+        echo 'tt';
+        print_r($target_group_mapper->getAllTargetGroupIdsByDocumentVersionId(2));
+        return new Response("dd");
+    }
+
+    private function getTargetGroups()
+    {
+        $target_group_mapper = new DocumentVersionTargetGroupDBMapper();
+        $target_group_mapper->getAllTargetGroupIdsByDocumentVersionId(2);
+
     }
 
     protected function create()

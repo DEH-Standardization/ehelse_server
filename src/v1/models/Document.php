@@ -193,6 +193,25 @@ class Document implements iModel
         $this->prev_document_id = $prev_document_id;
     }
 
+    public function setTargetGroups($target_groups)
+    {
+        $this->target_groups = $target_groups;
+    }
+
+    public function getTargetGroups()
+    {
+        return $this->target_groups;
+    }
+
+    public function getLinks()
+    {
+        return $this->links;
+    }
+
+    public function setLinks($links)
+    {
+        $this->links = $links;
+    }
 
     /**
      * Returns associated array representation of model
@@ -209,7 +228,7 @@ class Document implements iModel
             'sequence' => $this->sequence,
             'topicId' => $this->topic_id,
             'comment' => $this->comment,
-            'status' => $this->status_id,
+            //'status' => $this->status_id,
             'documentType' => $this->document_type_id,
             'targetGroups' => $this->target_groups,
             'links' => $this->links
