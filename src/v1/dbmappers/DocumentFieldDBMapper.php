@@ -25,12 +25,8 @@ class DocumentFieldDBMapper extends DBMapper
                     $row['description'],
                     $row['sequence'],
                     $row['mandatory'],
-                    $row['is_standard_field'],
-                    $row['is_profile_field']);
-            } else {
-                $response = new DBError("Returned " . $result->rowCount() .
-                    " profile, expected 1");
-            }
+                    $row['document_type_id']);
+            } 
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
@@ -52,8 +48,7 @@ class DocumentFieldDBMapper extends DBMapper
                     $row['description'],
                     $row['sequence'],
                     $row['mandatory'],
-                    $row['is_standard_field'],
-                    $row['is_profile_field']));
+                    $row['document_type_id']));
             }
             $response = $actions;
 
@@ -73,14 +68,13 @@ class DocumentFieldDBMapper extends DBMapper
         $response = null;
         $db_name = DbCommunication::getInstance()->getDatabaseName();
         $sql = "INSERT INTO $db_name.document_field
-                VALUES (null, ?, ?, ?, ?, ?, ?);";
+                VALUES (null, ?, ?, ?, ?, ?);";
         $parameters = array(
             $document_field->getName(),
             $document_field->getDescription(),
             $document_field->getSequence(),
             $document_field->getMandatory(),
-            $document_field->getIsStandardField(),
-            $document_field->getIsProfileField());
+            $document_field->getDocumentTypeId());
         try {
             $this->queryDB($sql, $parameters);
             $response = $this->connection->lastInsertId();
@@ -98,15 +92,14 @@ class DocumentFieldDBMapper extends DBMapper
         $response = null;
         $db_name = DbCommunication::getInstance()->getDatabaseName();
         $sql = "UPDATE $db_name.document_field
-                SET `name` = ?, description = ?, sequence = ?, mandatory = ?, is_standard_field = ?, is_profile_field = ?
+                SET `name` = ?, description = ?, sequence = ?, mandatory = ?, document_type_id = ?
                 WHERE id = ?;";
         $parameters = array(
             $document_field->getName(),
             $document_field->getDescription(),
             $document_field->getSequence(),
             $document_field->getMandatory(),
-            $document_field->getIsStandardField(),
-            $document_field->getIsProfileField(),
+            $document_field->getDocumentTypeId(),
             $document_field->getId());
         try {
             $this->queryDB($sql, $parameters);
