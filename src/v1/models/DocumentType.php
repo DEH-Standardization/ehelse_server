@@ -2,14 +2,16 @@
 
 require_once __DIR__ . '/ModelValidation.php';
 require_once __DIR__ . '/iModel.php';
-
+require_once __DIR__ . '/../../utils.php';
 class DocumentType implements iModel
 {
     const REQUIRED_POST_FIELDS = ['name'];
     const REQUIRED_PUT_FIELDS = ['name'];
-    const SQL_INSERT_STATEMENT = "INSERT INTO document_type(name) VALUES (:name);";
-    const SQL_UPDATE_STATEMENT = "UPDATE document_type SET name=:name WHERE id = :id;";
-
+    const SQL_GET_ALL = "SELECT * FROM document_type;";
+    const SQL_GET_BY_ID = "SELECT * FROM document_type WHERE id = :id;";
+    const SQL_INSERT = "INSERT INTO document_type VALUES (null, :name);";
+    const SQL_UPDATE = "UPDATE document_type SET name = :name WHERE id = :id;";
+    const SQL_DELETE = "DELETE FROM document_type WHERE id = :id;";
 
     private $id, $name;
 
@@ -78,8 +80,10 @@ class DocumentType implements iModel
 
     public static function fromJSON($json)
     {
-        return new DocumentType($json['id'],
-            $json['name']);
+        return new DocumentType(
+            getValueFromArray($json,'id'),
+            getValueFromArray($json,'name')
+            );
     }
 
     public function toDBArray()

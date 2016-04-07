@@ -10,6 +10,7 @@ require_once 'actions/ActionController.php';
 require_once 'status/StatusController.php';
 require_once 'mandatory/MandatoryController.php';
 require_once __DIR__ . '/models/User.php';
+require_once 'documents/controllers/DocumentTypeController.php';
 
 class APIV1Controller implements iController
 {
@@ -60,6 +61,9 @@ class APIV1Controller implements iController
                 break;
             case 'status':
                 $this->controller = new StatusController($path, $method, $body);
+                break;
+            case 'document-types':
+                $this->controller = new DocumentTypeController($path, $method, $body);
                 break;
             default:
                 $this->controller = new ErrorController(new InvalidPathError());
