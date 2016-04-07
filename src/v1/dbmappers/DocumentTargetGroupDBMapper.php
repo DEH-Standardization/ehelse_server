@@ -3,7 +3,7 @@
 require_once 'DBMapper.php';
 require_once __DIR__.'/../errors/DBError.php';
 
-class DocumentVersionTargetGroupDBMapper extends DBMapper
+class DocumentTargetGroupDBMapper extends DBMapper
 {
 
     public function get($target_group)
