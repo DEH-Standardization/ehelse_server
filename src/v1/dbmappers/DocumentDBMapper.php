@@ -209,14 +209,4 @@ class DocumentDBMapper extends DBMapper
         }
         return $result;
     }
-
-    public function delete($model)
-    {
-        // TODO: Implement delete() method.
-    }
-
-    public function deleteById($id)
-    {
-        // TODO: Implement deleteById() method.
-    }
 }

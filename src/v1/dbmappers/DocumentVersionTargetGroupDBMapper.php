@@ -40,21 +40,7 @@ class DocumentVersionTargetGroupDBMapper extends DBMapper
         }
         return $response;
     }
-
-    public function getAll()
-    {
-        // TODO: Implement getAll() method.
-    }
-
-    public function add($model)
-    {
-        // TODO: Implement add() method.
-    }
-
-    public function update($model)
-    {
-        // TODO: Implement update() method.
-    }
+    
 
     /**
      * Returns a list of target group ids connected to a document version

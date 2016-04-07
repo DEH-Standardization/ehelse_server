@@ -296,28 +296,5 @@ class TopicDbMapper extends DBMapper
         }
         return $topic_three;
     }
-
-    public function get($model)
-    {
-        // TODO: Implement get() method.
-        throw new Exception("Not implemented error");
-    }
-
-    public function getById($id)
-    {
-        // TODO: Implement getById() method.
-        throw new Exception("Not implemented error");
-    }
-
-    public function delete($model)
-    {
-        // TODO: Implement delete() method.
-        throw new Exception("Not implemented error");
-    }
-
-    public function deleteById($id)
-    {
-        // TODO: Implement deleteById() method.
-        throw new Exception("Not implemented error");
-    }
+    
 }
