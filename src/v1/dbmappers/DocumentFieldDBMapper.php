@@ -6,10 +6,6 @@ require_once __DIR__.'/../errors/DBError.php';
 
 class DocumentFieldDBMapper extends DBMapper
 {
-    public function get($target_group)
-    {
-        // TODO: Implement get() method.
-    }
 
     public function getById($id)
     {
@@ -120,12 +116,7 @@ class DocumentFieldDBMapper extends DBMapper
         }
         return $response;
     }
-
-
-    public function delete($model)
-    {
-        // TODO: Implement delete() method.
-    }
+    
 
     public function deleteById($id)
     {

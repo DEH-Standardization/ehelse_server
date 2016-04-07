@@ -3,7 +3,7 @@
 require_once 'DBMapper.php';
 require_once __DIR__.'/../errors/DBError.php';
 
-class DocumentVersionTargetGroupDBMapper extends DBMapper
+class DocumentTargetGroupDBMapper extends DBMapper
 {
 
     public function get($target_group)
@@ -40,21 +40,7 @@ class DocumentVersionTargetGroupDBMapper extends DBMapper
         }
         return $response;
     }
-
-    public function getAll()
-    {
-        // TODO: Implement getAll() method.
-    }
-
-    public function add($model)
-    {
-        // TODO: Implement add() method.
-    }
-
-    public function update($model)
-    {
-        // TODO: Implement update() method.
-    }
+    
 
     /**
      * Returns a list of target group ids connected to a document version

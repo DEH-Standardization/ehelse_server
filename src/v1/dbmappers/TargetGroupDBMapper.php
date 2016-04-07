@@ -75,12 +75,6 @@ class TargetGroupDBMapper extends DBMapper
         return $response;
     }
 
-    public function delete($model)
-    {
-        // TODO: Implement delete() method.
-        throw new Exception("Not implemented error");
-    }
-
     public function deleteById($id)
     {
         $response = null;
