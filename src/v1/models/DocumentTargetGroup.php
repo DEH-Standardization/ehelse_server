@@ -8,7 +8,19 @@ class DocumentTargetGroup implements iModel
     const SQL_GET_ALL_TARGET_GROUPS_BY_DOCUMENT_ID = "SELECT target_group_id
                 FROM document_target_group
                 WHERE document_id = :document_id;";
-    private $target_group_id, $deadline, $description, $action_id, $mandatory_id, $document_id, $document_timestamp;
+    const GET_DOCUMENT_TARGET_GROUPS_BY_DOCUMENT_ID =
+        "SELECT * FROM document_target_group WHERE document_id = :document_id AND document_timestamp = :document_timestamp;";
+    private
+        $target_group_id,
+        $deadline,
+        $description,
+        $action_id,
+        $mandatory_id,
+        $document_id,
+        $document_timestamp,
+        $target_group,
+        $action,
+        $mandatory;
 
     /**
      * DocumentTargetGroup constructor.
@@ -29,6 +41,7 @@ class DocumentTargetGroup implements iModel
         $this->mandatory_id = $mandatory_id;
         $this->document_id = $document_id;
         $this->document_timestamp = $document_timestamp;
+        $this->target_group = [];
     }
 
     public function getTargetGroupId()
@@ -110,6 +123,31 @@ class DocumentTargetGroup implements iModel
         $this->document_timestamp = $document_timestamp;
     }
 
+    public function getTargetGroup()
+    {
+        return $this->target_group;
+    }
+
+    public function setAction($action)
+    {
+        $this->action = $action;
+    }
+
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    public function setMandatory($mandatory)
+    {
+        $this->mandatory = $mandatory;
+    }
+
+    public function getMandatory()
+    {
+        return $this->mandatory;
+    }
+
     /**
      * Returns associated array representation of model
      * @return array
@@ -117,13 +155,14 @@ class DocumentTargetGroup implements iModel
     public function toArray()
     {
         return array(
-            'targetGroupId' => $this->target_group_id,
-            'deadline' => $this->deadline,
+            'TargetGroupID' => $this->target_group_id,
+            //'deadline' => $this->deadline,
             'description' => $this->description,
-            'actionId' => $this->action_id,
-            'mandatoryId' => $this->mandatory_id,
-            'documentId' => $this->document_id,
-            'documentTimestamp' => $this->document_timestamp);
+            'action' => $this->action,
+            'mandatory' => $this->getMandatory(),
+            //'documentId' => $this->document_id,
+            //'documentTimestamp' => $this->document_timestamp
+        );
     }
 
     /**
@@ -137,7 +176,15 @@ class DocumentTargetGroup implements iModel
 
     public static function fromDBArray($db_array)
     {
-        // TODO: Implement fromDBArray() method.
+        return new DocumentTargetGroup(
+            $db_array['target_group_id'],
+            $db_array['deadline'],
+            $db_array['description'],
+            $db_array['action_id'],
+            $db_array['mandatory_id'],
+            $db_array['document_id'],
+            $db_array['document_timestamp']
+        );
     }
 
     public static function fromJSON($json)

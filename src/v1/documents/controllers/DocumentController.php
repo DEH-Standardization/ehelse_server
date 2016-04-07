@@ -10,6 +10,8 @@ require_once __DIR__ . '/../../dbmappers/DocumentTypeDBMapper.php';
 require_once __DIR__ . '/../../dbmappers/LinkDBMapper.php';
 require_once __DIR__ . '/../../dbmappers/DocumentTypeDBMapper.php';
 require_once __DIR__ . '/../../dbmappers/DocumentVersionTargetGroupDBMapper.php';
+require_once __DIR__ . '/../../dbmappers/ActionDBMapper.php';
+require_once __DIR__ . '/../../dbmappers/MandatoryDBMapper.php';
 require_once __DIR__ . '/../../responses/Response.php';
 
 class DocumentController extends ResponseController
@@ -71,16 +73,49 @@ class DocumentController extends ResponseController
         */
 
         $target_group_mapper = new DocumentVersionTargetGroupDBMapper();
-        echo 'tt';
+        //echo 'tt';
         print_r($target_group_mapper->getAllTargetGroupIdsByDocumentVersionId(2));
         return new Response("dd");
     }
 
-    private function getTargetGroups()
+    private function getTargetGroups($document)
     {
-        $target_group_mapper = new DocumentVersionTargetGroupDBMapper();
-        $target_group_mapper->getAllTargetGroupIdsByDocumentVersionId(2);
+        $document_target_group_mapper = new DocumentVersionTargetGroupDBMapper();
+        $action_mapper = new ActionDBMapper();
+        $mandatory_mapper = new MandatoryDBMapper();
 
+        $ddd = $document_target_group_mapper->getTargetGroupsByDocumentIdAndDocumentTimestamp(
+            $document->getId(), $document->getTimestamp());
+
+        $target_group_array = [];
+        foreach ($ddd as $tg) {
+            $tg->setAction($action_mapper->getById($tg->getTargetGroupId())->getName());
+            $tg->setMandatory($mandatory_mapper->getById($tg->getMandatoryId())->getName());
+            array_push($target_group_array, $tg->toArray());
+        }
+
+        return $target_group_array;
+    }
+
+    private function getLinks()
+    {
+        $link_mapper = new LinkDBMapper();
+        $link_array = array();
+
+        $link_categories = $link_mapper->getLinkCategoriesByDocumentId($this->id);
+        foreach ($link_categories as $category) {
+            $links = $link_mapper->getLinksByDocumentIdAndLinkCategoryId($category['id'],$this->id);
+            $json_links= array();
+            foreach ($links as $l) {
+                array_push($json_links, $l->toArray());
+            }
+            $category_array = array(
+                'linkCategory' => $category,
+                'links' => $json_links
+            );
+            array_push($link_array, $category_array);
+        }
+        return $link_array;
     }
 
     protected function create()
@@ -99,16 +134,20 @@ class DocumentController extends ResponseController
         $document_mapper = new DocumentDBMapper();
         $status_mapper = new StatusDBMapper();
         $document_type_mapper = new DocumentTypeDBMapper();
-        $document_model = $document_mapper->getById($this->id);
 
-        $document = $document_model->toArray();
-        $document['status'] = $status_mapper->getById($document['status'])->getName();
-        $document['documentType'] = $document_type_mapper->getById($document['documentType'])->getName();
+        $document = $document_mapper->getById($this->id);
 
-        $json = json_encode($document, JSON_PRETTY_PRINT);
+        $document->setTargetGroups($this->getTargetGroups($document));
+        $document->setLinks($this->getLinks());
+
+        $document_array = $document->toArray();
+        $document_array['status'] = $status_mapper->getById($document->getStatusId())->getName();
+        $document_array['documentTypeId'] = $document_type_mapper->getById($document->getDocumentTypeId())->getName();
+
+
+        $json = json_encode(array( "documents" => $document_array), JSON_PRETTY_PRINT);
 
         return new Response($json);
-
     }
 
     protected function update()

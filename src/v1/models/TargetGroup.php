@@ -7,10 +7,11 @@ class TargetGroup implements iModel
 {
     const REQUIRED_POST_FIELDS = ['name', 'description', 'parentId', 'abbreviation'];
     const REQUIRED_PUT_FIELDS = ['name', 'description', 'parentId', 'abbreviation'];
-    private $id, $name, $description, $parent_id, $abbreviation;
     const SQL_INSERT_STATEMENT = "INSERT INTO target_group(name, description, parent_id, abbreviation) VALUES (:name, :description, :parent_id, :abbreviation);";
     const SQL_UPDATE_STATEMENT = "UPDATE target_group set name=:name, description=:description, parent_id=:parent_id, abbreviation=:abbreviation WHERE id=:id;";
     const SQL_DELETE_TARGET_GROUP_BY_ID = "DELETE FROM target_group WHERE id=:id";
+
+    private $id, $name, $description, $parent_id, $abbreviation, $children;
 
     /**
      * Status constructor.
@@ -27,6 +28,7 @@ class TargetGroup implements iModel
         $this->setDescription($description);
         $this->parent_id = $parent_id;
         $this->abbreviation = $abbreviation;
+        $this->children = [];
     }
 
     public static function fromJSON($json)
@@ -72,6 +74,24 @@ class TargetGroup implements iModel
     public function getName()
     {
         return $this->name;
+    }
+
+    public function getParentId()
+    {
+        return $this->parent_id;
+    }
+
+    public function getAbbreviation()
+    {
+        return $this->abbreviation;
+    }
+    public function addChild($child)
+    {
+        array_push($this->children, $child);
+    }
+    public function addChildren($children)
+    {
+        $this->children = array_merge($this->children, $children);
     }
 
     /**

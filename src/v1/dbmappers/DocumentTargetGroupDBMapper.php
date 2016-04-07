@@ -100,4 +100,26 @@ class DocumentTargetGroupDBMapper extends DBMapper
     {
         // TODO: Implement deleteById() method.
     }
+
+
+    public function getTargetGroupsByDocumentIdAndDocumentTimestamp($document_id, $document_timestamp) {
+        try {
+            $result = $this->queryDBWithAssociativeArray(DocumentTargetGroup::GET_DOCUMENT_TARGET_GROUPS_BY_DOCUMENT_ID,
+                array(
+                    ':document_id' => $document_id,
+                    'document_timestamp' => $document_timestamp
+                ));
+            $raw = $result->fetchAll();
+            $objects = [];
+            foreach($raw as $raw_item){
+                array_push($objects, DocumentTargetGroup::fromDBArray($raw_item));
+            }
+            $response = $objects;
+
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
+
 }

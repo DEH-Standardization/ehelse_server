@@ -75,9 +75,29 @@ class TargetGroupDBMapper extends DBMapper
         return $response;
     }
 
-    public function deleteById($id)
+
+    public function getTargetGroupAsThree()
     {
-        // TODO: Implement deleteById() method.
-        throw new Exception("Not implemented error");
+        $target_group_three = [];
+        $target_group_dict = array();
+        $target_group_children = array();
+        $target_group_list = $this->getAll();
+        foreach ($target_group_list as $target_group) {
+            $parent_id = $target_group->getParentId();
+            if ($parent_id == null) {
+                array_push($target_group_three, $target_group);
+            } else {
+                if (!array_key_exists($parent_id, $target_group_children)) {
+                    $target_group_children[$parent_id] = array();
+                }
+                array_push($target_group_children[$parent_id], $target_group);
+            }
+            $target_group_dict[$target_group->getID()] = $target_group;
+        }
+        foreach ($target_group_children as $parent => $children) {
+            $target_group_dict[$parent]->addChildren($children);
+        }
+        return $target_group_three;
     }
+    
 }

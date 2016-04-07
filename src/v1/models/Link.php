@@ -28,9 +28,11 @@ class Link implements iModel
       WHERE id=:id";
     const SQL_GET_LINKS_BY_DOCUMENT_ID_AND_LINK_CATEGORY_ID =
         "SELECT * FROM link WHERE link_category_id=:link_category_id AND document_id=:document_id;";
-    const GET_LINK_CATEGORIES_BY_DOCUMENT_ID =
+    const GET_LINK_CATEGORY_IDS_BY_DOCUMENT_ID =
         "SELECT distinct link_category_id FROM link WHERE document_id = :document_id;";
-
+    const GET_LINK_CATEGORIES_BY_DOCUMENT_ID =
+        "SELECT * FROM link_category where id IN
+          (SELECT DISTINCT link_category_id FROM link WHERE document_id = :document_id);";
     private
         $id,
         $text,
