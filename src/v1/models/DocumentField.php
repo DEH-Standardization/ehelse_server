@@ -4,6 +4,12 @@ require_once __DIR__.'/ModelValidation.php';
 
 class DocumentField
 {
+    const REQUIRED_POST_FIELDS = ['name'];
+    const REQUIRED_PUT_FIELDS = ['name'];
+    const SQL_GET_ALL = "SELECT * FROM document_field;";
+    const SQL_GET_BY_ID = "SELECT * FROM document_field WHERE id = :id;";
+    const SQL_INSERT = "INSERT INTO document_field VALUES (null, :name);";
+    const SQL_UPDATE = "UPDATE document_field SET name = :name, description = :description, sequence = :sequence, mandatory = :mandatory, document_type_id = :document_type_id WHERE id = :id;";
     const SQL_DELETE_DOCUMENT_FIELD_BY_ID = "DELETE FROM document_field WHERE id=:id";
     private $id, $name, $description, $sequence, $mandatory, $document_type_id;
 
@@ -108,6 +114,17 @@ class DocumentField
     public function toJSON()
     {
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+    }
+    public function fromJSON($json)
+    {
+        return new DocumentField(
+            getValueFromArray($json,'id'),
+            getValueFromArray($json,'name'),
+            getValueFromArray($json,'description'),
+            getValueFromArray($json,'sequence'),
+            getValueFromArray($json,'mandatory'),
+            getValueFromArray($json,'documentTypeId')
+        );
     }
 
 }
