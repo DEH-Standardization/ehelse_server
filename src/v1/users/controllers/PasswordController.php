@@ -19,7 +19,6 @@ class PasswordController extends ResponseController
         $this->method=$method;
         $this->id=$id;
         if( count($this->path) != 0){
-            print_r($this->path);
             $this->controller = new ErrorController(new InvalidPathError());
         }
     }

@@ -45,8 +45,7 @@ abstract class DBMapper implements iDbMapper
             $stmt->execute();
         }
         catch(Exception $e){
-            echo "\n\nDBMapper failed!";
-            print_r($e);
+            $stmt = new DBError($e);
         }
 
         return $stmt;
@@ -76,8 +75,7 @@ abstract class DBMapper implements iDbMapper
                 $valid = true;
             }
         } catch(PDOException $e) {
-            print_r($e);
-            echo new DBError($e);
+            $valid = new DBError($e);
         }
         return $valid;
     }

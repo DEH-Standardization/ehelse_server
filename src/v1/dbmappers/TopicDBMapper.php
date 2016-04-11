@@ -28,18 +28,22 @@ class TopicDbMapper extends DBMapper
                   FROM topic
                   GROUP BY id)";
         $result = $this->queryDB($sql, array($id));
-        if ($result->rowCount() == 1) {
+        if( $result instanceof DBError){
+            return $result;
+        }
+        else{
             $row = $result->fetch();
-            return new Topic(
-                $row['id'],
-                $row['timestamp'],
-                $row['title'],
-                $row['description'],
-                $row['sequence'],
-                $row['parent_id'],
-                $row['comment']);
-        } else {
-            trigger_error($result->errorInfo(), E_USER_ERROR);
+            if ($row) {
+
+                return new Topic(
+                    $row['id'],
+                    $row['timestamp'],
+                    $row['title'],
+                    $row['description'],
+                    $row['sequence'],
+                    $row['parent_id'],
+                    $row['comment']);
+            }
         }
         return null;
     }
@@ -187,10 +191,16 @@ class TopicDbMapper extends DBMapper
             $topic->getComment()
         );
         try {
-            $this->queryDB($sql, $parameters);
-            $response = $this->connection->lastInsertId();
+            $result = $this->queryDB($sql, $parameters);
+            if($result instanceof DBError){
+                $response = $result;
+            }
+            else{
+                $response = $this->connection->lastInsertId();
+            }
         } catch(PDOException $e) {
-            $response = new DBError($e);
+            print_r($e);
+            $response = $e;
         }
         return $response;
     }

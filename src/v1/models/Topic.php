@@ -158,7 +158,7 @@ class Topic implements iModel
             'title' => $this->title,
             'description' => $this->description,
             'sequence' => $this->sequence,
-            'parent' => $this->parent_id,
+            'parentId' => $this->parent_id,
             'comment' => $this->comment,
             'children' => $children,
             'documents' => $documents);

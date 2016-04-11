@@ -69,11 +69,14 @@ class TopicController extends ResponseController
                 $assoc['comment']);
             $response = $mapper->add($topic);
 
+
             if ($response instanceof DBError) {
                 $response = new ErrorResponse($response);
             }
-            $this->id = $response;
-            $response = $this->get();
+            else{
+                $this->id = $response;
+                $response = $this->get();
+            }
         }
         else{
             $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
@@ -88,73 +91,81 @@ class TopicController extends ResponseController
     protected function get()
     {
         $result = $this->getChildren($this->id);
-        return new Response(json_encode($result, JSON_PRETTY_PRINT));
+        if($result){
+
+            return new Response(json_encode($result, JSON_PRETTY_PRINT));
+        }
+        else{
+            return new ErrorResponse(new NotFoundError());
+        }
     }
 
     private function getChildren($id)
     {
         $controller = new TopicDbMapper();
         $topic = $controller->getTopicById($id);
-        $result = $topic->toArray();
-        $topic_children = $controller->getSubtopicsByTopicId($id);
+        if($topic){
+            $result = $topic->toArray();
+            $topic_children = $controller->getSubtopicsByTopicId($id);
 
-        $children = array();
-        foreach ($topic_children as $child) {
+            $children = array();
+            foreach ($topic_children as $child) {
 
-            if (count($topic_children) > 0) {
-                array_push($children, $this->getChildren($child->getId()));
-            } else {
-                array_push($children, $child->toArray());
+                if (count($topic_children) > 0) {
+                    array_push($children, $this->getChildren($child->getId()));
+                } else {
+                    array_push($children, $child->toArray());
+                }
             }
+            $result['children'] = $children;
+
+            $document_mapper = new DocumentDBMapper();
+            $documents = $document_mapper->getDocumentsByTopicId($id);
+
+
+            $status_mapper = new StatusDBMapper();
+            $document_type_mapper = new DocumentTypeDBMapper();
+
+            $documents_array = array();
+            foreach ($documents as $document) {
+                $document->setTargetGroups(DocumentController::getTargetGroups($document));
+                $document->setLinks(DocumentController::getLinks($document));
+
+                $document_array = $document->toArray();
+                $document_array['status'] = $status_mapper->getById($document->getStatusId())->getName();
+                $document_array['documentTypeId'] = $document_type_mapper->getById($document->getDocumentTypeId())->getName();
+
+                array_push($documents_array, $document_array);
+
+            }
+
+            usort($documents_array, function ($a, $b)
+            {
+                return $a['sequence'] - $b['sequence'];
+
+            });
+
+            $result['documents'] = array_merge($result['documents'],$documents_array);
+            return $result;
         }
-        $result['children'] = $children;
-
-        $document_mapper = new DocumentDBMapper();
-        $documents = $document_mapper->getDocumentsByTopicId($id);
-
-
-        $status_mapper = new StatusDBMapper();
-        $document_type_mapper = new DocumentTypeDBMapper();
-
-        $documents_array = array();
-        foreach ($documents as $document) {
-            $document->setTargetGroups(DocumentController::getTargetGroups($document));
-            $document->setLinks(DocumentController::getLinks($document));
-
-            $document_array = $document->toArray();
-            $document_array['status'] = $status_mapper->getById($document->getStatusId())->getName();
-            $document_array['documentTypeId'] = $document_type_mapper->getById($document->getDocumentTypeId())->getName();
-
-            array_push($documents_array, $document_array);
-
-        }
-
-        usort($documents_array, function ($a, $b)
-        {
-            return $a['sequence'] - $b['sequence'];
-
-        });
-
-        $result['documents'] = array_merge($result['documents'],$documents_array);
-        return $result;
     }
 
-    /**
-     * Function updating a topics values.
-     * @return Response
-     */
-    protected function update()
+        /**
+         * Function updating a topics values.
+         * @return Response
+         */
+        protected function update()
     {
         return new ErrorResponse(new MethodNotAllowedError($this->method));
     }
 
-    /**
-     * Function deleting a topic.
-     * @return Response
-     */
-    protected function delete()
+        /**
+         * Function deleting a topic.
+         * @return Response
+         */
+        protected function delete()
     {
         // TODO fix delete
         return new Response("delete topic");
     }
-}
+    }
