@@ -5,6 +5,8 @@ require_once "ApplicationError.php";
  */
 class DBError extends ApplicationError
 {
+
+    protected $response_code = Response::STATUS_CODE_INTERNAL_ERROR;
     /**
      * DBError constructor.
      * @param $e
@@ -53,10 +55,7 @@ class DBError extends ApplicationError
         ), JSON_PRETTY_PRINT);
     }
 
-    public function getStatusCode()
-    {
-        return 400;
-    }
+
 
 
 }
