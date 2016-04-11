@@ -120,8 +120,6 @@ class TopicController extends ResponseController
             }
             $result['children'] = $children;
 
-
-
             $result['documents'] = array_merge($result['documents'],$this->getDocuments($id));
             return $result;
         }
