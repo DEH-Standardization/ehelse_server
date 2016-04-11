@@ -49,47 +49,19 @@ class DocumentTargetGroupDBMapper extends DBMapper
      * @return array|DBError
      */
 
+    /*
     public function getAllTargetGroupIdsByDocumentVersionId($id)
     {
-        /*
-        $response = null;
-        $target_group_ids = array();
-        //$dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "select target_group_id
-                from document_target_group
-                where document_id = 2;";
-        try {
-            $result = $this->queryDB($sql, array($id));
-            print_r($result);
-            foreach ($result as $row) {
-                array_push($target_group_ids,
-                    $row['target_group_id']);
-            }
-            if (count($target_group_ids) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                return $target_group_ids;
-            }
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-        */
-
-        echo "/n id = $id ";
         $response = null;
         try {
             $result = $this->queryDBWithAssociativeArray("select * from document_target_group", array());
-                //DocumentTargetGroup::SQL_GET_ALL_TARGET_GROUPS_BY_DOCUMENT_ID,
-                //array(":document_id" => $id));
-            print_r($result->fetchAll());
-            echo gettype($result);
             $response = $result->fetch();
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
     }
+    */
 
     public function delete($model)
     {
