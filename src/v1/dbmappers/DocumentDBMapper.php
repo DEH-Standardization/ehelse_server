@@ -209,4 +209,22 @@ class DocumentDBMapper extends DBMapper
         }
         return $result;
     }
+
+    public function getDocumentsByTopicId($topic_id)
+    {
+        try {
+            $result = $this->queryDBWithAssociativeArray(Topic::SQL_GET_DOCUMENTS_BY_TOPIC_ID,
+                array(':topic_id' => $topic_id));
+            $raw = $result->fetchAll();
+            $objects = [];
+            foreach($raw as $raw_item){
+                array_push($objects, Document::fromDBArray($raw_item));
+            }
+            $response = $objects;
+
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
 }

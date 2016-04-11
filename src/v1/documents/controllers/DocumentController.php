@@ -76,7 +76,7 @@ class DocumentController extends ResponseController
 
     }
 
-    private function getTargetGroups($document)
+    public static function getTargetGroups($document)
     {
         $document_target_group_mapper = new DocumentTargetGroupDBMapper();
         $action_mapper = new ActionDBMapper();
@@ -100,7 +100,7 @@ class DocumentController extends ResponseController
         return $target_group_array;
     }
 
-    private function getLinks($document)
+    public static function getLinks($document)
     {
         $link_mapper = new LinkDBMapper();
         $link_array = array();

@@ -12,6 +12,7 @@ class Document implements iModel
                                   comment,next_document_id,prev_document_id)
                                   VALUES (:title,:description,:status_id,:sequence,:document_type_id,:topicId,
                                   :comment,:next_document_id,:prev_document_id);";
+
     private
         $id,
         $timestamp,
