@@ -9,7 +9,7 @@ require_once __DIR__ . '/../../dbmappers/StatusDBMapper.php';
 require_once __DIR__ . '/../../dbmappers/DocumentTypeDBMapper.php';
 require_once __DIR__ . '/../../dbmappers/LinkDBMapper.php';
 require_once __DIR__ . '/../../dbmappers/DocumentTypeDBMapper.php';
-require_once __DIR__ . '/../../dbmappers/DocumentVersionTargetGroupDBMapper.php';
+require_once __DIR__ . '/../../dbmappers/DocumentTargetGroupDBMapper.php';
 require_once __DIR__ . '/../../dbmappers/ActionDBMapper.php';
 require_once __DIR__ . '/../../dbmappers/MandatoryDBMapper.php';
 require_once __DIR__ . '/../../responses/Response.php';
@@ -45,66 +45,69 @@ class DocumentController extends ResponseController
         $status_mapper = new StatusDBMapper();
         $document_type_mapper = new DocumentTypeDBMapper();
 
-        $links_db_mapper = new LinkDBMapper();
-        $document_models = $document_mapper->getAll();
-        $topics_array = [];
+        $documents = $document_mapper->getAll();
 
-        /*
-        foreach($document_models as $document){
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            $document = new Document(null,null,null,null,null,null,null,null,null,null,null);
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        $documents_array = array();
+        foreach ($documents as $document) {
+            $document->setTargetGroups($this->getTargetGroups($document));
+            $document->setLinks($this->getLinks($document));
 
-            //$document->setLinks();
-            $target_group =
-
-            $document->setTargetGroups($this->getTargetGroups());
+            //echo "doc___________________: ";
+            //print_r($document);
 
             $document_array = $document->toArray();
             $document_array['status'] = $status_mapper->getById($document->getStatusId())->getName();
-            $document_array['documentType'] = $document_type_mapper->getById($document->getDocumentTypeId())->getName();
+            $document_array['documentTypeId'] = $document_type_mapper->getById($document->getDocumentTypeId())->getName();
 
-            array_push($topics_array, $document);
+            array_push($documents_array, $document_array);
 
         }
-        $json = json_encode(array( "documents" => $topics_array), JSON_PRETTY_PRINT);
+        $json = json_encode(array( "documents" => $documents_array), JSON_PRETTY_PRINT);
+        return new Response($json);
+
+
+
+
+
+        $json = json_encode(array( "documents" => $documents), JSON_PRETTY_PRINT);
 
         return new Response($json);
-        */
 
-        $target_group_mapper = new DocumentVersionTargetGroupDBMapper();
-        //echo 'tt';
-        print_r($target_group_mapper->getAllTargetGroupIdsByDocumentVersionId(2));
-        return new Response("dd");
+
     }
 
     private function getTargetGroups($document)
     {
-        $document_target_group_mapper = new DocumentVersionTargetGroupDBMapper();
+        $document_target_group_mapper = new DocumentTargetGroupDBMapper();
         $action_mapper = new ActionDBMapper();
         $mandatory_mapper = new MandatoryDBMapper();
 
-        $ddd = $document_target_group_mapper->getTargetGroupsByDocumentIdAndDocumentTimestamp(
+        $target_groups = $document_target_group_mapper->getTargetGroupsByDocumentIdAndDocumentTimestamp(
             $document->getId(), $document->getTimestamp());
 
         $target_group_array = [];
-        foreach ($ddd as $tg) {
-            $tg->setAction($action_mapper->getById($tg->getTargetGroupId())->getName());
-            $tg->setMandatory($mandatory_mapper->getById($tg->getMandatoryId())->getName());
-            array_push($target_group_array, $tg->toArray());
+
+        foreach ($target_groups as $target_group) {
+            // Action
+            $action = $action_mapper->getById($target_group->getActionId());
+            $target_group->setAction($action->getName());
+            // Mandatory
+            $mandatory = $mandatory_mapper->getById($target_group->getMandatoryId());
+            $target_group->setMandatory($mandatory->getName());
+            array_push($target_group_array, $target_group->toArray());
         }
 
         return $target_group_array;
     }
 
-    private function getLinks()
+    private function getLinks($document)
     {
         $link_mapper = new LinkDBMapper();
         $link_array = array();
 
-        $link_categories = $link_mapper->getLinkCategoriesByDocumentId($this->id);
+        $link_categories = $link_mapper->getLinkCategoriesByDocumentId($document->getId());
         foreach ($link_categories as $category) {
-            $links = $link_mapper->getLinksByDocumentIdAndLinkCategoryId($category['id'],$this->id);
+            $links = $link_mapper->getLinksByDocumentIdAndLinkCategoryId($category['id'],$document->getId());
             $json_links= array();
             foreach ($links as $l) {
                 array_push($json_links, $l->toArray());
