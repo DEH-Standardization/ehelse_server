@@ -219,7 +219,6 @@ class Document implements iModel
      */
     public function toArray()
     {
-        // TODO: check with API description
         return array(
             'id' => $this->id,
             'timestamp' => $this->timestamp,
@@ -228,7 +227,6 @@ class Document implements iModel
             'sequence' => $this->sequence,
             'topicId' => $this->topic_id,
             'comment' => $this->comment,
-            //'status' => $this->status_id,
             'documentType' => $this->document_type_id,
             'targetGroups' => $this->target_groups,
             'links' => $this->links

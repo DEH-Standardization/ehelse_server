@@ -141,7 +141,7 @@ class DocumentController extends ResponseController
         $document = $document_mapper->getById($this->id);
 
         $document->setTargetGroups($this->getTargetGroups($document));
-        $document->setLinks($this->getLinks());
+        $document->setLinks($this->getLinks($document));
 
         $document_array = $document->toArray();
         $document_array['status'] = $status_mapper->getById($document->getStatusId())->getName();
