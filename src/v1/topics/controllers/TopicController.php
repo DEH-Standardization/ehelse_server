@@ -39,8 +39,9 @@ class TopicController extends ResponseController
         $topics = $mapper->getTopicsAsThree();
         $topics_array = [];
         foreach($topics as $topic){
-            //$topic->add
-            array_push($topics_array, $topic->toArray());
+            $array = $topic->toArray();
+            $array['documents'] = $this->getDocuments($topic->getId());
+            array_push($topics_array, $array);
         }
 
         $json = json_encode(array( "topics" => $topics_array), JSON_PRETTY_PRINT);
@@ -119,35 +120,47 @@ class TopicController extends ResponseController
             }
             $result['children'] = $children;
 
-            $document_mapper = new DocumentDBMapper();
-            $documents = $document_mapper->getDocumentsByTopicId($id);
 
 
-            $status_mapper = new StatusDBMapper();
-            $document_type_mapper = new DocumentTypeDBMapper();
-
-            $documents_array = array();
-            foreach ($documents as $document) {
-                $document->setTargetGroups(DocumentController::getTargetGroups($document));
-                $document->setLinks(DocumentController::getLinks($document));
-
-                $document_array = $document->toArray();
-                $document_array['status'] = $status_mapper->getById($document->getStatusId())->getName();
-                $document_array['documentTypeId'] = $document_type_mapper->getById($document->getDocumentTypeId())->getName();
-
-                array_push($documents_array, $document_array);
-
-            }
-
-            usort($documents_array, function ($a, $b)
-            {
-                return $a['sequence'] - $b['sequence'];
-
-            });
-
-            $result['documents'] = array_merge($result['documents'],$documents_array);
+            $result['documents'] = array_merge($result['documents'],$this->getDocuments($id));
             return $result;
         }
+    }
+
+    /**
+     * Returns all documents for the topic
+     * @param $topic_id
+     * @return array
+     */
+    private function getDocuments($topic_id)
+    {
+        $document_mapper = new DocumentDBMapper();
+        $documents = $document_mapper->getDocumentsByTopicId($topic_id);
+
+
+        $status_mapper = new StatusDBMapper();
+        $document_type_mapper = new DocumentTypeDBMapper();
+
+        $documents_array = array();
+        foreach ($documents as $document) {
+            $document->setTargetGroups(DocumentController::getTargetGroups($document));
+            $document->setLinks(DocumentController::getLinks($document));
+
+            $document_array = $document->toArray();
+            $document_array['status'] = $status_mapper->getById($document->getStatusId())->getName();
+            $document_array['documentTypeId'] = $document_type_mapper->getById($document->getDocumentTypeId())->getName();
+
+            array_push($documents_array, $document_array);
+
+        }
+
+        usort($documents_array, function ($a, $b)
+        {
+            return $a['sequence'] - $b['sequence'];
+
+        });
+
+        return $documents_array;
     }
 
         /**
