@@ -40,7 +40,7 @@ class TopicController extends ResponseController
         $topics_array = [];
         foreach($topics as $topic){
             $array = $topic->toArray();
-            $array['documents'] = $this->getDocuments($topic->getId());
+            //$array['documents'] = $this->getDocuments($topic->getId()); // Adds all documents
             array_push($topics_array, $array);
         }
 
