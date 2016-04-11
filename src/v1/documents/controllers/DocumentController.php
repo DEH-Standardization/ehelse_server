@@ -52,9 +52,6 @@ class DocumentController extends ResponseController
             $document->setTargetGroups($this->getTargetGroups($document));
             $document->setLinks($this->getLinks($document));
 
-            //echo "doc___________________: ";
-            //print_r($document);
-
             $document_array = $document->toArray();
             $document_array['status'] = $status_mapper->getById($document->getStatusId())->getName();
             $document_array['documentTypeId'] = $document_type_mapper->getById($document->getDocumentTypeId())->getName();
@@ -65,15 +62,9 @@ class DocumentController extends ResponseController
         $json = json_encode(array( "documents" => $documents_array), JSON_PRETTY_PRINT);
         return new Response($json);
 
-
-
-
-
         $json = json_encode(array( "documents" => $documents), JSON_PRETTY_PRINT);
 
         return new Response($json);
-
-
     }
 
     public static function getTargetGroups($document)
