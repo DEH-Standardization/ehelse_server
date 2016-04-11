@@ -2,6 +2,7 @@
 
 require_once 'DBMapper.php';
 require_once __DIR__.'/../errors/DBError.php';
+require_once __DIR__.'/../models/DocumentTargetGroup.php';
 
 class DocumentTargetGroupDBMapper extends DBMapper
 {
@@ -16,7 +17,7 @@ class DocumentTargetGroupDBMapper extends DBMapper
         $response = null;
         $dbName = DbCommunication::getInstance()->getDatabaseName();
         $sql = "SELECT *
-                FROM $dbName.dokument_version_target_group
+                FROM document_target_group
                 WHERE id = ?;";
         $parameters = array($id);
         try {
@@ -47,28 +48,50 @@ class DocumentTargetGroupDBMapper extends DBMapper
      * @param $id
      * @return array|DBError
      */
+
+    /*
     public function getAllTargetGroupIdsByDocumentVersionId($id)
     {
         $response = null;
-        $target_group_ids = array();
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "select target_group_id
-                from $dbName.dokument_version_target_group
-                where document_version_id = ?;";
         try {
-            $result = $this->queryDB($sql, array($id));
-            foreach ($result as $row) {
-                array_push($target_group_ids,
-                    $row['target_group_id']);
-            }
-            if (count($target_group_ids) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                return $target_group_ids;
-            }
+            $result = $this->queryDBWithAssociativeArray("select * from document_target_group", array());
+            $response = $result->fetch();
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
     }
+    */
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function deleteById($id)
+    {
+        // TODO: Implement deleteById() method.
+    }
+
+
+    public function getTargetGroupsByDocumentIdAndDocumentTimestamp($document_id, $document_timestamp) {
+        try {
+            $result = $this->queryDBWithAssociativeArray(DocumentTargetGroup::GET_DOCUMENT_TARGET_GROUPS_BY_DOCUMENT_ID,
+                array(
+                    ':document_id' => $document_id,
+                    'document_timestamp' => $document_timestamp
+                ));
+            $raw = $result->fetchAll();
+            $objects = [];
+            foreach($raw as $raw_item){
+                array_push($objects, DocumentTargetGroup::fromDBArray($raw_item));
+            }
+            $response = $objects;
+
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
+
 }

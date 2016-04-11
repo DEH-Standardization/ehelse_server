@@ -39,6 +39,7 @@ class TopicController extends ResponseController
         $topics = $mapper->getTopicsAsThree();
         $topics_array = [];
         foreach($topics as $topic){
+            //$topic->add
             array_push($topics_array, $topic->toArray());
         }
 
@@ -46,6 +47,7 @@ class TopicController extends ResponseController
 
         return new Response($json);
     }
+
 
     /**
      * Function creating a new topic.
@@ -117,38 +119,53 @@ class TopicController extends ResponseController
             }
             $result['children'] = $children;
 
+            $document_mapper = new DocumentDBMapper();
+            $documents = $document_mapper->getDocumentsByTopicId($id);
 
-            $documents = array();
 
-            usort($documents, function ($a, $b)
+            $status_mapper = new StatusDBMapper();
+            $document_type_mapper = new DocumentTypeDBMapper();
+
+            $documents_array = array();
+            foreach ($documents as $document) {
+                $document->setTargetGroups(DocumentController::getTargetGroups($document));
+                $document->setLinks(DocumentController::getLinks($document));
+
+                $document_array = $document->toArray();
+                $document_array['status'] = $status_mapper->getById($document->getStatusId())->getName();
+                $document_array['documentTypeId'] = $document_type_mapper->getById($document->getDocumentTypeId())->getName();
+
+                array_push($documents_array, $document_array);
+
+            }
+
+            usort($documents_array, function ($a, $b)
             {
                 return $a['sequence'] - $b['sequence'];
 
             });
-            $result['documents'] = array_merge($result['documents'],$documents);
+
+            $result['documents'] = array_merge($result['documents'],$documents_array);
             return $result;
-        }
-        else{
-            return null;
         }
     }
 
-    /**
-     * Function updating a topics values.
-     * @return Response
-     */
-    protected function update()
+        /**
+         * Function updating a topics values.
+         * @return Response
+         */
+        protected function update()
     {
         return new ErrorResponse(new MethodNotAllowedError($this->method));
     }
 
-    /**
-     * Function deleting a topic.
-     * @return Response
-     */
-    protected function delete()
+        /**
+         * Function deleting a topic.
+         * @return Response
+         */
+        protected function delete()
     {
         // TODO fix delete
         return new Response("delete topic");
     }
-}
+    }

@@ -9,6 +9,8 @@ class Topic implements iModel
 {
     private $id, $timestamp, $title, $description, $sequence, $parent_id, $comment, $children, $documents;
     const REQUIRED_POST_FIELDS = ['title', 'description','sequence','parentId','comment'];
+    const SQL_GET_DOCUMENTS_BY_TOPIC_ID = "SELECT D.* FROM document AS  D, topic as T WHERE(D.id,D.timestamp) IN
+                ( SELECT id, MAX(timestamp)FROM document GROUP BY id) AND T.id = :topic_id;";
     /**
      * Topic constructor.
      * @param $id
