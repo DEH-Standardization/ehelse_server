@@ -34,10 +34,10 @@ class UserController extends ResponseController
                 $this->controller = new ErrorController(new InvalidPathError());
             }
         }
-
+/*
         if(!array_key_exists('CURRENT_USER', $GLOBALS) && $this->method != Response::REQUEST_METHOD_OPTIONS){
             $this->controller = new ErrorController(new AuthenticationError($this->method));
-        }
+        }*/
     }
 
     protected static function getArrayFromObjectArray($array){
