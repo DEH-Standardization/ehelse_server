@@ -140,6 +140,7 @@ class TopicController extends ResponseController
         foreach ($documents as $document) {
             $document->setTargetGroups(DocumentController::getTargetGroups($document));
             $document->setLinks(DocumentController::getLinks($document));
+            $document->setFields([]);
 
             $document_array = $document->toArray();
 
