@@ -212,6 +212,7 @@ class Link implements iModel
             $json['linkCategoryId'],
             $json['documentId'],
             $json['documentTimestamp'],
+            (array_key_exists('linkDocumentId', $json)) ? $json['linkDocumentId'] : null
         );
     }
 
