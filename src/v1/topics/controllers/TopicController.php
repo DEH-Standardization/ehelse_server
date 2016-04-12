@@ -136,17 +136,12 @@ class TopicController extends ResponseController
         $documents = $document_mapper->getDocumentsByTopicId($topic_id);
 
 
-        $status_mapper = new StatusDBMapper();
-        $document_type_mapper = new DocumentTypeDBMapper();
-
         $documents_array = array();
         foreach ($documents as $document) {
             $document->setTargetGroups(DocumentController::getTargetGroups($document));
             $document->setLinks(DocumentController::getLinks($document));
 
             $document_array = $document->toArray();
-            $document_array['status'] = $status_mapper->getById($document->getStatusId())->getName();
-            $document_array['documentTypeId'] = $document_type_mapper->getById($document->getDocumentTypeId())->getName();
 
             array_push($documents_array, $document_array);
 
