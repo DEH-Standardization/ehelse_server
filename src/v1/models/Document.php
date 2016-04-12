@@ -26,6 +26,7 @@ class Document implements iModel
         $next_document_id,
         $prev_document_id,
         $target_groups,
+        $fields,
         $links;
 
     /**
@@ -214,6 +215,16 @@ class Document implements iModel
         $this->links = $links;
     }
 
+    public function getFields()
+    {
+        return $this->fields;
+    }
+
+    public function setFields($fields)
+    {
+        $this->fields = $fields;
+    }
+
     /**
      * Returns associated array representation of model
      * @return array
@@ -225,12 +236,16 @@ class Document implements iModel
             'timestamp' => $this->timestamp,
             'title' => $this->title,
             'description' => $this->description,
+            'statusId' => $this->status_id,
             'sequence' => $this->sequence,
             'topicId' => $this->topic_id,
             'comment' => $this->comment,
-            'documentType' => $this->document_type_id,
-            'targetGroups' => $this->target_groups,
-            'links' => $this->links
+            'documentTypeId' => $this->document_type_id,
+            'nextDocumentId' => $this->next_document_id,
+            'previousDocumentId' => $this->prev_document_id,
+            'links' => $this->links,
+            'fields' => $this->fields,
+            'targetGroups' => $this->target_groups
         );
     }
 

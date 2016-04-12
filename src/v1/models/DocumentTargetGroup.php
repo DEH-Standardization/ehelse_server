@@ -155,13 +155,12 @@ class DocumentTargetGroup implements iModel
     public function toArray()
     {
         return array(
-            'TargetGroupID' => $this->target_group_id,
-            //'deadline' => $this->deadline,
+            'documentId' => $this->document_id,
             'description' => $this->description,
-            'action' => $this->action,
-            'mandatory' => $this->getMandatory(),
-            //'documentId' => $this->document_id,
-            //'documentTimestamp' => $this->document_timestamp
+            'actionId' => $this->action_id,
+            'deadline' => $this->deadline,
+            'mandatoryId' => $this->mandatory_id,
+            'targetGroupId' => $this->target_group_id
         );
     }
 

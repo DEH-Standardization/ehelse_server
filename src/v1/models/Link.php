@@ -33,6 +33,7 @@ class Link implements iModel
     const GET_LINK_CATEGORIES_BY_DOCUMENT_ID =
         "SELECT * FROM link_category where id IN
           (SELECT DISTINCT link_category_id FROM link WHERE document_id = :document_id);";
+    const SQL_GET_LINKS_BY_DOCUMENT_ID = "SELECT * FROM link WHERE document_id = :document_id;";
     private
         $id,
         $text,
@@ -168,16 +169,14 @@ class Link implements iModel
      */
     public function toArray()
     {
-        // TODO: check with API
         return array(
             'id' => $this->id,
             'text' => $this->text,
             'description' => $this->description,
             'url' => $this->url,
             'linkCategoryId' => $this->link_category_id,
-            'documentId' => $this->document_id,
-            'documentTimestamp' => $this->document_timestamp,
-            'linkDocumentId' => $this->document_id);
+            'documentId' => $this->document_id
+        );
     }
 
     /**

@@ -127,4 +127,16 @@ class DocumentField
         );
     }
 
+    public static function fromDBArray($db_array)
+    {
+        return new DocumentField(
+            $db_array['id'],
+            $db_array['name'],
+            $db_array['description'],
+            $db_array['sequence'],
+            $db_array['mandatory'],
+            $db_array['document_type_id']
+        );
+    }
+
 }

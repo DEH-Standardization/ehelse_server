@@ -3,6 +3,7 @@
 require_once 'DBMapper.php';
 require_once __DIR__.'/../models/DocumentField.php';
 require_once __DIR__.'/../errors/DBError.php';
+require_once __DIR__ . '/../models/DocumentFieldValue.php';
 
 class DocumentFieldDBMapper extends DBMapper
 {
@@ -121,5 +122,26 @@ class DocumentFieldDBMapper extends DBMapper
             $response = new DBError($e);
         }
         return $response;
+    }
+
+    public function getFieldsByDocumentIdAndDocumentTimestamp($document_id, $document_timestamp)
+    {
+        try {
+            $result = $this->queryDBWithAssociativeArray(DocumentFieldValue::SQL_GET_FIELDS_BY_DOCUMENT_ID, array(
+                ':document_id' => $document_id,
+                ':document_timestamp' => $document_timestamp
+            ));
+            $raw = $result->fetchAll();
+            $objects = [];
+            foreach($raw as $raw_item){
+                array_push($objects, DocumentFieldValue::fromDBArray($raw_item));
+            }
+            $response = $objects;
+
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+
     }
 }
