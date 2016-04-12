@@ -87,10 +87,16 @@ class DocumentController extends ResponseController
 
     protected function create()
     {
+        $response = null;
         $document_mapper = new DocumentDBMapper();
         $document = Document::fromJSON($this->body);
         $result = $document_mapper->add($document);
-        return new Response($result);
+        if (!$result instanceof DBError) {
+            $response = $document_mapper->getById($result)->toJSON();
+        } else {
+            $response = $result->toJSON();
+        }
+        return new Response($response);
     }
 
 
@@ -111,11 +117,17 @@ class DocumentController extends ResponseController
 
     protected function update()
     {
+        $response = null;
         $document_mapper = new DocumentDBMapper();
         $document = Document::fromJSON($this->body);
         $document->setId($this->id);    // set id from this model
         $result = $document_mapper->update($document);
-        return new Response($result);
+        if (!$result instanceof DBError) {
+            $response = $document_mapper->getById($result)->toJSON();
+        } else {
+            $response = $result->toJSON();
+        }
+        return new Response($response);
     }
 
     protected function delete()

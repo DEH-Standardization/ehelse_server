@@ -14,7 +14,6 @@ class DBError extends ApplicationError
     public function __construct($exception)
     {
 
-        $this->title = "DB error: ";
         $this->title = "Database Error";
         $this->message = $exception->getMessage();
 
