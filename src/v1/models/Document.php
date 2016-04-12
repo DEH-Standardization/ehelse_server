@@ -7,12 +7,39 @@ require_once 'Link.php';
 
 class Document implements iModel
 {
-    const REQUIRED_POST_FIELDS = ['title','description','status','sequence','documentType','topicId'];
-    const SQL_INSERT_STATEMENT = "INSERT INTO document(title,description,status_id,sequence,document_type_id,topic_id,
+    const REQUIRED_POST_FIELDS = ['title','description','statusId','sequence','documentTypeId',
+       'topicId','comment','nextDocumentId','previousDocumentId'];
+    const SQL_INSERT = "INSERT INTO document(title,description,status_id,sequence,document_type_id,topic_id,
                                   comment,next_document_id,prev_document_id)
                                   VALUES (:title,:description,:status_id,:sequence,:document_type_id,:topicId,
                                   :comment,:next_document_id,:prev_document_id);";
 
+
+    const SQL_UPDATE ="INSERT INTO document(id,title,description,status_id,sequence,document_type_id,topic_id,
+                                  comment,next_document_id,prev_document_id)
+                                  VALUES (
+                                  :id,
+                                  :title,
+                                  :description,
+                                  :status_id,
+                                  :sequence,
+                                  :document_type_id,
+                                  :topicId,
+                                  :comment,
+                                  :next_document_id,
+                                  :prev_document_id)";
+
+    const REQUIRED_PUT_FIELDS = [
+        ':id',
+        ':title',
+        ':description',
+        ':status_id',
+        ':sequence',
+        ':document_type_id',
+        ':topicId',
+        ':comment',
+        ':next_document_id',
+        ':prev_document_id'];
     private
         $id,
         $timestamp,
@@ -26,6 +53,7 @@ class Document implements iModel
         $next_document_id,
         $prev_document_id,
         $target_groups,
+        $fields,
         $links;
 
     /**
@@ -65,6 +93,11 @@ class Document implements iModel
     public function getId()
     {
         return $this->id;
+    }
+
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     public function getTimestamp()
@@ -214,6 +247,16 @@ class Document implements iModel
         $this->links = $links;
     }
 
+    public function getFields()
+    {
+        return $this->fields;
+    }
+
+    public function setFields($fields)
+    {
+        $this->fields = $fields;
+    }
+
     /**
      * Returns associated array representation of model
      * @return array
@@ -225,12 +268,16 @@ class Document implements iModel
             'timestamp' => $this->timestamp,
             'title' => $this->title,
             'description' => $this->description,
+            'statusId' => $this->status_id,
             'sequence' => $this->sequence,
             'topicId' => $this->topic_id,
             'comment' => $this->comment,
-            'documentType' => $this->document_type_id,
-            'targetGroups' => $this->target_groups,
-            'links' => $this->links
+            'documentTypeId' => $this->document_type_id,
+            'nextDocumentId' => $this->next_document_id,
+            'previousDocumentId' => $this->prev_document_id,
+            'links' => $this->links,
+            'fields' => $this->fields,
+            'targetGroups' => $this->target_groups
         );
     }
 
@@ -262,24 +309,37 @@ class Document implements iModel
 
     public static function fromJSON($json)
     {
-        // TODO: Implement fromJSON() method.
+        return new Document(
+            (array_key_exists('id', $json)) ? $json['id'] : null,
+            (array_key_exists('timestamp', $json)) ? $json['timestamp'] : null,
+            $json['title'],
+            $json['description'],
+            $json['sequence'],
+            $json['topicId'],
+            $json['comment'],
+            $json['statusId'],
+            $json['documentTypeId'],
+            $json['nextDocumentId'],
+            $json['previousDocumentId']
+        );
+
     }
 
     public function toDBArray()
     {
         $db_array = array(
-            ":title" => $this->title,
-            ":description" => $this->description,
-            ":status_id" => $this->status_id,
-            ":sequence" => $this->sequence,
-            ":document_type_id" => $this->document_type_id,
-            ":topic_id" => $this->topic_id,
-            ":comment" => $this->comment,
-            ":next_document_id" => $this->next_document_id,
-            ":prev_document_id" => $this->prev_document_id
+            ':title' => $this->title,
+            ':description' => $this->description,
+            ':status_id' => $this->status_id,
+            ':sequence' => $this->sequence,
+            ':document_type_id' => $this->document_type_id,
+            ':topicId' => $this->topic_id,
+            ':comment' => $this->comment,
+            ':next_document_id' => $this->next_document_id,
+            ':prev_document_id' => $this->prev_document_id
         );
         if($this->id){
-            $db_array[":id"] = $this->id;
+            $db_array[':id'] = $this->id;
         }
         return $db_array;
     }

@@ -6,6 +6,8 @@ require_once __DIR__ . '/iModel.php';
 class DocumentFieldValue implements iModel
 {
 
+    const SQL_GET_FIELDS_BY_DOCUMENT_ID = "SELECT * FROM document_field_value
+      WHERE document_id = :document_id AND document_timestamp = :document_timestamp;";
     private $document_field_id, $value, $document_id, $document_timestamp;
 
     /**
@@ -84,12 +86,9 @@ class DocumentFieldValue implements iModel
      */
     public function toArray()
     {
-        // TODO: check with API
         return array(
-            'documentFieldId' => $this->document_field_id,
-            'value' => $this->value,
-            'documentId' => $this->document_id,
-            'documentTimestamp' => $this->document_timestamp
+            'fieldId' => $this->document_field_id,
+            'value' => $this->value
         );
     }
 
@@ -100,5 +99,30 @@ class DocumentFieldValue implements iModel
     public function toJSON()
     {
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+    }
+
+    public static function fromDBArray($db_array)
+    {
+        return new DocumentFieldValue(
+            $db_array['document_field_id'],
+            $db_array['value'],
+            $db_array['document_id'],
+            $db_array['document_timestamp']
+        );
+    }
+
+    public static function fromJSON($json)
+    {
+        return new DocumentFieldValue(
+            $json['document_field_id'],
+            $json['value'],
+            $json['document_id'],
+            $json['document_timestamp']
+        );
+    }
+
+    public function toDBArray()
+    {
+        // TODO: Implement toDBArray() method.
     }
 }

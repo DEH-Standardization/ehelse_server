@@ -135,6 +135,25 @@ class LinkDBMapper extends DBMapper
         return $response;
     }
 
+    public function getLinksByDocumentId($document_id)
+    {
+        try {
+            $result = $this->queryDBWithAssociativeArray(Link::SQL_GET_LINKS_BY_DOCUMENT_ID, array(
+                ':document_id' => $document_id
+            ));
+            $raw = $result->fetchAll();
+            $objects = [];
+            foreach($raw as $raw_item){
+                array_push($objects, Link::fromDBArray($raw_item));
+            }
+            $response = $objects;
+
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
+
     public function getLinkCategoriesByDocumentId($document_id)
     {
         try {
