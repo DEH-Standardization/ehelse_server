@@ -94,7 +94,7 @@ class DocumentController extends ResponseController
         if (!$result instanceof DBError) {
             $response = $document_mapper->getById($result)->toJSON();
         } else {
-            $response = $result;
+            $response = $result->toJSON();
         }
         return new Response($response);
     }
@@ -125,7 +125,7 @@ class DocumentController extends ResponseController
         if (!$result instanceof DBError) {
             $response = $document_mapper->getById($result)->toJSON();
         } else {
-            $response = $result;
+            $response = $result->toJSON();
         }
         return new Response($response);
     }
