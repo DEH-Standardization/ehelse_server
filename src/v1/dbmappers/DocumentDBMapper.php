@@ -177,17 +177,19 @@ class DocumentDBMapper extends DBMapper
     }
     */
 
-    public function add($document)
+    public function add($document_input)
     {
-        $document_id = parent::add($document);
+        $document_id = parent::add($document_input);
 
-        $document_target_groups_db_mapper = new DocumentTargetGroupDBMapper();
+        $document_target_group_db_mapper = new DocumentTargetGroupDBMapper();
         $document_link_db_mapper = new LinkDBMapper();
         $document_field_db_mapper = new DocumentFieldDBMapper();
 
-        $document_target_groups_db_mapper->addMultiple($document->target_groups);
-        $document_link_db_mapper->addMultiple($document->links);
-        $document_field_db_mapper->addMultiple($document->fiels);
+        $document = $this->getById($document_id);
+
+        //$document_target_group_db_mapper->addMultiple($document->getTargetGroups());
+        $document_link_db_mapper->addMultiple($document_input->getLinks(), $document->getId(), $document->getTimestamp());
+        //$document_field_db_mapper->addMultiple($document->getFields);
 
         return $document_id;
     }

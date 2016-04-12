@@ -172,5 +172,15 @@ class LinkDBMapper extends DBMapper
         }
         return $response;
     }
+
+    public function addMultiple($links, $id, $timestamp)
+    {
+        foreach ($links as $link) {
+            $link['documentId'] = $id;
+            $link['documentTimestamp'] = $timestamp;
+            $l = Link::fromJSON($link);
+            echo $this->add($l);
+        }
+    }
     
 }

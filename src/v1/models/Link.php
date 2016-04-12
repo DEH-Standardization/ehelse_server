@@ -205,14 +205,13 @@ class Link implements iModel
     public static function fromJSON($json)
     {
         return new Link(
-            $json['id'],
+            (array_key_exists('id', $json)) ? $json['id'] : null,
             $json['text'],
             $json['description'],
             $json['url'],
-            $json['link_categoryId'],
+            $json['linkCategoryId'],
             $json['documentId'],
             $json['documentTimestamp'],
-            $json['linkDocumentId']
         );
     }
 
