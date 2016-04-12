@@ -8,6 +8,12 @@ class DocumentDBMapper extends DBMapper
 {
     private $table_name = 'document';
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->model = 'Document';
+    }
+
     /**
      * Returns document from database based on model
      * @param $id
@@ -141,6 +147,8 @@ class DocumentDBMapper extends DBMapper
      * @param $document
      * @return DBError|string
      */
+
+    /*
     public function add($document)
     {
 
@@ -165,24 +173,17 @@ class DocumentDBMapper extends DBMapper
             $result = new DBError($e);  // Sets DBError
         }
         return $result;
-        /*
-        $response = null;
-        try {
-            $this->queryDBWithAssociativeArray(Document::SQL_INSERT_STATEMENT, $document->toDBArray());
-            $response = $this->connection->lastInsertId();
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-        */
 
     }
+    */
 
     /**
      * Updates document in database by inserting new, returns id if success, error otherwise
      * @param $document
      * @return DBError|string
      */
+
+    /*
     public function update($document)
     {
         if(!$this->isValidId($document->getId(), $this->table_name)) {
@@ -209,6 +210,7 @@ class DocumentDBMapper extends DBMapper
         }
         return $result;
     }
+    */
 
     public function getDocumentsByTopicId($topic_id)
     {
