@@ -34,10 +34,10 @@ class UserController extends ResponseController
                 $this->controller = new ErrorController(new InvalidPathError());
             }
         }
-/*
-        if(!array_key_exists('CURRENT_USER', $GLOBALS) && $this->method != Response::REQUEST_METHOD_OPTIONS){
-            $this->controller = new ErrorController(new AuthenticationError($this->method));
-        }*/
+        /*
+                if(!array_key_exists('CURRENT_USER', $GLOBALS) && $this->method != Response::REQUEST_METHOD_OPTIONS){
+                    $this->controller = new ErrorController(new AuthenticationError($this->method));
+                }*/
     }
 
     protected static function getArrayFromObjectArray($array){
@@ -100,31 +100,32 @@ class UserController extends ResponseController
 
     protected function update()
     {
-        if($GLOBALS['CURRENT_USER']->getId() == $this->id){
-            $missing_fields = UserController::validateJSONFormat($this->body, User::REQUIRED_PUT_FIELDS);
+        /* if($GLOBALS['CURRENT_USER']->getId() == $this->id){*/
+        $missing_fields = UserController::validateJSONFormat($this->body, User::REQUIRED_PUT_FIELDS);
 
-            if( !$missing_fields ){
-                $mapper = new UserDBMapper();
-                $json = $this->body;
-                $json["id"] = $this->id;
-                $user=User::fromJSON($json);
-                $db_response = $mapper->update($user);
+        if( !$missing_fields ){
+            $mapper = new UserDBMapper();
+            $json = $this->body;
+            $json["id"] = $this->id;
+            $user=User::fromJSON($json);
+            $db_response = $mapper->update($user);
 
-                if ($db_response instanceof DBError) {
-                    $response =  new ErrorResponse($db_response);
-                }
-                else{
-                    $response=$this->get();
-                }
+            if ($db_response instanceof DBError) {
+                $response =  new ErrorResponse($db_response);
             }
             else{
-                $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
+                $response=$this->get();
             }
-            $this->controller = new ErrorController(new AuthenticationError($this->method));
         }
         else{
-            $response = new ErrorResponse(new AuthorizationError($this->method));
+            $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
         }
+        $this->controller = new ErrorController(new AuthenticationError($this->method));
+        /*}
+
+        else{
+            $response = new ErrorResponse(new AuthorizationError($this->method));
+        }*/
 
         return $response;
     }
