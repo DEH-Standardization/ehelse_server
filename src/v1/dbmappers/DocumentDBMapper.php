@@ -177,6 +177,21 @@ class DocumentDBMapper extends DBMapper
     }
     */
 
+    public function add($document)
+    {
+        $document_id = parent::add($document);
+
+        $document_target_groups_db_mapper = new DocumentTargetGroupDBMapper();
+        $document_link_db_mapper = new LinkDBMapper();
+        $document_field_db_mapper = new DocumentFieldDBMapper();
+
+        $document_target_groups_db_mapper->addMultiple($document->target_groups);
+        $document_link_db_mapper->addMultiple($document->links);
+        $document_field_db_mapper->addMultiple($document->fiels);
+
+        return $document_id;
+    }
+
     /**
      * Updates document in database by inserting new, returns id if success, error otherwise
      * @param $document
