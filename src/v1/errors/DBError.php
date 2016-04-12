@@ -6,7 +6,6 @@ require_once "ApplicationError.php";
 class DBError extends ApplicationError
 {
 
-    protected $response_code = Response::STATUS_CODE_INTERNAL_ERROR;
     /**
      * DBError constructor.
      * @param $e
@@ -16,7 +15,7 @@ class DBError extends ApplicationError
 
         $this->title = "Database Error";
         $this->message = $exception->getMessage();
-
+        $this->response_code = Response::STATUS_CODE_INTERNAL_ERROR;
     }
 
     public function toJSON()
