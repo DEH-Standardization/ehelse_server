@@ -3,6 +3,7 @@
 require_once "DBMapper.php";
 require_once __DIR__. "/../models/Document.php";
 require_once __DIR__. "/../errors/DBError.php";
+require_once __DIR__. "/../dbmappers/DocumentFieldValueDBMapper.php";
 
 class DocumentDBMapper extends DBMapper
 {
@@ -183,13 +184,13 @@ class DocumentDBMapper extends DBMapper
 
         $document_target_group_db_mapper = new DocumentTargetGroupDBMapper();
         $document_link_db_mapper = new LinkDBMapper();
-        $document_field_db_mapper = new DocumentFieldDBMapper();
+        $document_field_db_mapper = new DocumentFieldValueDBMapper();
 
         $document = $this->getById($document_id);
 
         //$document_target_group_db_mapper->addMultiple($document->getTargetGroups());
         $document_link_db_mapper->addMultiple($document_input->getLinks(), $document->getId(), $document->getTimestamp());
-        //$document_field_db_mapper->addMultiple($document->getFields);
+        $document_field_db_mapper->addMultiple($document_input->getFields(), $document->getId(), $document->getTimestamp());
 
         return $document_id;
     }

@@ -8,7 +8,15 @@ class DocumentFieldValue implements iModel
 
     const SQL_GET_FIELDS_BY_DOCUMENT_ID = "SELECT * FROM document_field_value
       WHERE document_id = :document_id AND document_timestamp = :document_timestamp;";
+    const SQL_GET_ALL = "SELECT * FROM document_field_value;";
+    const SQL_GET_BY_ID = "SELECT * FROM document_field_value WHERE id = :id;";
+    const SQL_INSERT = "INSERT INTO document_field_value VALUES (:document_field_id, :value, :document_id, :document_timestamp);";
+    //const SQL_UPDATE = "UPDATE document_field_value SET name = :name, description = :description WHERE id = :id;";
+    //const SQL_DELETE = "DELETE FROM action WHERE id = :id;";
+
     private $document_field_id, $value, $document_id, $document_timestamp;
+
+    const REQUIRED_POST_FIELDS = ['document_field_id', 'value', 'document_id', 'document_timestamp'];
 
     /**
      * DocumentFieldValue constructor.
@@ -114,15 +122,20 @@ class DocumentFieldValue implements iModel
     public static function fromJSON($json)
     {
         return new DocumentFieldValue(
-            $json['document_field_id'],
+            $json['fieldId'],
             $json['value'],
-            $json['document_id'],
-            $json['document_timestamp']
+            $json['documentId'],
+            $json['documentTimestamp']
         );
     }
 
     public function toDBArray()
     {
-        // TODO: Implement toDBArray() method.
+        return array(
+            ':document_field_id' => $this->document_field_id,
+            ':value' => $this->value,
+            ':document_id' => $this->document_id,
+            ':document_timestamp' => $this->document_timestamp
+        );
     }
 }
