@@ -199,7 +199,6 @@ class TopicDbMapper extends DBMapper
                 $response = $this->connection->lastInsertId();
             }
         } catch(PDOException $e) {
-            print_r($e);
             $response = $e;
         }
         return $response;

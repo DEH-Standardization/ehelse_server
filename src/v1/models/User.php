@@ -164,7 +164,6 @@ class User
 
     public static function fromJSON($json)
     {
-        print_r($json);
         return new User(
             getValueFromArray($json,'id'),
             getValueFromArray($json,'name'),
