@@ -207,7 +207,7 @@ class Link implements iModel
         return new Link(
             (array_key_exists('id', $json)) ? $json['id'] : null,
             $json['text'],
-            $json['description'],
+            (array_key_exists('description', $json)) ? $json['description'] : null,
             $json['url'],
             $json['linkCategoryId'],
             $json['documentId'],

@@ -14,9 +14,9 @@ class DocumentFieldValue implements iModel
     //const SQL_UPDATE = "UPDATE document_field_value SET name = :name, description = :description WHERE id = :id;";
     //const SQL_DELETE = "DELETE FROM action WHERE id = :id;";
 
-    private $document_field_id, $value, $document_id, $document_timestamp;
-
     const REQUIRED_POST_FIELDS = ['document_field_id', 'value', 'document_id', 'document_timestamp'];
+
+    private $document_field_id, $value, $document_id, $document_timestamp;
 
     /**
      * DocumentFieldValue constructor.
