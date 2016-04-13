@@ -7,6 +7,12 @@ require_once __DIR__.'/../models/DocumentTargetGroup.php';
 class DocumentTargetGroupDBMapper extends DBMapper
 {
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->model = 'DocumentTargetGroup';
+    }
+
     public function get($target_group)
     {
         return $this->getById($target_group->getId());
@@ -92,6 +98,21 @@ class DocumentTargetGroupDBMapper extends DBMapper
             $response = new DBError($e);
         }
         return $response;
+    }
+
+    /**
+     * Adds multiple DocumentTargetGroups form JSON list
+     * @param $target_groups
+     * @param $id
+     * @param $timestamp
+     */
+    public function addMultiple($target_groups, $id, $timestamp)
+    {
+        foreach ($target_groups as $target_group) {
+            $target_group['documentId'] = $id;
+            $target_group['documentTimestamp'] = $timestamp;
+            $this->add(DocumentTargetGroup::fromJSON($target_group));
+        }
     }
 
 }

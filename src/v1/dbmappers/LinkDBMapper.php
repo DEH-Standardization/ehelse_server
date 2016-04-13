@@ -179,7 +179,7 @@ class LinkDBMapper extends DBMapper
             $link['documentId'] = $id;
             $link['documentTimestamp'] = $timestamp;
             $l = Link::fromJSON($link);
-            echo $this->add($l);
+            $this->add($l);
         }
     }
     

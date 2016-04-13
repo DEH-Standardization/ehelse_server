@@ -188,9 +188,12 @@ class DocumentDBMapper extends DBMapper
 
         $document = $this->getById($document_id);
 
-        //$document_target_group_db_mapper->addMultiple($document->getTargetGroups());
-        $document_link_db_mapper->addMultiple($document_input->getLinks(), $document->getId(), $document->getTimestamp());
-        $document_field_db_mapper->addMultiple($document_input->getFields(), $document->getId(), $document->getTimestamp());
+        $id = $document->getId();
+        $timestamp = $document->getTimestamp();
+
+        $document_target_group_db_mapper->addMultiple($document_input->getTargetGroups(), $id, $timestamp);
+        $document_link_db_mapper->addMultiple($document_input->getLinks(), $id, $timestamp);
+        $document_field_db_mapper->addMultiple($document_input->getFields(), $id, $timestamp);
 
         return $document_id;
     }
