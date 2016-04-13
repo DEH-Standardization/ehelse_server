@@ -11,8 +11,6 @@ class DocumentFieldValue implements iModel
     const SQL_GET_ALL = "SELECT * FROM document_field_value;";
     const SQL_GET_BY_ID = "SELECT * FROM document_field_value WHERE id = :id;";
     const SQL_INSERT = "INSERT INTO document_field_value VALUES (:document_field_id, :value, :document_id, :document_timestamp);";
-    //const SQL_UPDATE = "UPDATE document_field_value SET name = :name, description = :description WHERE id = :id;";
-    //const SQL_DELETE = "DELETE FROM action WHERE id = :id;";
 
     const REQUIRED_POST_FIELDS = ['document_field_id', 'value', 'document_id', 'document_timestamp'];
 

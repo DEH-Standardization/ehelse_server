@@ -10,17 +10,11 @@ class DocumentTargetGroup implements iModel
                 WHERE document_id = :document_id;";
     const GET_DOCUMENT_TARGET_GROUPS_BY_DOCUMENT_ID =
         "SELECT * FROM document_target_group WHERE document_id = :document_id AND document_timestamp = :document_timestamp;";
-
-    //const SQL_GET_ALL = "SELECT * FROM action;";
-    //const SQL_GET_BY_ID = "SELECT * FROM action WHERE id = :id;";
     const SQL_INSERT = "INSERT INTO document_target_group VALUES (:target_group_id, :deadline, :description,
         :action_id, :mandatory_id, :document_id, :document_timestamp);";
-    //const SQL_UPDATE = "UPDATE action SET name = :name, description = :description WHERE id = :id;";
-    //const SQL_DELETE = "DELETE FROM action WHERE id = :id;";
 
     const REQUIRED_POST_FIELDS = ['target_group_id',
         'action_id', 'mandatory_id', 'document_id', 'document_timestamp'];
-    //const REQUIRED_PUT_FIELDS = ['name', 'description'];
 
 
     private
