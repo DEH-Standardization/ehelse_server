@@ -28,6 +28,12 @@ class Document implements iModel
                                   :comment,
                                   :next_document_id,
                                   :prev_document_id)";
+    const SQL_GET_BY_ID = "SELECT *
+                FROM document WHERE id = :id and (id,timestamp) IN
+                ( SELECT id, MAX(timestamp)
+                  FROM document
+                GROUP BY id)";
+
 
     const REQUIRED_PUT_FIELDS = [
         ':id',
