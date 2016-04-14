@@ -5,41 +5,17 @@ require_once "ApplicationError.php";
  */
 class DBError extends ApplicationError
 {
+
     /**
      * DBError constructor.
      * @param $e
      */
-    public function __construct($e)
+    public function __construct($exception)
     {
-        $this->title = "DB error: ";
-        if (is_a($e, 'PDOException')) {
-            switch ($e->getCode()) {
-                case 23000:
-                    $this->title .= "integrity constraint violation";
-                    $this->message = $e;
-                    // TODO handle DB error messages
-                    /*
-                    switch ($e->getCode()) {
 
-                        case 1452:
-                            $this->message =  "foreign key failed";
-                            break;
-                        default:
-                            break;
-
-                    };
-                    */
-                    break;
-                default:
-                    $this->message = $e;
-                    break;
-
-            }
-        } else {
-            $this->title .= "other error";
-            $this->message = $e;
-        }
-
+        $this->title = "Database Error";
+        $this->message = $exception->getMessage();
+        $this->response_code = Response::STATUS_CODE_INTERNAL_ERROR;
     }
 
     public function toJSON()
@@ -50,10 +26,7 @@ class DBError extends ApplicationError
         ), JSON_PRETTY_PRINT);
     }
 
-    public function getStatusCode()
-    {
-        return 400;
-    }
+
 
 
 }

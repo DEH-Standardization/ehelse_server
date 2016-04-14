@@ -1,5 +1,5 @@
 <?php
-
+require_once __DIR__ . '/../db_info.php';
 
 class EHelseTestCase extends PHPUnit_Framework_TestCase
 {
