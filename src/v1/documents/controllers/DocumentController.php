@@ -56,7 +56,7 @@ class DocumentController extends ResponseController
      * @param $document
      * @return array
      */
-    private static function getTargetGroups($document)
+    public static function getTargetGroups($document)   // TODO: Might be better to move this to TargetGroup
     {
         $document_target_group_mapper = new DocumentTargetGroupDBMapper();
 
@@ -77,7 +77,7 @@ class DocumentController extends ResponseController
      * @param $document
      * @return array
      */
-    private static function getLinks($document)
+    public static function getLinks($document)  // TODO: Might be better to move this to Link
     {
         $link_mapper = new LinkDBMapper();
 
@@ -95,7 +95,7 @@ class DocumentController extends ResponseController
      * @param $document
      * @return array
      */
-    public static function getFields($document)
+    public static function getFields($document) // TODO: Might be better to move this to Field
     {
         $field_mapper = new DocumentFieldDBMapper();
         $fields = $field_mapper->getFieldsByDocumentIdAndDocumentTimestamp(
