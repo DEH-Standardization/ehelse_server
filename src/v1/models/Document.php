@@ -309,7 +309,7 @@ class Document implements iModel
 
     public static function fromJSON($json)
     {
-        return new Document(
+        $document = new Document(
             (array_key_exists('id', $json)) ? $json['id'] : null,
             (array_key_exists('timestamp', $json)) ? $json['timestamp'] : null,
             $json['title'],
@@ -322,7 +322,11 @@ class Document implements iModel
             $json['nextDocumentId'],
             $json['previousDocumentId']
         );
+        $document->setLinks($json['links']);
+        $document->setFields($json['fields']);
+        $document->setTargetGroups($json['targetGroups']);
 
+        return $document;
     }
 
     public function toDBArray()

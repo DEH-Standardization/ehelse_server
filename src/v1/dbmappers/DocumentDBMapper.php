@@ -3,6 +3,7 @@
 require_once "DBMapper.php";
 require_once __DIR__. "/../models/Document.php";
 require_once __DIR__. "/../errors/DBError.php";
+require_once __DIR__. "/../dbmappers/DocumentFieldValueDBMapper.php";
 
 class DocumentDBMapper extends DBMapper
 {
@@ -176,6 +177,26 @@ class DocumentDBMapper extends DBMapper
 
     }
     */
+
+    public function add($document_input)
+    {
+        $document_id = parent::add($document_input);
+
+        $document_target_group_db_mapper = new DocumentTargetGroupDBMapper();
+        $document_link_db_mapper = new LinkDBMapper();
+        $document_field_db_mapper = new DocumentFieldValueDBMapper();
+
+        $document = $this->getById($document_id);
+
+        $id = $document->getId();
+        $timestamp = $document->getTimestamp();
+
+        $document_target_group_db_mapper->addMultiple($document_input->getTargetGroups(), $id, $timestamp);
+        $document_link_db_mapper->addMultiple($document_input->getLinks(), $id, $timestamp);
+        $document_field_db_mapper->addMultiple($document_input->getFields(), $id, $timestamp);
+
+        return $document_id;
+    }
 
     /**
      * Updates document in database by inserting new, returns id if success, error otherwise

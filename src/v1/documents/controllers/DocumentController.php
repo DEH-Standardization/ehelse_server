@@ -92,7 +92,7 @@ class DocumentController extends ResponseController
         $document = Document::fromJSON($this->body);
         $result = $document_mapper->add($document);
         if (!$result instanceof DBError) {
-            $response = $document_mapper->getById($result)->toJSON();
+            return $this->getById($result); //$document_mapper->getById($result)->toJSON();
         } else {
             $response = $result->toJSON();
         }
@@ -102,8 +102,13 @@ class DocumentController extends ResponseController
 
     protected function get()
     {
+        $this->getById($this->id);
+    }
+
+    private function getById($id)
+    {
         $document_mapper = new DocumentDBMapper();
-        $document = $document_mapper->getById($this->id);
+        $document = $document_mapper->getById($id);
 
         $document->setLinks($this->getLinks($document));
         $document->setFields($this->getFields($document));
