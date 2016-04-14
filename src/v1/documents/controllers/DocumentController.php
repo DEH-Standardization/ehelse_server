@@ -16,6 +16,12 @@ require_once __DIR__ . '/../../responses/Response.php';
 
 class DocumentController extends ResponseController
 {
+    /**
+     * DocumentController constructor.
+     * @param $path
+     * @param $method
+     * @param $body
+     */
     public function __construct($path, $method, $body)
     {
         $this->init($path, $method, $body);
@@ -24,6 +30,10 @@ class DocumentController extends ResponseController
         $this->model = 'Document';
     }
 
+    /**
+     * Retrieving all documents
+     * @return Response
+     */
     protected function getAll()
     {
         $document_mapper = new DocumentDBMapper();
@@ -41,7 +51,12 @@ class DocumentController extends ResponseController
         return new Response($json);
     }
 
-    public static function getTargetGroups($document)
+    /**
+     * Retrieving all target groups under documents
+     * @param $document
+     * @return array
+     */
+    private static function getTargetGroups($document)
     {
         $document_target_group_mapper = new DocumentTargetGroupDBMapper();
 
@@ -57,7 +72,12 @@ class DocumentController extends ResponseController
 
     }
 
-    public static function getLinks($document)
+    /**
+     * Retrieving all links under documents
+     * @param $document
+     * @return array
+     */
+    private static function getLinks($document)
     {
         $link_mapper = new LinkDBMapper();
 
@@ -70,6 +90,11 @@ class DocumentController extends ResponseController
         return $link_array;
     }
 
+    /**
+     * Retrieving all fields under documents
+     * @param $document
+     * @return array
+     */
     public static function getFields($document)
     {
         $field_mapper = new DocumentFieldDBMapper();
@@ -85,6 +110,10 @@ class DocumentController extends ResponseController
     }
 
 
+    /**
+     * Creates new document with related links, target groups and links
+     * @return Response
+     */
     protected function create()
     {
         $response = null;
@@ -92,7 +121,7 @@ class DocumentController extends ResponseController
         $document = Document::fromJSON($this->body);
         $result = $document_mapper->add($document);
         if (!$result instanceof DBError) {
-            return $this->getById($result); //$document_mapper->getById($result)->toJSON();
+            return $this->getById($result);
         } else {
             $response = $result->toJSON();
         }
@@ -100,11 +129,20 @@ class DocumentController extends ResponseController
     }
 
 
+    /**
+     * Retrieving documents based on document model
+     * @return Response
+     */
     protected function get()
     {
-        $this->getById($this->id);
+        return $this->getById($this->id);
     }
 
+    /**
+     * Retrieving documents based on id
+     * @param $id
+     * @return Response
+     */
     private function getById($id)
     {
         $document_mapper = new DocumentDBMapper();
@@ -120,15 +158,19 @@ class DocumentController extends ResponseController
         return new Response($json);
     }
 
+    /**
+     * Updates document with related links, target groups and links, by adding new document
+     * @return Response
+     */
     protected function update()
     {
         $response = null;
         $document_mapper = new DocumentDBMapper();
         $document = Document::fromJSON($this->body);
-        $document->setId($this->id);    // set id from this model
+        $document->setId($this->id);
         $result = $document_mapper->update($document);
         if (!$result instanceof DBError) {
-            $response = $document_mapper->getById($result)->toJSON();
+            return $this->getById($result);
         } else {
             $response = $result->toJSON();
         }
