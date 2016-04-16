@@ -75,7 +75,7 @@ class UserDBMapper extends DBMapper
         $response = null;
         try {
             $this->queryDBWithAssociativeArray(User::SQL_UPDATE_PASSWORD_STATEMENT, $user->toResetPasswordDBArray());
-            $response = $this->connection->lastInsertId();
+            $response = $user->getId();//$this->connection->lastInsertId();
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
@@ -106,4 +106,6 @@ class UserDBMapper extends DBMapper
         }
         return $response;
     }
+
+
 }

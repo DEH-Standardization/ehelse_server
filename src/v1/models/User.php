@@ -6,6 +6,7 @@ class User
     const REQUIRED_POST_FIELDS = ['name', 'email'];
     const REQUIRED_PUT_FIELDS = ['name', 'email'];
     const REQUIRED_PASSWORD_PUT_FIELD = ['password'];
+    const REQUIRED_PASSWORD_RESET_FIELD = ['email'];
     const SQL_INSERT_STATEMENT = "INSERT INTO user(name,profile_image,email,pw_date_edited) VALUES (:name,:profile_image,:email,NOW());";
     const SQL_UPDATE_STATEMENT = "UPDATE user SET name=:name,profile_image=:profile_image,email=:email,pw_date_edited=NOW() WHERE id = :id;";
     const SQL_UPDATE_PASSWORD_STATEMENT = "UPDATE user SET password_hash=:password_hash, pw_date_edited=NOW() WHERE id = :id;";
@@ -51,7 +52,6 @@ class User
     {
         return $this->password_hash;
     }
-
 
     public function __construct($id, $name, $email, $profile_image, $password_hash, $pw_date_edited)
     {

@@ -7,6 +7,7 @@ require_once __DIR__ . '/../../errors/AuthenticationError.php';
 require_once __DIR__ . '/../../errors/AuthorizationError.php';
 require_once __DIR__ . '/../../users/controllers/PasswordController.php';
 require_once __DIR__ . '/../../users/controllers/LoginController.php';
+require_once __DIR__ . '/../../users/controllers/ResetPasswordController.php';
 
 class UserController extends ResponseController
 {
@@ -24,6 +25,11 @@ class UserController extends ResponseController
                 $this->id = $path[0];
                 $path = trimPath($path, 2);
                 $this->controller = new PasswordController($path, $method, $body, $this->id);
+            }
+            elseif(count($this->path) == 1 && $path[0] == "reset-password"){
+                $this->id = $path[0];
+                $path = trimPath($path, 2);
+                $this->controller = new ResetPasswordController($path, $method, $body);
             }
             elseif(count($this->path) == 1 && $path[0] == "login"){
                 $this->id = $path[0];
