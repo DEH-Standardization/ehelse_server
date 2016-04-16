@@ -46,7 +46,6 @@ class ResetPasswordController extends ResponseController
             if($reset_password_user) {
 
                 $db_response = $user_mapper->resetPassword($reset_password_user);
-                $response = $db_response;
 
                 if ($db_response instanceof DBError) {
                     $response = new ErrorResponse($db_response);
