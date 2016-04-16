@@ -52,7 +52,7 @@ class ResetPasswordController extends ResponseController
                 } else {
                     $reset_password_user = $user_mapper->getById($id);
                     if ($reset_password_user) {
-                        //EmailSender::sendResetPasswordEmail($email, $password);   // Sending Email notification
+                        EmailSender::sendResetPasswordEmail($email, $password);   // Sending Email notification
                         $response = new Response(json_encode($reset_password_user->toArray(), JSON_PRETTY_PRINT));
                     } else {
                         $response = new ErrorResponse(new NotFoundError());
