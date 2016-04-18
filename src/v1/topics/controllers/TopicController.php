@@ -162,9 +162,18 @@ class TopicController extends ResponseController
          * @return Response
          */
         protected function update()
-    {
-        return new ErrorResponse(new MethodNotAllowedError($this->method));
-    }
+        {
+            $response = null;
+            $topic_mapper = new TopicDbMapper();
+            $topic = Topic::fromJSON($this->body);
+            $result = $topic_mapper->add($topic);
+            if (!$result instanceof DBError) {
+                return $this->get();
+            } else {
+                $response = $result->toJSON();
+            }
+            return new Response($response);
+        }
 
         /**
          * Function deleting a topic.
