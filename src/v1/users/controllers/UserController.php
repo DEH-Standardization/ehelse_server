@@ -69,7 +69,9 @@ class UserController extends ResponseController
     private function isValidEmail($email)
     {
         $mapper = new UserDBMapper();
-        if ($mapper->getByEmail($email) instanceof DBError) {   // check that email is
+        $result = $mapper->getByEmail($email);
+
+        if ($result instanceof DBError || $result == null) {   // check that email exists
             return true;
         }
         return false;
