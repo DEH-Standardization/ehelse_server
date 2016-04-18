@@ -53,6 +53,11 @@ class User
         return $this->password_hash;
     }
 
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
     public function __construct($id, $name, $email, $profile_image, $password_hash, $pw_date_edited)
     {
         $this->id=$id;

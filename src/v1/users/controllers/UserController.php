@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../errors/NotFoundError.php';
 require_once __DIR__ . '/../../errors/ErrorController.php';
 require_once __DIR__ . '/../../errors/AuthenticationError.php';
 require_once __DIR__ . '/../../errors/AuthorizationError.php';
+require_once __DIR__ . '/../../errors/DuplicateUserError.php';
 require_once __DIR__ . '/../../users/controllers/PasswordController.php';
 require_once __DIR__ . '/../../users/controllers/LoginController.php';
 require_once __DIR__ . '/../../users/controllers/ResetPasswordController.php';
@@ -65,26 +66,43 @@ class UserController extends ResponseController
         return new Response($json);
     }
 
+    private function isValidEmail($email)
+    {
+        $mapper = new UserDBMapper();
+        $result = $mapper->getByEmail($email);
+
+        if ($result instanceof DBError || $result == null) {   // check that email exists
+            return true;
+        }
+        return false;
+    }
+
     protected function create()
     {
         $missing_fields = UserController::validateJSONFormat($this->body, User::REQUIRED_POST_FIELDS);
         if( !$missing_fields ){
             $mapper = new UserDBMapper();
             $user = User::fromJSON($this->body);
-            $db_response = $mapper->add($user);
 
-            if ($db_response instanceof DBError) {
-                $response = new ErrorResponse($db_response);
-            }
-            elseif(is_numeric($db_response)){
-                $this->id = $db_response;
-                ResetPasswordController::setNewPassword(
-                    $this->body, EmailSender::REGISTER_EMAIL);  // Set random password and notify user by email
-                $response = $this->get();
-            }
-            else{
-                //todo not sure how best to handle this
-                throw new Exception("Not implemented error");
+            if($this->isValidEmail($user->getEmail())) {
+                $db_response = $mapper->add($user);
+
+
+                if ($db_response instanceof DBError) {
+                    $response = new ErrorResponse($db_response);
+                }
+                elseif(is_numeric($db_response)){
+                    $this->id = $db_response;
+                    ResetPasswordController::setNewPassword(
+                        $this->body, EmailSender::REGISTER_EMAIL);  // Set random password and notify user by email
+                    $response = $this->get();
+                }
+                else{
+                    //todo not sure how best to handle this
+                    throw new Exception("Not implemented error");
+                }
+            } else {
+                $response = new ErrorResponse(new DuplicateUserError());
             }
         }
         else{
