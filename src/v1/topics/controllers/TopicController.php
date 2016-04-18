@@ -135,23 +135,19 @@ class TopicController extends ResponseController
         $document_mapper = new DocumentDBMapper();
         $documents = $document_mapper->getDocumentsByTopicId($topic_id);
 
-
         $documents_array = array();
         foreach ($documents as $document) {
             $document->setTargetGroups(DocumentController::getTargetGroups($document));
             $document->setLinks(DocumentController::getLinks($document));
-            $document->setFields([]);
+            $document->setFields(DocumentController::getFields($document));
 
             $document_array = $document->toArray();
-
             array_push($documents_array, $document_array);
-
         }
 
-        usort($documents_array, function ($a, $b)
+        usort($documents_array, function ($a, $b)   // Sort document list on sequence
         {
             return $a['sequence'] - $b['sequence'];
-
         });
 
         return $documents_array;
