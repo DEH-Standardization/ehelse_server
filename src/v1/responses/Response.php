@@ -18,6 +18,7 @@ class Response implements iResponse
     const STATUS_CODE_FORBIDDEN = 403 ;
     const STATUS_CODE_NOT_FOUND = 404 ;
     const STATUS_CODE_METHOD_NOT_ALLOWED = 405 ;
+    const STATUS_CODE_CONFLICT = 409;
     const STATUS_CODE_OK = 200;
     const STATUS_CODE_CREATED= 201;
     const STATUS_CODE_ACCEPTED= 202;
