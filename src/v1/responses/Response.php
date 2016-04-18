@@ -22,6 +22,7 @@ class Response implements iResponse
     const STATUS_CODE_CREATED= 201;
     const STATUS_CODE_ACCEPTED= 202;
     const STATUS_CODE_NO_CONTENT= 204;
+    const STATUS_CODE_INTERNAL_ERROR = 500;
 
     public function __construct($body,
                                 $response_code = Response::STATUS_CODE_OK,

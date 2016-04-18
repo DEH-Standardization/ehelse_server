@@ -4,7 +4,14 @@ require_once __DIR__.'/ModelValidation.php';
 
 class DocumentField
 {
-    private $id, $name, $description, $sequence, $mandatory, $is_standard_field, $is_profiles_field;
+    const REQUIRED_POST_FIELDS = ['name'];
+    const REQUIRED_PUT_FIELDS = ['name'];
+    const SQL_GET_ALL = "SELECT * FROM document_field;";
+    const SQL_GET_BY_ID = "SELECT * FROM document_field WHERE id = :id;";
+    const SQL_INSERT = "INSERT INTO document_field VALUES (null, :name);";
+    const SQL_UPDATE = "UPDATE document_field SET name = :name, description = :description, sequence = :sequence, mandatory = :mandatory, document_type_id = :document_type_id WHERE id = :id;";
+    const SQL_DELETE_DOCUMENT_FIELD_BY_ID = "DELETE FROM document_field WHERE id=:id";
+    private $id, $name, $description, $sequence, $mandatory, $document_type_id;
 
     /**
      * DocumentField constructor.
@@ -13,18 +20,16 @@ class DocumentField
      * @param $description
      * @param $sequence
      * @param $mandatory
-     * @param $is_standard_field
-     * @param $is_profiles_field
+     * @param $document_type_id
      */
-    public function __construct($id, $name, $description, $sequence, $mandatory, $is_standard_field, $is_profile_field)
+    public function __construct($id, $name, $description, $sequence, $mandatory, $document_type_id)
     {
         $this->id = $id;
         $this->name = $name;
         $this->description = $description;
         $this->sequence = $sequence;
         $this->mandatory = $mandatory;
-        $this->is_standard_field = $is_standard_field;
-        $this->is_profile_field = $is_profile_field;
+        $this->document_type_id = $document_type_id;
     }
 
     public function getId()
@@ -39,9 +44,9 @@ class DocumentField
 
     public function setName($name)
     {
-        if (strlen($name) > ModelValidation::getNameMaxLength($name)) {
+        if (strlen($name) > ModelValidation::NAME_MAX_LENGTH) {
             $this->name = ModelValidation::getValidName($name);
-            return "name is too long. Description set to: " . $this->description;
+            return "Name is too long, set to: " . $this->name;
         }
         else {
             $this->name = $name;
@@ -55,9 +60,9 @@ class DocumentField
 
     public function setDescription($description)
     {
-        if (strlen($description) > ModelValidation::getDescriptionMaxLength($description)) {
+        if (strlen($description) > ModelValidation::DESCRIPTION_MAX_LENGTH) {
             $this->description = ModelValidation::getValidDescription($description);
-            return "description is too long. Description set to: " . $this->description;
+            return "Description is too long, set to: " . $this->description;
         }
         else {
             $this->description = $description;
@@ -84,24 +89,14 @@ class DocumentField
         $this->mandatory = $mandatory;
     }
 
-    public function getIsStandardField()
+    public function getDocumentTypeId()
     {
-        return $this->is_standard_field;
+        return $this->document_type_id;
     }
 
-    public function setIsStandardField($is_standard_field)
+    public function setDocumentTypeId($document_type_id)
     {
-        $this->is_standard_field = $is_standard_field;
-    }
-
-    public function getIsProfileField()
-    {
-        return $this->is_profile_field;
-    }
-
-    public function setIsProfileField($is_profile_field)
-    {
-        $this->is_profile_field = $is_profile_field;
+        $this->document_type_id = $document_type_id;
     }
 
     public function toArray()
@@ -112,14 +107,36 @@ class DocumentField
             'description' => $this->description,
             'sequence' => $this->sequence,
             'mandatory' => $this->mandatory,
-            'isStandardField' => $this->is_standard_field,
-            'isProfileField' => $this->is_profile_field);
+            'documentTypeId' => $this->document_type_id);
         return $assoc;
     }
 
     public function toJSON()
     {
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+    }
+    public function fromJSON($json)
+    {
+        return new DocumentField(
+            getValueFromArray($json,'id'),
+            getValueFromArray($json,'name'),
+            getValueFromArray($json,'description'),
+            getValueFromArray($json,'sequence'),
+            getValueFromArray($json,'mandatory'),
+            getValueFromArray($json,'documentTypeId')
+        );
+    }
+
+    public static function fromDBArray($db_array)
+    {
+        return new DocumentField(
+            $db_array['id'],
+            $db_array['name'],
+            $db_array['description'],
+            $db_array['sequence'],
+            $db_array['mandatory'],
+            $db_array['document_type_id']
+        );
     }
 
 }

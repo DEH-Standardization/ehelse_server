@@ -3,13 +3,10 @@
 require_once 'DBMapper.php';
 require_once __DIR__.'/../models/DocumentField.php';
 require_once __DIR__.'/../errors/DBError.php';
+require_once __DIR__ . '/../models/DocumentFieldValue.php';
 
 class DocumentFieldDBMapper extends DBMapper
 {
-    public function get($target_group)
-    {
-        // TODO: Implement get() method.
-    }
 
     public function getById($id)
     {
@@ -29,12 +26,8 @@ class DocumentFieldDBMapper extends DBMapper
                     $row['description'],
                     $row['sequence'],
                     $row['mandatory'],
-                    $row['is_standard_field'],
-                    $row['is_profile_field']);
-            } else {
-                $response = new DBError("Returned " . $result->rowCount() .
-                    " profile, expected 1");
-            }
+                    $row['document_type_id']);
+            } 
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
@@ -56,14 +49,10 @@ class DocumentFieldDBMapper extends DBMapper
                     $row['description'],
                     $row['sequence'],
                     $row['mandatory'],
-                    $row['is_standard_field'],
-                    $row['is_profile_field']));
+                    $row['document_type_id']));
             }
-            if (count($actions) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                return $actions;
-            }
+            $response = $actions;
+
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
@@ -80,14 +69,13 @@ class DocumentFieldDBMapper extends DBMapper
         $response = null;
         $db_name = DbCommunication::getInstance()->getDatabaseName();
         $sql = "INSERT INTO $db_name.document_field
-                VALUES (null, ?, ?, ?, ?, ?, ?);";
+                VALUES (null, ?, ?, ?, ?, ?);";
         $parameters = array(
             $document_field->getName(),
             $document_field->getDescription(),
             $document_field->getSequence(),
             $document_field->getMandatory(),
-            $document_field->getIsStandardField(),
-            $document_field->getIsProfileField());
+            $document_field->getDocumentTypeId());
         try {
             $this->queryDB($sql, $parameters);
             $response = $this->connection->lastInsertId();
@@ -105,15 +93,14 @@ class DocumentFieldDBMapper extends DBMapper
         $response = null;
         $db_name = DbCommunication::getInstance()->getDatabaseName();
         $sql = "UPDATE $db_name.document_field
-                SET `name` = ?, description = ?, sequence = ?, mandatory = ?, is_standard_field = ?, is_profile_field = ?
+                SET `name` = ?, description = ?, sequence = ?, mandatory = ?, document_type_id = ?
                 WHERE id = ?;";
         $parameters = array(
             $document_field->getName(),
             $document_field->getDescription(),
             $document_field->getSequence(),
             $document_field->getMandatory(),
-            $document_field->getIsStandardField(),
-            $document_field->getIsProfileField(),
+            $document_field->getDocumentTypeId(),
             $document_field->getId());
         try {
             $this->queryDB($sql, $parameters);
@@ -123,6 +110,39 @@ class DocumentFieldDBMapper extends DBMapper
         }
         return $response;
     }
+    
 
+    public function deleteById($id)
+    {
+        $response = null;
+        try {
+            $this->queryDBWithAssociativeArray(DocumentField::SQL_DELETE_DOCUMENT_FIELD_BY_ID,array(":id"=>$id));
+            $response = array();
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
+
+    public function getFieldsByDocumentIdAndDocumentTimestamp($document_id, $document_timestamp)
+    {
+        try {
+            $result = $this->queryDBWithAssociativeArray(DocumentFieldValue::SQL_GET_FIELDS_BY_DOCUMENT_ID, array(
+                ':document_id' => $document_id,
+                ':document_timestamp' => $document_timestamp
+            ));
+            $raw = $result->fetchAll();
+            $objects = [];
+            foreach($raw as $raw_item){
+                array_push($objects, DocumentFieldValue::fromDBArray($raw_item));
+            }
+            $response = $objects;
+
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+
+    }
 
 }

@@ -5,33 +5,99 @@ require_once __DIR__."/ErrorResponse.php";
 
 abstract class ResponseController implements iController
 {
-    protected  $method, $body, $path, $controller, $id;
+    protected  $method, $body, $path, $controller, $id, $db_mapper, $list_name, $model;
 
-    abstract protected function getAll();
-    abstract protected function create();
+    protected function getAll()
+    {
+        $mapper = new $this->db_mapper();
+        $objects = $mapper->getAll();
+        $object_array = [];
+        foreach($objects as $object){
+            array_push($object_array, $object->toArray());
+        }
+
+        $json = json_encode(array( $this->list_name => $object_array), JSON_PRETTY_PRINT);
+
+        return new Response($json);
+    }
+
+    protected function create()
+    {
+        $model = $this->model;
+        $missing_fields = self::validateJSONFormat($this->body, $model::REQUIRED_POST_FIELDS);
+        if( !$missing_fields ){
+            $mapper = new $this->db_mapper();
+            $object = $model::fromJSON($this->body);
+            $db_response = $mapper->add($object);
+
+            if ($db_response instanceof DBError) {
+                $response = new ErrorResponse($db_response);
+            }
+            elseif(is_numeric($db_response)){
+                $this->id = $db_response;
+                $response = $this->get();
+            }
+            else{
+                //todo not sure how best to handle this
+                throw new Exception("Not implemented error");
+            }
+        }
+        else{
+            $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
+        }
+        return $response;
+    }
 
     protected function getOptions(){
         return new Response("{}");
     }
 
-    abstract protected function get();
-    abstract protected function update();
-    abstract protected function delete();
-
-    //if $parts == 1,then remove std_id, if $parts == 2, then remove std_id AND 'verions'
-    protected function trimPath($parts){
-        if($parts == 1){
-            //remove part from path array and fix index of array
-            unset($this->path[0]);
-            $this->path = array_values($this->path);
-
-        }elseif($parts == 2){
-            //remove part from path array and fix index of array
-            unset($this->path[0]);
-            unset($this->path[1]);
-            $this->path = array_values($this->path);
+    protected function get()
+    {
+        $mapper = new $this->db_mapper();
+        $object = $mapper->getById($this->id);
+        if($object){
+            $response = new Response(json_encode($object->toArray(), JSON_PRETTY_PRINT));
         }
+        else{
+            $response = new ErrorResponse(new NotFoundError());
+        }
+        return $response;
     }
+
+    protected function update()
+    {
+        $model = $this->model;
+        $missing_fields = self::validateJSONFormat($this->body, $model::REQUIRED_PUT_FIELDS);
+
+        if( !$missing_fields ){
+            $mapper = new $this->db_mapper();
+            $json = $this->body;
+            $json["id"] = $this->id;
+            $object = $model::fromJSON($json);
+            $db_response = $mapper->update($object);
+
+            if ($db_response instanceof DBError) {
+                $response =  new ErrorResponse($db_response);
+            }
+            else{
+                $response=$this->get();
+            }
+        }
+        else{
+            $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
+        }
+
+        return $response;
+    }
+
+    protected function delete()
+    {
+        $db_mapper = new $this->db_mapper();
+        $response = $db_mapper->deleteById($this->id);
+        return new Response(json_encode("{}",JSON_PRETTY_PRINT),Response::STATUS_CODE_NO_CONTENT);
+    }
+
 
     protected function handleRequest()
     {
@@ -79,6 +145,21 @@ abstract class ResponseController implements iController
             }
         }
         return $response;
+    }
+
+    protected function init($path, $method, $body)
+    {
+        $this->method = $method;
+        $this->body = $body;
+        $this->path = $path;
+
+        if(count($this->path) != 0){
+            if(count($this->path) == 1 && is_numeric($path[0])){
+                $this->id = $path[0];
+            }else{
+                $this->controller = new ErrorController(new InvalidPathError());
+            }
+        }
     }
 
     protected static function validateJSONFormat($json, $required_fields)

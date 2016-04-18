@@ -3,10 +3,8 @@ require_once __DIR__.'/../../responses/Response.php';
 require_once __DIR__.'/../../responses/ResponseController.php';
 require_once __DIR__.'/../../errors/InvalidPathError.php';
 require_once __DIR__.'/../../errors/ErrorController.php';
-require_once __DIR__.'/../../main/controllers/DescriptionController.php';
 require_once __DIR__.'/../../dbmappers/TopicDBMapper.php';
-require_once __DIR__.'/../../models/Standard.php';
-require_once __DIR__.'/../../models/Profile.php';
+require_once __DIR__.'/../../models/Document.php';
 
 class TopicController extends ResponseController
 {
@@ -41,7 +39,9 @@ class TopicController extends ResponseController
         $topics = $mapper->getTopicsAsThree();
         $topics_array = [];
         foreach($topics as $topic){
-            array_push($topics_array, $topic->toArray());
+            $array = $topic->toArray();
+            //$array['documents'] = $this->getDocuments($topic->getId()); // Adds all documents
+            array_push($topics_array, $array);
         }
 
         $json = json_encode(array( "topics" => $topics_array), JSON_PRETTY_PRINT);
@@ -49,29 +49,40 @@ class TopicController extends ResponseController
         return new Response($json);
     }
 
+
     /**
      * Function creating a new topic.
      * @return Response
      */
     protected function create()
     {
-        $mapper = new TopicDbMapper();
-        $assoc = $this->body;
-        $topic = new Topic(
-            null,
-            null,
-            $assoc['title'],
-            $assoc['description'],
-            $assoc['sequence'],
-            $assoc['parent'],
-            $assoc['comment']);
-        $response = $mapper->add($topic);
+        $missing_fields = TopicController::validateJSONFormat($this->body, Topic::REQUIRED_POST_FIELDS);
+        if( !$missing_fields ){
+            $mapper = new TopicDbMapper();
+            $assoc = $this->body;
+            $topic = new Topic(
+                null,
+                null,
+                $assoc['title'],
+                $assoc['description'],
+                $assoc['sequence'],
+                $assoc['parentId'],
+                $assoc['comment']);
+            $response = $mapper->add($topic);
 
-        if ($response instanceof DBError) {
-            return new ErrorResponse($response);
+
+            if ($response instanceof DBError) {
+                $response = new ErrorResponse($response);
+            }
+            else{
+                $this->id = $response;
+                $response = $this->get();
+            }
         }
-        $this->id = $response;
-        return $this->get();
+        else{
+            $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
+        }
+        return $response;
     }
 
     /**
@@ -81,81 +92,87 @@ class TopicController extends ResponseController
     protected function get()
     {
         $result = $this->getChildren($this->id);
-        return new Response(json_encode($result, JSON_PRETTY_PRINT));
+        if($result){
+
+            return new Response(json_encode($result, JSON_PRETTY_PRINT));
+        }
+        else{
+            return new ErrorResponse(new NotFoundError());
+        }
     }
 
     private function getChildren($id)
     {
         $controller = new TopicDbMapper();
         $topic = $controller->getTopicById($id);
-        $result = $topic->toArray();
-        $topic_children = $controller->getSubtopicsByTopicId($id);
+        if($topic){
+            $result = $topic->toArray();
+            $topic_children = $controller->getSubtopicsByTopicId($id);
 
-        $children = array();
-        foreach ($topic_children as $child) {
+            $children = array();
+            foreach ($topic_children as $child) {
 
-            if (count($topic_children) > 0) {
-                array_push($children, $this->getChildren($child->getId()));
-            } else {
-                array_push($children, $child->toArray());
+                if (count($topic_children) > 0) {
+                    array_push($children, $this->getChildren($child->getId()));
+                } else {
+                    array_push($children, $child->toArray());
+                }
             }
-        }
-        $result['children'] = $children;
+            $result['children'] = $children;
 
-        $topic_standards = $controller->getStandardsByTopicId($id);
-        $topic_profiles = $controller->getProfileByTopicId($id);
+            $result['documents'] = array_merge($result['documents'],$this->getDocuments($id));
+            return $result;
+        }
+    }
 
-        $documents = array();
-        foreach ($topic_standards as $standard) {
-            $standard = $standard->toArray();
-            $standard['document'] = 'standard';
-            array_push($documents, $standard);
+    /**
+     * Returns all documents for the topic
+     * @param $topic_id
+     * @return array
+     */
+    private function getDocuments($topic_id)
+    {
+        $document_mapper = new DocumentDBMapper();
+        $documents = $document_mapper->getDocumentsByTopicId($topic_id);
+
+
+        $documents_array = array();
+        foreach ($documents as $document) {
+            $document->setTargetGroups(DocumentController::getTargetGroups($document));
+            $document->setLinks(DocumentController::getLinks($document));
+            $document->setFields([]);
+
+            $document_array = $document->toArray();
+
+            array_push($documents_array, $document_array);
+
         }
-        foreach ($topic_profiles as $profile) {
-            $profile = $profile->toArray();
-            $profile['document'] = 'profile';
-            array_push($documents, $profile);
-        }
-        usort($documents, function ($a, $b)
+
+        usort($documents_array, function ($a, $b)
         {
             return $a['sequence'] - $b['sequence'];
 
         });
-        $result['documents'] = array_merge($result['documents'],$documents);
-        return $result;
+
+        return $documents_array;
     }
 
-    /**
-     * Function updating a topics values.
-     * @return Response
-     */
-    protected function update()
+        /**
+         * Function updating a topics values.
+         * @return Response
+         */
+        protected function update()
     {
-        $mapper = new TopicDbMapper();
-        $assoc = $this->body;
-        $topic = new Topic(
-            $this->id, null,
-            $assoc['title'],
-            $assoc['description'],
-            $assoc['sequence'],
-            $assoc['parent'],
-            $assoc['comment']);
-        $response = $mapper->update($topic);
-
-        if ($response instanceof DBError) {
-            return new ErrorResponse($response);
-        }
-        $result =  $mapper->getTopicById($response)->toArray();
-        return new Response(json_encode($result, JSON_PRETTY_PRINT));
+        return new ErrorResponse(new MethodNotAllowedError($this->method));
     }
 
-    /**
-     * Function deleting a topic.
-     * @return Response
-     */
-    protected function delete()
+        /**
+         * Function deleting a topic.
+         * @return Response
+         */
+        protected function delete()
     {
         // TODO fix delete
         return new Response("delete topic");
     }
-}
+    }

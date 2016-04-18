@@ -134,6 +134,5 @@ class StandardVersionDBMapper extends DBMapper
         }
         return $result;
     }
-
-
+    
 }
