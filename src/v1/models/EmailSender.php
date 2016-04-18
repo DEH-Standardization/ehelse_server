@@ -2,9 +2,24 @@
 
 class EmailSender
 {
+    const REGISTER_EMAIL = 1;
+    const RESET_PASSWORD_EMAIL = 2;
     const FROM = "From: <noreplay@ehelseEditor.no> \r\n";
 
-    public static function sendResetPasswordEmail($to, $password)
+
+    public static function sendEmail($to, $password, $email_type)
+    {
+        switch ($email_type) {
+            case 1:
+                return self::sendRegisterEmail($to, $password);
+            case 2:
+                return self::sendResetPasswordEmail($to, $password);
+            default:
+                return false;
+        }
+    }
+
+    private static function sendResetPasswordEmail($to, $password)
     {
         $is_sent = false;
         if (filter_var($to, FILTER_VALIDATE_EMAIL)) {
@@ -15,6 +30,26 @@ class EmailSender
                 <h3>Glemt passord</h3>
                 <p>Passordet for $to har blitt satt til:</p>
                 <h2>$password</h2>
+            </body></html>";
+            $is_sent = self::send($to,$subject, $message);
+        }
+        return $is_sent;
+    }
+
+
+    private static function sendRegisterEmail($to, $password)
+    {
+        $is_sent = false;
+        if (filter_var($to, FILTER_VALIDATE_EMAIL)) {
+            $subject = 'Registrert ny bruker hos e-helse';
+            $message = "<html>
+            <head><title>Registrert ny bruker</title></head>
+            <body>
+                <h3>Registrert ny bruker</h3>
+                <p>Din -epsostadresse ($to) er registrert hos e-helse.</p>
+                <p>Midlertidig passordet er satt til:</p>
+                <h2>$password</h2>
+                <p>Vennligst bytt passord ved første innlogging.</p>
             </body></html>";
             $is_sent = self::send($to,$subject, $message);
         }

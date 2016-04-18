@@ -78,6 +78,8 @@ class UserController extends ResponseController
             }
             elseif(is_numeric($db_response)){
                 $this->id = $db_response;
+                ResetPasswordController::setNewPassword(
+                    $this->body, EmailSender::REGISTER_EMAIL);  // set password and send email
                 $response = $this->get();
             }
             else{
