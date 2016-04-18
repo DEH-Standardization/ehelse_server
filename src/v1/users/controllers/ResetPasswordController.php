@@ -27,16 +27,20 @@ class ResetPasswordController extends ResponseController
      */
     protected function create()
     {
+       return self::setNewPassword($this->body, EmailSender::RESET_PASSWORD_EMAIL);
+    }
+
+    public static function setNewPassword($json, $email_type)
+    {
         $response = null;
-        $json = $this->body;
-        $missing_fields = UserController::validateJSONFormat($this->body, User::REQUIRED_PASSWORD_RESET_FIELD);
+        $missing_fields = UserController::validateJSONFormat($json, User::REQUIRED_PASSWORD_RESET_FIELD);
 
         if (!$missing_fields) {
             $user_mapper = new UserDBMapper();
-            $email = $this->body['email'];
+            $email = $json['email'];
             $user = User::fromDBArray($user_mapper->getByEmail($email));
 
-            $password = $this->getRandomString(ResetPasswordController::PASSWORD_LENGTH);
+            $password = ResetPasswordController::getRandomString(ResetPasswordController::PASSWORD_LENGTH);
             $json['password'] = $password;
 
             $id = $user->getId();
@@ -44,7 +48,6 @@ class ResetPasswordController extends ResponseController
             $reset_password_user = User::fromResetPasswordQuery($id, $json);
 
             if($reset_password_user) {
-
                 $db_response = $user_mapper->resetPassword($reset_password_user);
 
                 if ($db_response instanceof DBError) {
@@ -52,7 +55,7 @@ class ResetPasswordController extends ResponseController
                 } else {
                     $reset_password_user = $user_mapper->getById($id);
                     if ($reset_password_user) {
-                        EmailSender::sendResetPasswordEmail($email, $password);   // Sending Email notification
+                        EmailSender::sendEmail($email, $password, $email_type);   // Sending Email notification
                         $response = new Response(json_encode($reset_password_user->toArray(), JSON_PRETTY_PRINT));
                     } else {
                         $response = new ErrorResponse(new NotFoundError());
@@ -61,8 +64,6 @@ class ResetPasswordController extends ResponseController
             }
             return $response;
         }
-
-
         return new Response($response);
     }
 
@@ -71,7 +72,7 @@ class ResetPasswordController extends ResponseController
      * @param $length
      * @return string
      */
-    private function getRandomString($length) {
+    private static function getRandomString($length) {
         $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
         $string = '';
         for ($i = 0; $i < $length; $i++) {

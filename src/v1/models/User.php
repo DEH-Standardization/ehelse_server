@@ -165,7 +165,7 @@ class User
     public static function fromJSON($json)
     {
         return new User(
-            getValueFromArray($json,'id'),
+            (array_key_exists('id', $json)) ? $json['id'] : null,
             getValueFromArray($json,'name'),
             getValueFromArray($json,'email'),
             getValueFromArray($json,'profileImage'),
