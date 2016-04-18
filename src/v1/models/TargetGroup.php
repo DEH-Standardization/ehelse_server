@@ -9,7 +9,7 @@ class TargetGroup implements iModel
     const REQUIRED_PUT_FIELDS = ['name', 'description', 'parentId', 'abbreviation'];
     const SQL_INSERT_STATEMENT = "INSERT INTO target_group(name, description, parent_id, abbreviation) VALUES (:name, :description, :parent_id, :abbreviation);";
     const SQL_UPDATE_STATEMENT = "UPDATE target_group set name=:name, description=:description, parent_id=:parent_id, abbreviation=:abbreviation WHERE id=:id;";
-    const SQL_DELETE_TARGET_GROUP_BY_ID = "DELETE FROM target_group WHERE id=:id";
+    const SQL_DELETE = "DELETE FROM target_group WHERE id=:id";
 
     private $id, $name, $description, $parent_id, $abbreviation, $children;
 

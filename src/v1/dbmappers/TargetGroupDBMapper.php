@@ -7,6 +7,12 @@ require_once __DIR__.'/../errors/DBError.php';
 
 class TargetGroupDBMapper extends DBMapper
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->model = 'TargetGroup';
+    }
+
     public function get($target_group)
     {
         $this->getById($target_group->getId());

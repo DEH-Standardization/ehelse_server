@@ -19,6 +19,7 @@ class TargetGroupController extends ResponseController
         $this->method = $method;
         $this->body = $body;
         $this->path = $path;
+        $this->db_mapper = 'TargetGroupDBMapper';
 
         if(count($this->path) != 0){
             if(count($this->path) == 1 && is_numeric($path[0])){
@@ -107,9 +108,4 @@ class TargetGroupController extends ResponseController
 
     }
 
-    protected function delete()
-    {
-        $target_group_db_mapper = new TargetGroupDBMapper();
-        return new Response(json_encode($target_group_db_mapper->deleteById($this->id),JSON_PRETTY_PRINT));
-    }
 }
