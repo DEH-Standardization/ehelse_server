@@ -4,6 +4,7 @@ require_once __DIR__.'/../../models/EmailSender.php';
 class ResetPasswordController extends ResponseController
 {
     const PASSWORD_LENGTH = 12;
+    const RESET_PASSWORD_ACCEPTED_MESSAGE = 'Password reset request received.';
 
     /**
      * ResetPasswordController constructor.
@@ -56,7 +57,10 @@ class ResetPasswordController extends ResponseController
                     $reset_password_user = $user_mapper->getById($id);
                     if ($reset_password_user) {
                         EmailSender::sendEmail($email, $password, $email_type);   // Sending Email notification
-                        $response = new Response(json_encode($reset_password_user->toArray(), JSON_PRETTY_PRINT));
+                        $response = new Response(json_encode(   // TODO: should this be moved? Might make more sense to use a own class.
+                            array('message' => ResetPasswordController::RESET_PASSWORD_ACCEPTED_STRING),
+                            JSON_PRETTY_PRINT), Response::STATUS_CODE_ACCEPTED
+                        );
                     } else {
                         $response = new ErrorResponse(new NotFoundError());
                     }
