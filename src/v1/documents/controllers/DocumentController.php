@@ -152,9 +152,7 @@ class DocumentController extends ResponseController
         $document->setFields($this->getFields($document));
         $document->setTargetGroups($this->getTargetGroups($document));
 
-        $document_array = $document->toArray();
-
-        $json = json_encode(array( "documents" => $document_array), JSON_PRETTY_PRINT);
+        $json = json_encode($document->toArray(), JSON_PRETTY_PRINT);
         return new Response($json);
     }
 
