@@ -209,7 +209,16 @@ class Topic implements iModel
 
     public static function fromJSON($json)
     {
-        // TODO: Implement fromJSON() method.
+        return new Topic(
+            (array_key_exists('id', $json)) ? $json['id'] : null,
+            (array_key_exists('timestamp', $json)) ? $json['timestamp'] : null,
+            $json['title'],
+            $json['description'],
+            $json['sequence'],
+            $json['parentId'],
+            $json['comment'],
+            $json['children']
+        );
     }
 
     public function toDBArray()

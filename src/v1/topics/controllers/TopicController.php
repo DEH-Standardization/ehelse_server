@@ -135,23 +135,19 @@ class TopicController extends ResponseController
         $document_mapper = new DocumentDBMapper();
         $documents = $document_mapper->getDocumentsByTopicId($topic_id);
 
-
         $documents_array = array();
         foreach ($documents as $document) {
             $document->setTargetGroups(DocumentController::getTargetGroups($document));
             $document->setLinks(DocumentController::getLinks($document));
-            $document->setFields([]);
+            $document->setFields(DocumentController::getFields($document));
 
             $document_array = $document->toArray();
-
             array_push($documents_array, $document_array);
-
         }
 
-        usort($documents_array, function ($a, $b)
+        usort($documents_array, function ($a, $b)   // Sort document list on sequence
         {
             return $a['sequence'] - $b['sequence'];
-
         });
 
         return $documents_array;
@@ -162,9 +158,18 @@ class TopicController extends ResponseController
          * @return Response
          */
         protected function update()
-    {
-        return new ErrorResponse(new MethodNotAllowedError($this->method));
-    }
+        {
+            $response = null;
+            $topic_mapper = new TopicDbMapper();
+            $topic = Topic::fromJSON($this->body);
+            $result = $topic_mapper->add($topic);
+            if (!$result instanceof DBError) {
+                return $this->get();
+            } else {
+                $response = $result->toJSON();
+            }
+            return new Response($response);
+        }
 
         /**
          * Function deleting a topic.
