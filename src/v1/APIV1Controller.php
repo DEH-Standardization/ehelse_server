@@ -54,6 +54,7 @@ class APIV1Controller implements iController
                 break;
             case 'link-categories':
                 $this->controller = new LinkCategoryController($path, $method, $body);
+                break;
             case 'actions':
                 $this->controller = new ActionController($path, $method, $body);
                 break;
