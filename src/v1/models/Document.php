@@ -29,11 +29,19 @@ class Document implements iModel
                                   :next_document_id,
                                   :prev_document_id)";
     const SQL_GET_BY_ID = "SELECT *
-                FROM document WHERE id = :id and (id,timestamp) IN
+                FROM document WHERE id = :id AND is_archived = 0 AND (id,timestamp) IN
                 ( SELECT id, MAX(timestamp)
                   FROM document
                 GROUP BY id)";
 
+
+    const SQL_GET_ALL = "SELECT * FROM document WHERE is_archived = 0 AND (id,timestamp) IN
+                ( SELECT id, MAX(timestamp)
+                  FROM document
+                  GROUP BY id);";
+    const SQL_DELETE = "UPDATE document SET is_archived = 1 WHERE id = :id AND
+                timestamp = :timestamp;";
+    const SQL_GET_MAX_TIMESTAMP = "SELECT MAX(timestamp) FROM document WHERE id = :id;";
 
     const REQUIRED_PUT_FIELDS = [
         ':id',
@@ -58,6 +66,7 @@ class Document implements iModel
         $document_type_id,
         $next_document_id,
         $prev_document_id,
+        $is_archived,
         $target_groups,
         $fields,
         $links;
@@ -73,13 +82,14 @@ class Document implements iModel
      * @param $topic_id
      * @param $comment
      * @param $status_id
+     * @param $is_archived
      * @param $document_type_id
      * @param $next_document_id
      * @param $prev_document_id
      */
     public function __construct($id, $timestamp, $title, $description, $sequence,
                                 $topic_id, $comment, $status_id, $document_type_id,
-                                $next_document_id, $prev_document_id)
+                                $next_document_id, $prev_document_id, $is_archived)
     {
         $this->id = $id;
         $this->timestamp = $timestamp;
@@ -92,6 +102,7 @@ class Document implements iModel
         $this->document_type_id = $document_type_id;
         $this->next_document_id = $next_document_id;
         $this->prev_document_id = $prev_document_id;
+        $this->is_archived = $is_archived;
         $this->target_groups = [];
         $this->links = [];
     }
@@ -309,7 +320,8 @@ class Document implements iModel
             $db_array['status_id'],
             $db_array['document_type_id'],
             $db_array['next_document_id'],
-            $db_array['prev_document_id']
+            $db_array['prev_document_id'],
+            $db_array['is_archived']
         );
     }
 
@@ -326,7 +338,8 @@ class Document implements iModel
             $json['statusId'],
             $json['documentTypeId'],
             $json['nextDocumentId'],
-            $json['previousDocumentId']
+            $json['previousDocumentId'],
+            null
         );
         $document->setLinks($json['links']);
         $document->setFields($json['fields']);
