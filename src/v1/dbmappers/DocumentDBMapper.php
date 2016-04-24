@@ -16,6 +16,34 @@ class DocumentDBMapper extends DBMapper
     }
 
     /**
+     * Delete document based on id
+     * Archive variable is set to true, nothing is removed from database.
+     * @param $id
+     * @return array|DBError|null
+     */
+    public function deleteById($id)
+    {
+        $response = null;
+        try {
+
+            $timestamp = $this->queryDBWithAssociativeArray(
+                Document::SQL_GET_MAX_TIMESTAMP, array(':id' => $id)
+            )->fetch()[0];  // gets the string representation of timestamp from database
+            $this->queryDBWithAssociativeArray(
+                Document::SQL_DELETE,
+                array(
+                    ':id' => $id,
+                    ':timestamp' => $timestamp)
+            );
+            $response = [];
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+
+    }
+
+    /**
      * Returns document from database based on model
      * @param $id
      * @return DBError|Document
@@ -26,71 +54,12 @@ class DocumentDBMapper extends DBMapper
     }
 
     /**
-     * Returns document from database based on id
-     * @param $id
-     * @return DBError|Document
-     */
-
-    /*
-    public function getById($id)
-    {
-        $response = null;
-        $sql = "SELECT *
-                FROM $this->table_name WHERE id = ? and (id,timestamp) IN
-                ( SELECT id, MAX(timestamp)
-                  FROM $this->table_name
-                GROUP BY id)";
-        try {
-            $result = $this->queryDB($sql, array($id));
-            $raw = $result->fetch();
-            if($raw){
-                $response = Document::fromDBArray($raw);
-            }
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-    */
-
-    /**
      * Returns all the newest logged documents
      * @return array|DBError
      */
+    /*
     public function getAll()
     {
-        /*
-        $response = null;
-        $documents = array();
-        $sql = "SELECT *
-                FROM $this->table_name WHERE(id,timestamp) IN
-                ( SELECT id, MAX(timestamp)
-                  FROM $this->table_name
-                  GROUP BY id);";
-        try {
-            $result = $this->queryDB($sql, array());
-            foreach ($result as $row) {
-                array_push($documents, new Document(
-                    $row['id'],
-                    $row['timestamp'],
-                    $row['title'],
-                    $row['description'],
-                    $row['sequence'],
-                    $row['topic_id'],
-                    $row['comment'],
-                    $row['status_id'],
-                    $row['document_type_id']));
-            }
-            if (count($documents) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                return $documents;
-            }
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-        */
 
         $response = null;
         $sql = "SELECT *
@@ -112,6 +81,7 @@ class DocumentDBMapper extends DBMapper
         }
         return $response;
     }
+    */
 
     /**
      * Adds new document to database, returns id if success, error otherwise

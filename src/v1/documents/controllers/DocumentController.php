@@ -39,6 +39,11 @@ class DocumentController extends ResponseController
         $document_mapper = new DocumentDBMapper();
 
         $documents = $document_mapper->getAll();
+
+        if($documents === null) {
+            return new ErrorResponse(new NotFoundError());
+        }
+
         $document_array = array();
         foreach ($documents as $document) {
             $document->setLinks($this->getLinks($document));
@@ -148,6 +153,10 @@ class DocumentController extends ResponseController
         $document_mapper = new DocumentDBMapper();
         $document = $document_mapper->getById($id);
 
+        if($document === null) {
+            return new ErrorResponse(new NotFoundError());
+        }
+
         $document->setLinks($this->getLinks($document));
         $document->setFields($this->getFields($document));
         $document->setTargetGroups($this->getTargetGroups($document));
@@ -175,8 +184,5 @@ class DocumentController extends ResponseController
         return new Response($response);
     }
 
-    protected function delete()
-    {
-        // TODO: Implement delete() method.
-    }
+
 }
