@@ -53,35 +53,6 @@ class DocumentDBMapper extends DBMapper
         $this->getById($model->getId());
     }
 
-    /**
-     * Returns all the newest logged documents
-     * @return array|DBError
-     */
-    /*
-    public function getAll()
-    {
-
-        $response = null;
-        $sql = "SELECT *
-                FROM $this->table_name WHERE(id,timestamp) IN
-                ( SELECT id, MAX(timestamp)
-                  FROM $this->table_name
-                  GROUP BY id);";
-        try {
-            $result = $this->queryDB($sql, array());
-            $raw = $result->fetchAll();
-            $objects = [];
-            foreach($raw as $raw_item){
-                array_push($objects, Document::fromDBArray($raw_item));
-            }
-            $response = $objects;
-
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-    */
 
     /**
      * Adds new document to database, returns id if success, error otherwise
@@ -139,9 +110,28 @@ class DocumentDBMapper extends DBMapper
 
     public function getDocumentsByTopicId($topic_id)
     {
+        $response = null;
         try {
             $result = $this->queryDBWithAssociativeArray(Topic::SQL_GET_DOCUMENTS_BY_TOPIC_ID,
                 array(':topic_id' => $topic_id));
+            $raw = $result->fetchAll();
+            $objects = [];
+            foreach($raw as $raw_item){
+                array_push($objects, Document::fromDBArray($raw_item));
+            }
+            $response = $objects;
+
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
+
+    public function getProfiles($id)
+    {
+        $response = null;
+        try {
+            $result = $this->queryDBWithAssociativeArray(Document::SQL_GET_PROFILES, array(':id' => $id));
             $raw = $result->fetchAll();
             $objects = [];
             foreach($raw as $raw_item){
