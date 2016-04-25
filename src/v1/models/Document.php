@@ -7,16 +7,16 @@ require_once 'Link.php';
 
 class Document implements iModel
 {
-    const REQUIRED_POST_FIELDS = ['title','description','statusId','sequence','documentTypeId',
-       'topicId','comment','nextDocumentId','previousDocumentId'];
+    const REQUIRED_POST_FIELDS = ['title', 'description', 'statusId', 'sequence', 'documentTypeId',
+        'topicId', 'comment', 'standardId', 'previousDocumentId'];
     const SQL_INSERT = "INSERT INTO document(title,description,status_id,sequence,document_type_id,topic_id,
-                                  comment,next_document_id,prev_document_id)
+                                  comment,standard_id,prev_document_id)
                                   VALUES (:title,:description,:status_id,:sequence,:document_type_id,:topicId,
-                                  :comment,:next_document_id,:prev_document_id);";
+                                  :comment,:standard_id,:prev_document_id);";
 
 
-    const SQL_UPDATE ="INSERT INTO document(id,title,description,status_id,sequence,document_type_id,topic_id,
-                                  comment,next_document_id,prev_document_id)
+    const SQL_UPDATE = "INSERT INTO document(id,title,description,status_id,sequence,document_type_id,topic_id,
+                                  comment,standard_id,prev_document_id)
                                   VALUES (
                                   :id,
                                   :title,
@@ -26,7 +26,7 @@ class Document implements iModel
                                   :document_type_id,
                                   :topicId,
                                   :comment,
-                                  :next_document_id,
+                                  :standard_id,
                                   :prev_document_id)";
     const SQL_GET_BY_ID = "SELECT *
                 FROM document WHERE id = :id AND is_archived = 0 AND (id,timestamp) IN
@@ -42,6 +42,14 @@ class Document implements iModel
     const SQL_DELETE = "UPDATE document SET is_archived = 1 WHERE id = :id AND
                 timestamp = :timestamp;";
     const SQL_GET_MAX_TIMESTAMP = "SELECT MAX(timestamp) FROM document WHERE id = :id;";
+    /*
+    const SQL_GET_PROFILES = "SELECT * FROM document WHERE standard_id = :id AND  timestamp IN
+(SELECT timestamp FROM document WHERE (id,timestamp) IN
+                ( SELECT id, MAX(timestamp)
+                  FROM document
+                GROUP BY id));";
+    */
+    const SQL_GET_PROFILE_IDS = "SELECT DISTINCT id FROM document WHERE standard_id = :id;";
 
     const REQUIRED_PUT_FIELDS = [
         ':id',
@@ -52,7 +60,7 @@ class Document implements iModel
         ':document_type_id',
         ':topicId',
         ':comment',
-        ':next_document_id',
+        ':standard_id',
         ':prev_document_id'];
     private
         $id,
@@ -64,9 +72,10 @@ class Document implements iModel
         $comment,
         $status_id,
         $document_type_id,
-        $next_document_id,
+        $standard_id,
         $prev_document_id,
         $is_archived,
+        $profiles,
         $target_groups,
         $fields,
         $links;
@@ -84,12 +93,12 @@ class Document implements iModel
      * @param $status_id
      * @param $is_archived
      * @param $document_type_id
-     * @param $next_document_id
+     * @param $standard_id
      * @param $prev_document_id
      */
     public function __construct($id, $timestamp, $title, $description, $sequence,
                                 $topic_id, $comment, $status_id, $document_type_id,
-                                $next_document_id, $prev_document_id, $is_archived)
+                                $standard_id, $prev_document_id, $is_archived)
     {
         $this->id = $id;
         $this->timestamp = $timestamp;
@@ -100,7 +109,7 @@ class Document implements iModel
         $this->setComment($comment);
         $this->status_id = $status_id;
         $this->document_type_id = $document_type_id;
-        $this->next_document_id = $next_document_id;
+        $this->standard_id = $standard_id;
         $this->prev_document_id = $prev_document_id;
         $this->is_archived = $is_archived;
         $this->target_groups = [];
@@ -226,12 +235,12 @@ class Document implements iModel
 
     public function getNextDocumentId()
     {
-        return $this->next_document_id;
+        return $this->standard_id;
     }
 
-    public function setNextDocumentId($next_document_id)
+    public function setNextDocumentId($standard_id)
     {
-        $this->next_document_id = $next_document_id;
+        $this->standard_id = $standard_id;
     }
 
     public function getPrevDocumentId()
@@ -242,6 +251,16 @@ class Document implements iModel
     public function setPrevDocumentId($prev_document_id)
     {
         $this->prev_document_id = $prev_document_id;
+    }
+
+    public function getProfiles()
+    {
+        return $this->profiles;
+    }
+
+    public function setProfiles($profiles)
+    {
+        $this->profiles = $profiles;
     }
 
     public function setTargetGroups($target_groups)
@@ -290,8 +309,9 @@ class Document implements iModel
             'topicId' => $this->topic_id,
             'comment' => $this->comment,
             'documentTypeId' => $this->document_type_id,
-            'nextDocumentId' => $this->next_document_id,
+            'standardId' => $this->standard_id,
             'previousDocumentId' => $this->prev_document_id,
+            'profiles' => $this->profiles,
             'links' => $this->links,
             'fields' => $this->fields,
             'targetGroups' => $this->target_groups
@@ -304,7 +324,7 @@ class Document implements iModel
      */
     public function toJSON()
     {
-        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+        return json_encode($this->toArray(), JSON_PRETTY_PRINT);
     }
 
     public static function fromDBArray($db_array)
@@ -319,7 +339,7 @@ class Document implements iModel
             $db_array['comment'],
             $db_array['status_id'],
             $db_array['document_type_id'],
-            $db_array['next_document_id'],
+            $db_array['standard_id'],
             $db_array['prev_document_id'],
             $db_array['is_archived']
         );
@@ -337,7 +357,7 @@ class Document implements iModel
             $json['comment'],
             $json['statusId'],
             $json['documentTypeId'],
-            $json['nextDocumentId'],
+            $json['standardId'],
             $json['previousDocumentId'],
             null
         );
@@ -358,10 +378,10 @@ class Document implements iModel
             ':document_type_id' => $this->document_type_id,
             ':topicId' => $this->topic_id,
             ':comment' => $this->comment,
-            ':next_document_id' => $this->next_document_id,
+            ':standard_id' => $this->standard_id,
             ':prev_document_id' => $this->prev_document_id
         );
-        if($this->id){
+        if ($this->id) {
             $db_array[':id'] = $this->id;
         }
         return $db_array;

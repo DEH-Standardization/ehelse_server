@@ -7,8 +7,6 @@ require_once __DIR__. "/../dbmappers/DocumentFieldValueDBMapper.php";
 
 class DocumentDBMapper extends DBMapper
 {
-    private $table_name = 'document';
-
     public function __construct()
     {
         parent::__construct();
@@ -25,7 +23,6 @@ class DocumentDBMapper extends DBMapper
     {
         $response = null;
         try {
-
             $timestamp = $this->queryDBWithAssociativeArray(
                 Document::SQL_GET_MAX_TIMESTAMP, array(':id' => $id)
             )->fetch()[0];  // gets the string representation of timestamp from database
@@ -53,35 +50,6 @@ class DocumentDBMapper extends DBMapper
         $this->getById($model->getId());
     }
 
-    /**
-     * Returns all the newest logged documents
-     * @return array|DBError
-     */
-    /*
-    public function getAll()
-    {
-
-        $response = null;
-        $sql = "SELECT *
-                FROM $this->table_name WHERE(id,timestamp) IN
-                ( SELECT id, MAX(timestamp)
-                  FROM $this->table_name
-                  GROUP BY id);";
-        try {
-            $result = $this->queryDB($sql, array());
-            $raw = $result->fetchAll();
-            $objects = [];
-            foreach($raw as $raw_item){
-                array_push($objects, Document::fromDBArray($raw_item));
-            }
-            $response = $objects;
-
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-    */
 
     /**
      * Adds new document to database, returns id if success, error otherwise
@@ -137,8 +105,14 @@ class DocumentDBMapper extends DBMapper
         return $document_id;
     }
 
+    /**
+     * Returns all documents under a topic
+     * @param $topic_id
+     * @return array|DBError|null
+     */
     public function getDocumentsByTopicId($topic_id)
     {
+        $response = null;
         try {
             $result = $this->queryDBWithAssociativeArray(Topic::SQL_GET_DOCUMENTS_BY_TOPIC_ID,
                 array(':topic_id' => $topic_id));
@@ -154,4 +128,51 @@ class DocumentDBMapper extends DBMapper
         }
         return $response;
     }
+
+    /**
+     * Return list of profiles under a document
+     * @param $id
+     * @return array|DBError|null
+     */
+    public function getProfiles($id)
+    {
+        $response = null;
+        try {
+            $result = $this->queryDBWithAssociativeArray(Document::SQL_GET_PROFILES, array(':id' => $id));
+            $raw = $result->fetchAll();
+            $objects = [];
+            foreach($raw as $raw_item){
+                array_push($objects, Document::fromDBArray($raw_item));
+            }
+            $response = $objects;
+
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
+
+    /**
+     * Return list of profile ids under a document
+     * @param $id
+     * @return array|DBError|null
+     */
+    public function getProfileIds($id)
+    {
+        $response = null;
+        try {
+            $result = $this->queryDBWithAssociativeArray(Document::SQL_GET_PROFILE_IDS, array(':id' => $id));
+            $raw = $result->fetchAll();
+            $objects = [];
+            foreach($raw as $raw_item){
+                array_push($objects, array('id' => $raw_item['id']));
+            }
+            $response = $objects;
+
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
+
 }
