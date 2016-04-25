@@ -33,7 +33,10 @@ class Link implements iModel
     const GET_LINK_CATEGORIES_BY_DOCUMENT_ID =
         "SELECT * FROM link_category where id IN
           (SELECT DISTINCT link_category_id FROM link WHERE document_id = :document_id);";
-    const SQL_GET_LINKS_BY_DOCUMENT_ID = "SELECT * FROM link WHERE document_id = :document_id;";
+    const SQL_GET_LINKS_BY_DOCUMENT_ID = "SELECT * FROM link WHERE document_id = :document_id AND (id,timestamp) IN
+                ( SELECT id, MAX(timestamp)
+                  FROM document
+                GROUP BY id);";
     private
         $id,
         $text,
