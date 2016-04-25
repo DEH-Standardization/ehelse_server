@@ -46,6 +46,7 @@ class DocumentController extends ResponseController
 
         $document_array = array();
         foreach ($documents as $document) {
+            $document->setProfiles($this->getProfiles($document));
             $document->setLinks($this->getLinks($document));
             $document->setFields($this->getFields($document));
             $document->setTargetGroups($this->getTargetGroups($document));
@@ -78,6 +79,28 @@ class DocumentController extends ResponseController
     }
 
     /**
+     * Retrieving all profiles under documents
+     * @param $document
+     * @return array
+     */
+    public static function getProfiles($document)
+    {
+        $document_mapper = new DocumentDBMapper();
+
+        $profiles = $document_mapper->getProfiles($document->getId());
+        $profiles_array = [];
+        foreach ($profiles as $profile) {
+            $profile->setProfiles(DocumentController::getProfiles($profile));
+            $profile->setLinks(DocumentController::getLinks($profile));
+            $profile->setFields(DocumentController::getFields($profile));
+            $profile->setTargetGroups(DocumentController::getTargetGroups($profile));
+            array_push($profiles_array, $profile->toArray());
+        }
+
+        return $profiles_array;
+    }
+
+    /**
      * Retrieving all links under documents
      * @param $document
      * @return array
@@ -88,8 +111,8 @@ class DocumentController extends ResponseController
 
         $links = $link_mapper->getLinksByDocumentId($document->getId());
         $link_array = [];
-        foreach ($links as $l) {
-            array_push($link_array, $l->toArray());
+        foreach ($links as $link) {
+            array_push($link_array, $link->toArray());
         }
 
         return $link_array;
@@ -157,6 +180,7 @@ class DocumentController extends ResponseController
             return new ErrorResponse(new NotFoundError());
         }
 
+        $document->setProfiles($this->getProfiles($document));
         $document->setLinks($this->getLinks($document));
         $document->setFields($this->getFields($document));
         $document->setTargetGroups($this->getTargetGroups($document));
