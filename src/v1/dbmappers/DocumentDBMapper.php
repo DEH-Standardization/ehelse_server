@@ -127,6 +127,11 @@ class DocumentDBMapper extends DBMapper
         return $response;
     }
 
+    /**
+     * Return list of profiles under a document
+     * @param $id
+     * @return array|DBError|null
+     */
     public function getProfiles($id)
     {
         $response = null;
@@ -144,4 +149,28 @@ class DocumentDBMapper extends DBMapper
         }
         return $response;
     }
+
+    /**
+     * Return list of profile ids under a document
+     * @param $id
+     * @return array|DBError|null
+     */
+    public function getProfileIds($id)
+    {
+        $response = null;
+        try {
+            $result = $this->queryDBWithAssociativeArray(Document::SQL_GET_PROFILE_IDS, array(':id' => $id));
+            $raw = $result->fetchAll();
+            $objects = [];
+            foreach($raw as $raw_item){
+                array_push($objects, array('id' => $raw_item['id']));
+            }
+            $response = $objects;
+
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
+
 }

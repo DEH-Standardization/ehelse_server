@@ -42,11 +42,14 @@ class Document implements iModel
     const SQL_DELETE = "UPDATE document SET is_archived = 1 WHERE id = :id AND
                 timestamp = :timestamp;";
     const SQL_GET_MAX_TIMESTAMP = "SELECT MAX(timestamp) FROM document WHERE id = :id;";
+    /*
     const SQL_GET_PROFILES = "SELECT * FROM document WHERE standard_id = :id AND  timestamp IN
 (SELECT timestamp FROM document WHERE (id,timestamp) IN
                 ( SELECT id, MAX(timestamp)
                   FROM document
                 GROUP BY id));";
+    */
+    const SQL_GET_PROFILE_IDS = "SELECT DISTINCT id FROM document WHERE standard_id = :id;";
 
     const REQUIRED_PUT_FIELDS = [
         ':id',

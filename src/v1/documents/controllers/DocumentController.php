@@ -86,6 +86,7 @@ class DocumentController extends ResponseController
     public static function getProfiles($document)
     {
         $document_mapper = new DocumentDBMapper();
+        /*  Returns profiles (Document objects)
 
         $profiles = $document_mapper->getProfiles($document->getId());
         $profiles_array = [];
@@ -98,6 +99,9 @@ class DocumentController extends ResponseController
         }
 
         return $profiles_array;
+        */
+
+        return $document_mapper->getProfileIds($document->getId());
     }
 
     /**
