@@ -7,8 +7,6 @@ require_once __DIR__. "/../dbmappers/DocumentFieldValueDBMapper.php";
 
 class DocumentDBMapper extends DBMapper
 {
-    private $table_name = 'document';
-
     public function __construct()
     {
         parent::__construct();
@@ -25,7 +23,6 @@ class DocumentDBMapper extends DBMapper
     {
         $response = null;
         try {
-
             $timestamp = $this->queryDBWithAssociativeArray(
                 Document::SQL_GET_MAX_TIMESTAMP, array(':id' => $id)
             )->fetch()[0];  // gets the string representation of timestamp from database
@@ -108,6 +105,11 @@ class DocumentDBMapper extends DBMapper
         return $document_id;
     }
 
+    /**
+     * Returns all documents under a topic
+     * @param $topic_id
+     * @return array|DBError|null
+     */
     public function getDocumentsByTopicId($topic_id)
     {
         $response = null;
