@@ -281,6 +281,36 @@ class TopicDbMapper extends DBMapper
         return $response;
     }
 
+    /**
+     * Deletes topic by id by setting is_archived = 1
+     * @param $id
+     * @return array|DBError|null
+     */
+    public function deleteById($id)
+    {
+        $response = null;
+        try {
+            $timestamp = $this->queryDBWithAssociativeArray(
+                Topic::SQL_GET_MAX_TIMESTAMP, array(':id' => $id)
+            )->fetch()[0];  // gets the string representation of timestamp from database
+            $this->queryDBWithAssociativeArray(
+                Topic::SQL_DELETE,
+                array(
+                    ':id' => $id,
+                    ':timestamp' => $timestamp)
+            );
+            $response = [];
+        } catch(PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+
+    }
+
+    /**
+     * Return tree representation of topics
+     * @return array
+     */
     public function getTopicsAsThree()
     {
         $topic_three = [];
@@ -305,5 +335,46 @@ class TopicDbMapper extends DBMapper
         }
         return $topic_three;
     }
-    
+
+    /**
+     * Returns true if topic with id has any subtopics
+     * @param $id
+     * @return bool
+     */
+    public function hasSubtopic($id)
+    {
+        $has_subtopics = false;
+        try {
+            $result = $this->queryDBWithAssociativeArray(Topic::SQL_GET_SUBTOPICS, array(':id' => $id));
+            if ($result->fetchAll())
+                $has_subtopics = true;
+            else
+                $has_subtopics = false;
+        } catch(PDOException $e) {
+            printf($e);     // TODO: find a better way to handle this
+            $has_subtopics = false; // does this make sense?
+        }
+        return $has_subtopics;
+    }
+
+    /**
+     * Returns true if topic with id has any documents
+     * @param $id
+     * @return bool
+     */
+    public function hasDocuments($id)
+    {
+        $has_documents = false;
+        try {
+            $result = $this->queryDBWithAssociativeArray(Topic::SQL_GET_DOCUMENTS_BY_TOPIC_ID, array(':topic_id' => $id));
+            if ($result->fetchAll())
+                $has_documents = true;
+            else
+                $has_documents = false;
+        } catch(PDOException $e) {
+            printf($e);     // TODO: find a better way to handle this
+            $has_documents = false; // does this make sense?
+        }
+        return $has_documents;
+    }
 }
