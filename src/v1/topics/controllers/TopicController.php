@@ -5,6 +5,7 @@ require_once __DIR__.'/../../errors/InvalidPathError.php';
 require_once __DIR__.'/../../errors/ErrorController.php';
 require_once __DIR__.'/../../dbmappers/TopicDBMapper.php';
 require_once __DIR__.'/../../models/Document.php';
+require_once __DIR__.'/../../errors/CantDeleteError.php';
 
 class TopicController extends ResponseController
 {
@@ -171,13 +172,19 @@ class TopicController extends ResponseController
             return new Response($response);
         }
 
-        /**
-         * Function deleting a topic.
-         * @return Response
-         */
-        protected function delete()
+    /**
+     * Function deleting a topic.
+     * @return Response
+     */
+    protected function delete()
     {
-        // TODO fix delete
-        return new Response("delete topic");
+        $mapper = new TopicDbMapper();
+
+        if ( !( $mapper->hasSubtopic($this->id) || $mapper->hasDocuments($this->id)))
+            return new Response($mapper->deleteById($this->id), Response::STATUS_CODE_NO_CONTENT);
+        else
+            return new ErrorResponse(new CantDeleteError());
     }
-    }
+
+
+}
