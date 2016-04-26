@@ -11,6 +11,11 @@ class Topic implements iModel
     const REQUIRED_POST_FIELDS = ['title', 'description','sequence','parentId','comment'];
     const SQL_GET_DOCUMENTS_BY_TOPIC_ID = "SELECT DISTINCT * FROM document WHERE(id,timestamp) IN
                 ( SELECT id, MAX(timestamp)FROM document GROUP BY id) AND topic_id = :topic_id;";
+    const SQL_GET_SUBTOPICS = "SELECT * FROM topic WHERE parent_id = :id AND is_archived = 0 AND (id,timestamp) IN
+                ( SELECT id, MAX(timestamp)FROM topic GROUP BY id);";
+    const SQL_GET_MAX_TIMESTAMP = "SELECT MAX(timestamp) FROM topic WHERE id = :id;";
+    const SQL_DELETE = "UPDATE topic SET is_archived = 1 WHERE id = :id AND
+                timestamp = :timestamp;";
     /**
      * Topic constructor.
      * @param $id
