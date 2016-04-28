@@ -129,7 +129,7 @@ class DocumentController extends ResponseController
      */
     public static function getFields($document) // TODO: Might be better to move this to Field
     {
-        $field_mapper = new DocumentFieldDBMapper();
+        $field_mapper = new DocumentFieldValueDBMapper();
         $fields = $field_mapper->getFieldsByDocumentIdAndDocumentTimestamp(
             $document->getId(),
             $document->getTimestamp()
