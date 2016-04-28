@@ -16,35 +16,32 @@ class UserController extends ResponseController
     public function __construct($path, $method, $body)
     {
         $this->body = $body;
-        $this->method=$method;
+        $this->method = $method;
         $this->path = $path;
-        if(count($this->path) != 0){
-            if(count($this->path) == 1 && is_numeric($path[0])){
+        if (count($this->path) != 0) {
+            if (count($this->path) == 1 && is_numeric($path[0])) {
                 $this->id = $path[0];
-            }
-            elseif(count($this->path) == 2 && is_numeric($path[0]) && $path[1] == "password"){
+            } elseif (count($this->path) == 2 && is_numeric($path[0]) && $path[1] == "password") {
                 $this->id = $path[0];
                 $path = trimPath($path, 2);
                 $this->controller = new PasswordController($path, $method, $body, $this->id);
-            }
-            elseif(count($this->path) == 1 && $path[0] == "reset-password"){
+            } elseif (count($this->path) == 1 && $path[0] == "reset-password") {
                 $this->id = $path[0];
                 $path = trimPath($path, 2);
                 $this->controller = new ResetPasswordController($path, $method, $body);
-            }
-            elseif(count($this->path) == 1 && $path[0] == "login"){
+            } elseif (count($this->path) == 1 && $path[0] == "login") {
                 $this->id = $path[0];
                 $path = trimPath($path, 1);
                 $this->controller = new LoginController($path, $method, $body);
-            }
-            else{
+            } else {
                 $this->controller = new ErrorController(new InvalidPathError());
             }
         }
-        /*
-                if(!array_key_exists('CURRENT_USER', $GLOBALS) && $this->method != Response::REQUEST_METHOD_OPTIONS){
-                    $this->controller = new ErrorController(new AuthenticationError($this->method));
-                }*/
+
+        if (!array_key_exists('CURRENT_USER', $GLOBALS) && $this->method != Response::REQUEST_METHOD_OPTIONS) {
+            $this->controller = new ErrorController(new AuthenticationError($this->method));
+
+        }
     }
 
     protected static function getArrayFromObjectArray($array){
