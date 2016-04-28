@@ -7,7 +7,7 @@ require_once __DIR__ . '/iModel.php';
  */
 class Topic implements iModel
 {
-    const REQUIRED_POST_FIELDS = ['title', 'description','sequence','parentId','comment'];
+    const REQUIRED_POST_FIELDS = ['title', 'sequence'];
 
     const SQL_GET_ALL = "SELECT * FROM topic WHERE is_archived = 0 AND (id,timestamp) IN (SELECT id, MAX(timestamp)
                   FROM topic GROUP BY id);";
@@ -229,11 +229,11 @@ class Topic implements iModel
             (array_key_exists('id', $json)) ? $json['id'] : null,
             (array_key_exists('timestamp', $json)) ? $json['timestamp'] : null,
             $json['title'],
-            $json['description'],
+            (array_key_exists('description', $json)) ? $json['description'] : null,
             $json['sequence'],
-            $json['parentId'],
-            $json['comment'],
-            $json['children']
+            (array_key_exists('parentId', $json)) ? $json['parentId'] : null,
+            (array_key_exists('comment', $json)) ? $json['comment'] : null,
+            (array_key_exists('children', $json)) ? $json['children'] : null
         );
     }
 

@@ -7,10 +7,8 @@ require_once 'Link.php';
 
 class Document implements iModel
 {
-    const REQUIRED_POST_FIELDS = ['title', 'description', 'statusId', 'sequence', 'documentTypeId',
-        'topicId', 'comment', 'standardId', 'previousDocumentId'];
-    const REQUIRED_PUT_FIELDS = [':id', ':title', ':description', ':status_id', ':sequence', ':document_type_id',
-        ':topicId', ':comment', ':standard_id', ':prev_document_id'];
+    const REQUIRED_POST_FIELDS = ['title', 'sequence', 'documentTypeId','topicId'];
+    const REQUIRED_PUT_FIELDS = ['title', 'sequence', 'documentTypeId','topicId'];
 
     const SQL_INSERT = "INSERT INTO document(title,description,status_id,sequence,document_type_id,topic_id,
                                   comment,standard_id,prev_document_id)
@@ -327,19 +325,20 @@ class Document implements iModel
             (array_key_exists('id', $json)) ? $json['id'] : null,
             (array_key_exists('timestamp', $json)) ? $json['timestamp'] : null,
             $json['title'],
-            $json['description'],
+            (array_key_exists('description', $json)) ? $json['description'] : null,
             $json['sequence'],
             $json['topicId'],
-            $json['comment'],
-            $json['statusId'],
+            (array_key_exists('comment', $json)) ? $json['comment'] : null,
+            (array_key_exists('statusId', $json)) ? $json['statusId'] : null,
             $json['documentTypeId'],
-            $json['standardId'],
-            $json['previousDocumentId'],
+            (array_key_exists('standardId', $json)) ? $json['standardId'] : null,
+            (array_key_exists('previousDocumentId', $json)) ? $json['previousDocumentId'] : null,
             null
         );
-        $document->setLinks($json['links']);
-        $document->setFields($json['fields']);
-        $document->setTargetGroups($json['targetGroups']);
+
+        $document->setLinks((array_key_exists('links', $json)) ? $json['links'] : []);
+        $document->setFields((array_key_exists('fields', $json)) ? $json['fields'] : []);
+        $document->setTargetGroups((array_key_exists('targetGroups', $json)) ? $json['targetGroups'] : []);
 
         return $document;
     }

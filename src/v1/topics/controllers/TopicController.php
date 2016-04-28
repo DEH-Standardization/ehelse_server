@@ -61,14 +61,7 @@ class TopicController extends ResponseController
         if( !$missing_fields ){
             $mapper = new TopicDbMapper();
             $assoc = $this->body;
-            $topic = new Topic(
-                null,
-                null,
-                $assoc['title'],
-                $assoc['description'],
-                $assoc['sequence'],
-                $assoc['parentId'],
-                $assoc['comment']);
+            $topic = Topic::fromJSON($assoc);
             $response = $mapper->add($topic);
 
 
