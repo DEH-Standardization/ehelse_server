@@ -13,73 +13,26 @@ class DocumentTargetGroupDBMapper extends DBMapper
         $this->model = 'DocumentTargetGroup';
     }
 
-    public function get($target_group)
-    {
-        return $this->getById($target_group->getId());
-    }
-
-    public function getById($id)
-    {
-        $response = null;
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "SELECT *
-                FROM document_target_group
-                WHERE id = ?;";
-        $parameters = array($id);
-        try {
-            $result = $this->queryDB($sql, $parameters);
-            if ($result->rowCount() === 1) {
-                $row = $result->fetch();
-                return new Action(
-                    $row['document_version_id'],
-                    $row['deadline'],
-                    $row['mandatory'],
-                    $row['description'],
-                    $row['target_group_id'],
-                    $row['action_id'],
-                    $row['mandatory_id']);
-            } else {
-                $response = new DBError("Returned " . $result->rowCount() .
-                    ", expected 1");
-            }
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-    
-
-    /**
-     * Returns a list of target group ids connected to a document version
-     * @param $id
-     * @return array|DBError
-     */
-
-    /*
-    public function getAllTargetGroupIdsByDocumentVersionId($id)
-    {
-        $response = null;
-        try {
-            $result = $this->queryDBWithAssociativeArray("select * from document_target_group", array());
-            $response = $result->fetch();
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-    */
 
     public function delete($model)
     {
         // TODO: Implement delete() method.
+        throw new Exception("Not implemented error");
     }
 
     public function deleteById($id)
     {
         // TODO: Implement deleteById() method.
+        throw new Exception("Not implemented error");
     }
 
 
+    /**
+     * Return target groups for a specific document
+     * @param $document_id
+     * @param $document_timestamp
+     * @return array|DBError
+     */
     public function getTargetGroupsByDocumentIdAndDocumentTimestamp($document_id, $document_timestamp) {
         try {
             $result = $this->queryDBWithAssociativeArray(DocumentTargetGroup::GET_DOCUMENT_TARGET_GROUPS_BY_DOCUMENT_ID,

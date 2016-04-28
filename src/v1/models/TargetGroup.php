@@ -7,8 +7,10 @@ class TargetGroup implements iModel
 {
     const REQUIRED_POST_FIELDS = ['name', 'parentId', 'abbreviation'];
     const REQUIRED_PUT_FIELDS = ['name', 'parentId', 'abbreviation'];
-    const SQL_INSERT_STATEMENT = "INSERT INTO target_group(name, description, parent_id, abbreviation) VALUES (:name, :description, :parent_id, :abbreviation);";
-    const SQL_UPDATE_STATEMENT = "UPDATE target_group set name=:name, description=:description, parent_id=:parent_id, abbreviation=:abbreviation WHERE id=:id;";
+    const SQL_GET_ALL = "SELECT * FROM target_group;";
+    const SQL_GET_BY_ID = "SELECT * FROM target_group WHERE id = :id;";
+    const SQL_INSERT = "INSERT INTO target_group(name, description, parent_id, abbreviation) VALUES (:name, :description, :parent_id, :abbreviation);";
+    const SQL_UPDATE = "UPDATE target_group set name=:name, description=:description, parent_id=:parent_id, abbreviation=:abbreviation WHERE id=:id;";
     const SQL_DELETE = "DELETE FROM target_group WHERE id=:id";
 
     private $id, $name, $description, $parent_id, $abbreviation, $children;
@@ -29,41 +31,6 @@ class TargetGroup implements iModel
         $this->parent_id = $parent_id;
         $this->abbreviation = $abbreviation;
         $this->children = [];
-    }
-
-    public static function fromJSON($json)
-    {
-        return new TargetGroup(
-            $json['id'],
-            $json['name'],
-            $json['description'],
-            $json['parentId'],
-            $json['abbreviation']
-        );
-    }
-
-    public static function fromDBArray($row)
-    {
-        return new TargetGroup(
-            $row['id'],
-            $row['name'],
-            $row['description'],
-            $row['parent_id'],
-            $row['abbreviation']);
-    }
-
-    public function toDBArray()
-    {
-        $db_array = array(
-            ":name" => $this->name,
-            ":description" => $this->description,
-            ":parent_id" => $this->parent_id,
-            ":abbreviation" => $this->abbreviation
-        );
-        if($this->id){
-            $db_array[":id"] = $this->id;
-        }
-        return $db_array;
     }
 
     public function getId()
@@ -150,6 +117,41 @@ class TargetGroup implements iModel
     public function toJSON()
     {
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+    }
+
+    public static function fromJSON($json)
+    {
+        return new TargetGroup(
+            (array_key_exists('id', $json)) ? $json['id'] : null,
+            $json['name'],
+            $json['description'],
+            $json['parentId'],
+            $json['abbreviation']
+        );
+    }
+
+    public static function fromDBArray($row)
+    {
+        return new TargetGroup(
+            $row['id'],
+            $row['name'],
+            $row['description'],
+            $row['parent_id'],
+            $row['abbreviation']);
+    }
+
+    public function toDBArray()
+    {
+        $db_array = array(
+            ":name" => $this->name,
+            ":description" => $this->description,
+            ":parent_id" => $this->parent_id,
+            ":abbreviation" => $this->abbreviation
+        );
+        if($this->id){
+            $db_array[":id"] = $this->id;
+        }
+        return $db_array;
     }
 
 

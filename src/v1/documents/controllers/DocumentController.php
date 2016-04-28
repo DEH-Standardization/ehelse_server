@@ -67,7 +67,9 @@ class DocumentController extends ResponseController
         $document_target_group_mapper = new DocumentTargetGroupDBMapper();
 
         $target_groups = $document_target_group_mapper->getTargetGroupsByDocumentIdAndDocumentTimestamp(
-            $document->getId(), $document->getTimestamp());
+            $document->getId(),
+            $document->getTimestamp()
+        );
 
         $target_group_array = [];
         foreach ($target_groups as $target_group) {
