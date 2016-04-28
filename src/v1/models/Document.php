@@ -11,11 +11,11 @@ class Document implements iModel
     const REQUIRED_PUT_FIELDS = ['title', 'sequence', 'documentTypeId','topicId'];
 
     const SQL_INSERT = "INSERT INTO document(title,description,status_id,sequence,document_type_id,topic_id,
-                                  comment,standard_id,prev_document_id)
+                                  comment,standard_id,prev_document_id, internal_id)
                                   VALUES (:title,:description,:status_id,:sequence,:document_type_id,:topicId,
-                                  :comment,:standard_id,:prev_document_id);";
+                                  :comment,:standard_id,:prev_document_id, :internal_id);";
     const SQL_UPDATE = "INSERT INTO document(id,title,description,status_id,sequence,document_type_id,topic_id,
-                                  comment,standard_id,prev_document_id)
+                                  comment,standard_id,prev_document_id, internal_id)
                                   VALUES (
                                   :id,
                                   :title,
@@ -26,7 +26,8 @@ class Document implements iModel
                                   :topicId,
                                   :comment,
                                   :standard_id,
-                                  :prev_document_id)";
+                                  :prev_document_id,
+                                  :internal_id)";
     const SQL_GET_BY_ID = "SELECT * FROM document WHERE id = :id AND is_archived = 0 AND (id,timestamp) IN
                 (SELECT id, MAX(timestamp) FROM document GROUP BY id)";
     const SQL_GET_ALL = "SELECT * FROM document WHERE is_archived = 0 AND (id,timestamp) IN (SELECT id, MAX(timestamp)
@@ -49,6 +50,7 @@ class Document implements iModel
         $standard_id,
         $prev_document_id,
         $is_archived,
+        $internal_id,
         $profiles,
         $target_groups,
         $fields,
@@ -69,10 +71,11 @@ class Document implements iModel
      * @param $document_type_id
      * @param $standard_id
      * @param $prev_document_id
+     * @param $internal_id
      */
     public function __construct($id, $timestamp, $title, $description, $sequence,
                                 $topic_id, $comment, $status_id, $document_type_id,
-                                $standard_id, $prev_document_id, $is_archived)
+                                $standard_id, $prev_document_id, $is_archived, $internal_id)
     {
         $this->id = $id;
         $this->timestamp = $timestamp;
@@ -86,6 +89,7 @@ class Document implements iModel
         $this->standard_id = $standard_id;
         $this->prev_document_id = $prev_document_id;
         $this->is_archived = $is_archived;
+        $this->internal_id = $internal_id;
         $this->target_groups = [];
         $this->links = [];
     }
@@ -285,6 +289,7 @@ class Document implements iModel
             'documentTypeId' => $this->document_type_id,
             'standardId' => $this->standard_id,
             'previousDocumentId' => $this->prev_document_id,
+            'internalId' => $this->internal_id,
             'profiles' => $this->profiles,
             'links' => $this->links,
             'fields' => $this->fields,
@@ -315,7 +320,8 @@ class Document implements iModel
             $db_array['document_type_id'],
             $db_array['standard_id'],
             $db_array['prev_document_id'],
-            $db_array['is_archived']
+            $db_array['is_archived'],
+            $db_array['internal_id']
         );
     }
 
@@ -333,7 +339,8 @@ class Document implements iModel
             $json['documentTypeId'],
             (array_key_exists('standardId', $json)) ? $json['standardId'] : null,
             (array_key_exists('previousDocumentId', $json)) ? $json['previousDocumentId'] : null,
-            null
+            null,
+            (array_key_exists('internalId', $json)) ? $json['internalId'] : null
         );
 
         $document->setLinks((array_key_exists('links', $json)) ? $json['links'] : []);
@@ -354,7 +361,8 @@ class Document implements iModel
             ':topicId' => $this->topic_id,
             ':comment' => $this->comment,
             ':standard_id' => $this->standard_id,
-            ':prev_document_id' => $this->prev_document_id
+            ':prev_document_id' => $this->prev_document_id,
+            ':internal_id' => $this->internal_id
         );
         if ($this->id) {
             $db_array[':id'] = $this->id;
