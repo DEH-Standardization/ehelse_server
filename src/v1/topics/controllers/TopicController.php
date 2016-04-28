@@ -105,18 +105,20 @@ class TopicController extends ResponseController
     private function getChildren($id)
     {
         $controller = new TopicDbMapper();
-        $topic = $controller->getTopicById($id);
+        $topic = $controller->getById($id);
         if($topic){
             $result = $topic->toArray();
             $topic_children = $controller->getSubtopicsByTopicId($id);
 
             $children = array();
-            foreach ($topic_children as $child) {
+            if ($topic_children) {
+                foreach ($topic_children as $child) {
 
-                if (count($topic_children) > 0) {
-                    array_push($children, $this->getChildren($child->getId()));
-                } else {
-                    array_push($children, $child->toArray());
+                    if (count($topic_children) > 0) {
+                        array_push($children, $this->getChildren($child->getId()));
+                    } else {
+                        array_push($children, $child->toArray());
+                    }
                 }
             }
             $result['children'] = $children;

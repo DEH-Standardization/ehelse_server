@@ -7,8 +7,16 @@ require_once __DIR__ . '/iModel.php';
  */
 class Topic implements iModel
 {
-    private $id, $timestamp, $title, $description, $sequence, $parent_id, $comment, $children, $documents;
     const REQUIRED_POST_FIELDS = ['title', 'description','sequence','parentId','comment'];
+
+    const SQL_GET_ALL = "SELECT * FROM topic WHERE is_archived = 0 AND (id,timestamp) IN (SELECT id, MAX(timestamp)
+                  FROM topic GROUP BY id);";
+    const SQL_GET_BY_ID = "SELECT * FROM topic WHERE id = :id AND is_archived = 0 AND (id,timestamp) IN
+                (SELECT id, MAX(timestamp) FROM topic GROUP BY id)";
+    const SQL_INSERT = "INSERT INTO topic VALUES (null, null, :title, :description, :sequence, :parent_id, :comment, 0);";
+    //const SQL_UPDATE = "UPDATE action SET name = :name, description = :description WHERE id = :id;";
+    //const SQL_DELETE = "DELETE FROM action WHERE id = :id;";
+
     const SQL_GET_DOCUMENTS_BY_TOPIC_ID = "SELECT DISTINCT * FROM document WHERE(id,timestamp) IN
                 ( SELECT id, MAX(timestamp)FROM document GROUP BY id) AND topic_id = :topic_id;";
     const SQL_GET_SUBTOPICS = "SELECT * FROM topic WHERE parent_id = :id AND is_archived = 0 AND (id,timestamp) IN
@@ -16,6 +24,9 @@ class Topic implements iModel
     const SQL_GET_MAX_TIMESTAMP = "SELECT MAX(timestamp) FROM topic WHERE id = :id;";
     const SQL_DELETE = "UPDATE topic SET is_archived = 1 WHERE id = :id AND
                 timestamp = :timestamp;";
+
+    private $id, $timestamp, $title, $description, $sequence, $parent_id, $comment, $children, $documents;
+
     /**
      * Topic constructor.
      * @param $id
@@ -226,8 +237,19 @@ class Topic implements iModel
         );
     }
 
+    //['title', 'description','sequence','parentId','comment', 'children']
     public function toDBArray()
     {
-        // TODO: Implement toDBArray() method.
+        $db_array = array(
+            ':title' => $this->title,
+            ':description' => $this->description,
+            ':sequence' => $this->sequence,
+            ':parent_id' => $this->parent_id,
+            ':comment' => $this->comment
+        );
+        if($this->id){
+            $db_array[':id'] = $this->id;
+        }
+        return $db_array;
     }
 }

@@ -9,12 +9,13 @@ class Document implements iModel
 {
     const REQUIRED_POST_FIELDS = ['title', 'description', 'statusId', 'sequence', 'documentTypeId',
         'topicId', 'comment', 'standardId', 'previousDocumentId'];
+    const REQUIRED_PUT_FIELDS = [':id', ':title', ':description', ':status_id', ':sequence', ':document_type_id',
+        ':topicId', ':comment', ':standard_id', ':prev_document_id'];
+
     const SQL_INSERT = "INSERT INTO document(title,description,status_id,sequence,document_type_id,topic_id,
                                   comment,standard_id,prev_document_id)
                                   VALUES (:title,:description,:status_id,:sequence,:document_type_id,:topicId,
                                   :comment,:standard_id,:prev_document_id);";
-
-
     const SQL_UPDATE = "INSERT INTO document(id,title,description,status_id,sequence,document_type_id,topic_id,
                                   comment,standard_id,prev_document_id)
                                   VALUES (
@@ -28,40 +29,15 @@ class Document implements iModel
                                   :comment,
                                   :standard_id,
                                   :prev_document_id)";
-    const SQL_GET_BY_ID = "SELECT *
-                FROM document WHERE id = :id AND is_archived = 0 AND (id,timestamp) IN
-                ( SELECT id, MAX(timestamp)
-                  FROM document
-                GROUP BY id)";
+    const SQL_GET_BY_ID = "SELECT * FROM document WHERE id = :id AND is_archived = 0 AND (id,timestamp) IN
+                (SELECT id, MAX(timestamp) FROM document GROUP BY id)";
+    const SQL_GET_ALL = "SELECT * FROM document WHERE is_archived = 0 AND (id,timestamp) IN (SELECT id, MAX(timestamp)
+                  FROM document GROUP BY id);";
+    const SQL_DELETE = "UPDATE document SET is_archived = 1 WHERE id = :id AND timestamp = :timestamp;";
 
-
-    const SQL_GET_ALL = "SELECT * FROM document WHERE is_archived = 0 AND (id,timestamp) IN
-                ( SELECT id, MAX(timestamp)
-                  FROM document
-                  GROUP BY id);";
-    const SQL_DELETE = "UPDATE document SET is_archived = 1 WHERE id = :id AND
-                timestamp = :timestamp;";
     const SQL_GET_MAX_TIMESTAMP = "SELECT MAX(timestamp) FROM document WHERE id = :id;";
-    /*
-    const SQL_GET_PROFILES = "SELECT * FROM document WHERE standard_id = :id AND  timestamp IN
-(SELECT timestamp FROM document WHERE (id,timestamp) IN
-                ( SELECT id, MAX(timestamp)
-                  FROM document
-                GROUP BY id));";
-    */
     const SQL_GET_PROFILE_IDS = "SELECT DISTINCT id FROM document WHERE standard_id = :id;";
 
-    const REQUIRED_PUT_FIELDS = [
-        ':id',
-        ':title',
-        ':description',
-        ':status_id',
-        ':sequence',
-        ':document_type_id',
-        ':topicId',
-        ':comment',
-        ':standard_id',
-        ':prev_document_id'];
     private
         $id,
         $timestamp,
