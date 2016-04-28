@@ -135,11 +135,12 @@ class LinkDBMapper extends DBMapper
         return $response;
     }
 
-    public function getLinksByDocumentId($document_id)
+    public function getLinksByDocumentId($document_id, $document_timestamp)
     {
         try {
             $result = $this->queryDBWithAssociativeArray(Link::SQL_GET_LINKS_BY_DOCUMENT_ID, array(
-                ':document_id' => $document_id
+                ':document_id' => $document_id,
+                ':document_timestamp' => $document_timestamp
             ));
             $raw = $result->fetchAll();
             $objects = [];

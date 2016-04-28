@@ -67,7 +67,9 @@ class DocumentController extends ResponseController
         $document_target_group_mapper = new DocumentTargetGroupDBMapper();
 
         $target_groups = $document_target_group_mapper->getTargetGroupsByDocumentIdAndDocumentTimestamp(
-            $document->getId(), $document->getTimestamp());
+            $document->getId(),
+            $document->getTimestamp()
+        );
 
         $target_group_array = [];
         foreach ($target_groups as $target_group) {
@@ -113,7 +115,7 @@ class DocumentController extends ResponseController
     {
         $link_mapper = new LinkDBMapper();
 
-        $links = $link_mapper->getLinksByDocumentId($document->getId());
+        $links = $link_mapper->getLinksByDocumentId($document->getId(), $document->getTimestamp());
         $link_array = [];
         foreach ($links as $link) {
             array_push($link_array, $link->toArray());
@@ -129,7 +131,7 @@ class DocumentController extends ResponseController
      */
     public static function getFields($document) // TODO: Might be better to move this to Field
     {
-        $field_mapper = new DocumentFieldDBMapper();
+        $field_mapper = new DocumentFieldValueDBMapper();
         $fields = $field_mapper->getFieldsByDocumentIdAndDocumentTimestamp(
             $document->getId(),
             $document->getTimestamp()

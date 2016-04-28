@@ -124,25 +124,4 @@ class DocumentFieldDBMapper extends DBMapper
         return $response;
     }
 
-    public function getFieldsByDocumentIdAndDocumentTimestamp($document_id, $document_timestamp)
-    {
-        try {
-            $result = $this->queryDBWithAssociativeArray(DocumentFieldValue::SQL_GET_FIELDS_BY_DOCUMENT_ID, array(
-                ':document_id' => $document_id,
-                ':document_timestamp' => $document_timestamp
-            ));
-            $raw = $result->fetchAll();
-            $objects = [];
-            foreach($raw as $raw_item){
-                array_push($objects, DocumentFieldValue::fromDBArray($raw_item));
-            }
-            $response = $objects;
-
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-
-    }
-
 }
