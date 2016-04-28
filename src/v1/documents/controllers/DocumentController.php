@@ -113,7 +113,7 @@ class DocumentController extends ResponseController
     {
         $link_mapper = new LinkDBMapper();
 
-        $links = $link_mapper->getLinksByDocumentId($document->getId());
+        $links = $link_mapper->getLinksByDocumentId($document->getId(), $document->getTimestamp());
         $link_array = [];
         foreach ($links as $link) {
             array_push($link_array, $link->toArray());
