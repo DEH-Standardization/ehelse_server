@@ -45,7 +45,7 @@ class DocumentFieldValueDBMapper extends DBMapper
         foreach ($fields as $field) {
             $field['documentId'] = $id;
             $field['documentTimestamp'] = $timestamp;
-            print_r($this->add(DocumentFieldValue::fromJSON($field)));
+            $this->add(DocumentFieldValue::fromJSON($field));
         }
     }
 
