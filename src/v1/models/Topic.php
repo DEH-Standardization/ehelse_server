@@ -8,13 +8,14 @@ require_once __DIR__ . '/iModel.php';
 class Topic implements iModel
 {
     const REQUIRED_POST_FIELDS = ['title', 'sequence'];
+    const REQUIRED_PUT_FIELDS = ['id','title', 'sequence'];
 
     const SQL_GET_ALL = "SELECT * FROM topic WHERE is_archived = 0 AND (id,timestamp) IN (SELECT id, MAX(timestamp)
                   FROM topic GROUP BY id);";
     const SQL_GET_BY_ID = "SELECT * FROM topic WHERE id = :id AND is_archived = 0 AND (id,timestamp) IN
                 (SELECT id, MAX(timestamp) FROM topic GROUP BY id)";
     const SQL_INSERT = "INSERT INTO topic VALUES (null, null, :title, :description, :sequence, :parent_id, :comment, 0);";
-    //const SQL_UPDATE = "UPDATE action SET name = :name, description = :description WHERE id = :id;";
+    const SQL_UPDATE = "INSERT INTO topic VALUES (:id, null, :title, :description, :sequence, :parent_id, :comment, 0);";
     //const SQL_DELETE = "DELETE FROM action WHERE id = :id;";
 
     const SQL_GET_DOCUMENTS_BY_TOPIC_ID = "SELECT DISTINCT * FROM document WHERE(id,timestamp) IN

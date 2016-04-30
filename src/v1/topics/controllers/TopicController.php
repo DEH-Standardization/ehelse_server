@@ -20,6 +20,9 @@ class TopicController extends ResponseController
         $this->method = $method;
         $this->body = $body;
         $this->path = $path;
+        $this->db_mapper = 'TopicDBMapper';
+        $this->list_name = 'topics';
+        $this->model = 'Topic';
 
         if(count($this->path) != 0){
             if(count($this->path) == 1 && is_numeric($path[0])){
@@ -149,23 +152,6 @@ class TopicController extends ResponseController
         return $documents_array;
     }
 
-        /**
-         * Function updating a topics values.
-         * @return Response
-         */
-        protected function update()
-        {
-            $response = null;
-            $topic_mapper = new TopicDbMapper();
-            $topic = Topic::fromJSON($this->body);
-            $result = $topic_mapper->add($topic);
-            if (!$result instanceof DBError) {
-                return $this->get();
-            } else {
-                $response = $result->toJSON();
-            }
-            return new Response($response);
-        }
 
     /**
      * Function deleting a topic.
