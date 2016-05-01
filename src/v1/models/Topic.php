@@ -1,30 +1,29 @@
 <?php
+
 require_once __DIR__ . '/../dbmappers/TopicDBMapper.php';
 require_once __DIR__ . '/iModel.php';
 
-/**
- * Class Topic Model
- */
 class Topic implements iModel
 {
-    const REQUIRED_POST_FIELDS = ['title', 'sequence'];
-    const REQUIRED_PUT_FIELDS = ['id','title', 'sequence'];
-
     const SQL_GET_ALL = "SELECT * FROM topic WHERE is_archived = 0 AND (id,timestamp) IN (SELECT id, MAX(timestamp)
                   FROM topic GROUP BY id);";
+
     const SQL_GET_BY_ID = "SELECT * FROM topic WHERE id = :id AND is_archived = 0 AND (id,timestamp) IN
                 (SELECT id, MAX(timestamp) FROM topic GROUP BY id)";
     const SQL_INSERT = "INSERT INTO topic VALUES (null, null, :title, :description, :sequence, :parent_id, :comment, 0);";
     const SQL_UPDATE = "INSERT INTO topic VALUES (:id, null, :title, :description, :sequence, :parent_id, :comment, 0);";
-    //const SQL_DELETE = "DELETE FROM action WHERE id = :id;";
-
+    //const SQL_DELETE = "DELETE FROM action WHERE id = :id;";  // TODO: delete this
     const SQL_GET_DOCUMENTS_BY_TOPIC_ID = "SELECT DISTINCT * FROM document WHERE(id,timestamp) IN
                 ( SELECT id, MAX(timestamp)FROM document GROUP BY id) AND topic_id = :topic_id;";
+
     const SQL_GET_SUBTOPICS = "SELECT * FROM topic WHERE parent_id = :id AND is_archived = 0 AND (id,timestamp) IN
                 ( SELECT id, MAX(timestamp)FROM topic GROUP BY id);";
     const SQL_GET_MAX_TIMESTAMP = "SELECT MAX(timestamp) FROM topic WHERE id = :id;";
     const SQL_DELETE = "UPDATE topic SET is_archived = 1 WHERE id = :id AND
                 timestamp = :timestamp;";
+
+    const REQUIRED_POST_FIELDS = ['title', 'sequence'];
+    const REQUIRED_PUT_FIELDS = ['id','title', 'sequence'];
 
     private $id, $timestamp, $title, $description, $sequence, $parent_id, $comment, $children, $documents;
 
@@ -224,6 +223,11 @@ class Topic implements iModel
         array_push($this->documents, $document);
     }
 
+    /**
+     * Returns model from JSON
+     * @param $json
+     * @return Topic
+     */
     public static function fromJSON($json)
     {
         return new Topic(
@@ -238,7 +242,10 @@ class Topic implements iModel
         );
     }
 
-    //['title', 'description','sequence','parentId','comment', 'children']
+    /**
+     * Returns associative array for sql querying
+     * @return array
+     */
     public function toDBArray()
     {
         $db_array = array(
