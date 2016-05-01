@@ -8,6 +8,9 @@ require_once __DIR__.'/../errors/DBError.php';
 class MandatoryDBMapper extends DBMapper
 {
 
+    /**
+     * MandatoryDBMapper constructor.
+     */
     public function __construct()
     {
         parent::__construct();

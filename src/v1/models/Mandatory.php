@@ -5,6 +5,7 @@ require_once 'iModel.php';
 
 class Mandatory implements iModel
 {
+
     const SQL_GET_ALL = "SELECT * FROM mandatory;";
     const SQL_GET_BY_ID = "SELECT * FROM mandatory WHERE id = :id;";
     const SQL_INSERT = "INSERT INTO mandatory VALUES (null, :name, :description);";
@@ -94,6 +95,11 @@ class Mandatory implements iModel
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
     }
 
+    /**
+     * Returns model from db array
+     * @param $db_array
+     * @return Action
+     */
     public static function fromDBArray($db_array)
     {
         return new Action(
@@ -102,6 +108,11 @@ class Mandatory implements iModel
             $db_array['description']);
     }
 
+    /**
+     * Returns model from JSON
+     * @param $json
+     * @return Action
+     */
     public static function fromJSON($json)
     {
         return new Action(
@@ -110,6 +121,10 @@ class Mandatory implements iModel
             $json['description']);
     }
 
+    /**
+     * Returns associative array for sql querying
+     * @return array
+     */
     public function toDBArray()
     {
         $db_array = array(
