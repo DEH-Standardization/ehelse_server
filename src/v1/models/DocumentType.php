@@ -3,15 +3,18 @@
 require_once __DIR__ . '/ModelValidation.php';
 require_once __DIR__ . '/iModel.php';
 require_once __DIR__ . '/../../utils.php';
+
 class DocumentType implements iModel
 {
-    const REQUIRED_POST_FIELDS = ['name'];
-    const REQUIRED_PUT_FIELDS = ['name'];
+
     const SQL_GET_ALL = "SELECT * FROM document_type;";
     const SQL_GET_BY_ID = "SELECT * FROM document_type WHERE id = :id;";
     const SQL_INSERT = "INSERT INTO document_type VALUES (null, :name);";
     const SQL_UPDATE = "UPDATE document_type SET name = :name WHERE id = :id;";
     const SQL_DELETE = "DELETE FROM document_type WHERE id = :id;";
+
+    const REQUIRED_POST_FIELDS = ['name'];
+    const REQUIRED_PUT_FIELDS = ['name'];
 
     private $id, $name;
 
@@ -71,13 +74,22 @@ class DocumentType implements iModel
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
     }
 
+    /**
+     * Returns model from db array
+     * @param $db_array
+     * @return DocumentType
+     */
     public static function fromDBArray($db_array)
     {
         return new DocumentType($db_array['id'],
             $db_array['name']);
     }
 
-
+    /**
+     * Returns model from JSON
+     * @param $json
+     * @return DocumentType
+     */
     public static function fromJSON($json)
     {
         return new DocumentType(
@@ -86,6 +98,10 @@ class DocumentType implements iModel
             );
     }
 
+    /**
+     * Returns associative array for sql querying
+     * @return array
+     */
     public function toDBArray()
     {
         $db_array = array(

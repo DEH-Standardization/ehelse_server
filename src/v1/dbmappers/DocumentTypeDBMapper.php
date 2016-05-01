@@ -8,8 +8,9 @@ require_once __DIR__. "/../errors/DBError.php";
 class DocumentTypeDBMapper extends DBMapper
 {
 
-    private $table_name = 'document_type';
-
+    /**
+     * DocumentTypeDBMapper constructor.
+     */
     public function __construct()
     {
         parent::__construct();
