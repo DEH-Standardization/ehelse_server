@@ -1,16 +1,21 @@
 <?php
 
 require_once __DIR__.'/ModelValidation.php';
+require_once 'iModel.php';
 
-class DocumentField
+class DocumentField implements iModel
 {
-    const REQUIRED_POST_FIELDS = ['name'];
-    const REQUIRED_PUT_FIELDS = ['name'];
     const SQL_GET_ALL = "SELECT * FROM document_field;";
     const SQL_GET_BY_ID = "SELECT * FROM document_field WHERE id = :id;";
-    const SQL_INSERT = "INSERT INTO document_field VALUES (null, :name);";
-    const SQL_UPDATE = "UPDATE document_field SET name = :name, description = :description, sequence = :sequence, mandatory = :mandatory, document_type_id = :document_type_id WHERE id = :id;";
-    const SQL_DELETE_DOCUMENT_FIELD_BY_ID = "DELETE FROM document_field WHERE id=:id";
+    const SQL_INSERT = "INSERT INTO document_field VALUES (null, :name, :description, :sequence, :mandatory,
+      :document_type_id);";
+    const SQL_UPDATE = "UPDATE document_field SET name = :name, description = :description, sequence = :sequence,
+      mandatory = :mandatory, document_type_id = :document_type_id WHERE id = :id;";
+    const SQL_DELETE = "DELETE FROM document_field WHERE id = :id";
+
+    const REQUIRED_POST_FIELDS = ['name', 'sequence', 'mandatory', 'document_type_id'];
+    const REQUIRED_PUT_FIELDS = ['name', 'sequence', 'mandatory', 'document_type_id'];
+
     private $id, $name, $description, $sequence, $mandatory, $document_type_id;
 
     /**
@@ -99,6 +104,10 @@ class DocumentField
         $this->document_type_id = $document_type_id;
     }
 
+    /**
+     * Returns associated array representation of model
+     * @return array
+     */
     public function toArray()
     {
         $assoc = array(
@@ -111,11 +120,21 @@ class DocumentField
         return $assoc;
     }
 
+    /**
+     * Returns JSON representation of model
+     * @return string
+     */
     public function toJSON()
     {
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
     }
-    public function fromJSON($json)
+
+    /**
+     * Returns model from JSON
+     * @param $json
+     * @return DocumentField
+     */
+    public static function fromJSON($json)
     {
         return new DocumentField(
             getValueFromArray($json,'id'),
@@ -127,6 +146,11 @@ class DocumentField
         );
     }
 
+    /**
+     * Returns model from db array
+     * @param $db_array
+     * @return DocumentField
+     */
     public static function fromDBArray($db_array)
     {
         return new DocumentField(
@@ -139,4 +163,22 @@ class DocumentField
         );
     }
 
+    /**
+     * Returns associative array for sql querying
+     * @return array
+     */
+    public function toDBArray()
+    {
+        $db_array = array(
+            ':name' => $this->name,
+            ':description' => $this->description,
+            ':sequence' => $this->sequence,
+            ':mandatory' => $this->mandatory,
+            ':document_type_id' => $this->document_type_id
+        );
+        if($this->id){
+            $db_array[':id'] = $this->id;
+        }
+        return $db_array;
+    }
 }
