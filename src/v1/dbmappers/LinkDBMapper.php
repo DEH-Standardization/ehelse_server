@@ -17,6 +17,12 @@ class LinkDBMapper extends DBMapper
         $this->model = 'Link';
     }
 
+    /**
+     * Returns links from a link category in a document
+     * @param $link_category_id
+     * @param $document_id
+     * @return array|DBError
+     */
     public function getLinksByDocumentIdAndLinkCategoryId($link_category_id, $document_id)
     {
         try {
@@ -37,6 +43,11 @@ class LinkDBMapper extends DBMapper
         return $response;
     }
 
+    /**
+     * Return all link categories a document contains
+     * @param $document_id
+     * @return array|DBError
+     */
     public function getLinkCategoriesIdByDocumentId($document_id)
     {
         try {
@@ -56,6 +67,12 @@ class LinkDBMapper extends DBMapper
         return $response;
     }
 
+    /**
+     * Return all links a document contains
+     * @param $document_id
+     * @param $document_timestamp
+     * @return array|DBError
+     */
     public function getLinksByDocumentId($document_id, $document_timestamp)
     {
         try {
@@ -76,6 +93,11 @@ class LinkDBMapper extends DBMapper
         return $response;
     }
 
+    /**
+     * Return all link categories a document contains
+     * @param $document_id
+     * @return array|DBError
+     */
     public function getLinkCategoriesByDocumentId($document_id)
     {
         try {
@@ -95,6 +117,12 @@ class LinkDBMapper extends DBMapper
         return $response;
     }
 
+    /**
+     * Add multiple links to a document version
+     * @param $links
+     * @param $id
+     * @param $timestamp
+     */
     public function addMultiple($links, $id, $timestamp)
     {
         foreach ($links as $link) {
