@@ -5,13 +5,14 @@ require_once 'iModel.php';
 
 class TargetGroup implements iModel
 {
-    const REQUIRED_POST_FIELDS = ['name', 'parentId', 'abbreviation'];
-    const REQUIRED_PUT_FIELDS = ['name', 'parentId', 'abbreviation'];
-    const SQL_GET_ALL = "SELECT * FROM target_group;";
+   const SQL_GET_ALL = "SELECT * FROM target_group;";
     const SQL_GET_BY_ID = "SELECT * FROM target_group WHERE id = :id;";
     const SQL_INSERT = "INSERT INTO target_group(name, description, parent_id, abbreviation) VALUES (:name, :description, :parent_id, :abbreviation);";
     const SQL_UPDATE = "UPDATE target_group set name=:name, description=:description, parent_id=:parent_id, abbreviation=:abbreviation WHERE id=:id;";
     const SQL_DELETE = "DELETE FROM target_group WHERE id=:id";
+
+    const REQUIRED_POST_FIELDS = ['name', 'parentId', 'abbreviation'];
+    const REQUIRED_PUT_FIELDS = ['name', 'parentId', 'abbreviation'];
 
     private $id, $name, $description, $parent_id, $abbreviation, $children;
 
@@ -119,6 +120,11 @@ class TargetGroup implements iModel
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
     }
 
+    /**
+     * Returns model from JSON
+     * @param $json
+     * @return TargetGroup
+     */
     public static function fromJSON($json)
     {
         return new TargetGroup(
@@ -130,6 +136,11 @@ class TargetGroup implements iModel
         );
     }
 
+    /**
+     * Returns model from db arra
+     * @param $row
+     * @return TargetGroup
+     */
     public static function fromDBArray($row)
     {
         return new TargetGroup(
@@ -140,6 +151,10 @@ class TargetGroup implements iModel
             $row['abbreviation']);
     }
 
+    /**
+     * Returns associative array for sql querying
+     * @return array
+     */
     public function toDBArray()
     {
         $db_array = array(
