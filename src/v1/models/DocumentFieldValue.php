@@ -10,9 +10,11 @@ class DocumentFieldValue implements iModel
       WHERE document_id = :document_id AND document_timestamp = :document_timestamp;";
     const SQL_GET_ALL = "SELECT * FROM document_field_value;";
     const SQL_GET_BY_ID = "SELECT * FROM document_field_value WHERE id = :id;";
-    const SQL_INSERT = "INSERT INTO document_field_value VALUES (:document_field_id, :value, :document_id, :document_timestamp);";
+    const SQL_INSERT = "INSERT INTO document_field_value VALUES (:document_field_id, :value, :document_id,
+      :document_timestamp);";
 
     const REQUIRED_POST_FIELDS = ['document_field_id', 'value', 'document_id', 'document_timestamp'];
+    const REQUIRED_PUT_FIELDS = ['document_field_id', 'value', 'document_id', 'document_timestamp'];
 
     private $document_field_id, $value, $document_id, $document_timestamp;
 
@@ -107,6 +109,11 @@ class DocumentFieldValue implements iModel
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
     }
 
+    /**
+     * Returns model from db array
+     * @param $db_array
+     * @return DocumentFieldValue
+     */
     public static function fromDBArray($db_array)
     {
         return new DocumentFieldValue(
@@ -117,6 +124,11 @@ class DocumentFieldValue implements iModel
         );
     }
 
+    /**
+     * Returns model from JSON
+     * @param $json
+     * @return DocumentFieldValue
+     */
     public static function fromJSON($json)
     {
         return new DocumentFieldValue(
@@ -127,6 +139,10 @@ class DocumentFieldValue implements iModel
         );
     }
 
+    /**
+     * Returns associative array for sql querying
+     * @return array
+     */
     public function toDBArray()
     {
         return array(

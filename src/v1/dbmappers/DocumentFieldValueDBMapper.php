@@ -1,9 +1,9 @@
 <?php
 
+require_once __DIR__.'/../models/DocumentFieldValue.php';
 
 class DocumentFieldValueDBMapper extends DBMapper
 {
-
     /**
      * DocumentFieldValueDBMapper constructor.
      */
@@ -13,6 +13,12 @@ class DocumentFieldValueDBMapper extends DBMapper
         $this->model = 'DocumentFieldValue';
     }
 
+    /**
+     * Returns a list of fields under a version of a document
+     * @param $document_id
+     * @param $document_timestamp
+     * @return array|DBError
+     */
     public function getFieldsByDocumentIdAndDocumentTimestamp($document_id, $document_timestamp)
     {
         try {
