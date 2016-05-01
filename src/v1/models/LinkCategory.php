@@ -5,15 +5,16 @@ require_once 'iModel.php';
 
 class LinkCategory implements iModel
 {
+
+    const SQL_GET_ALL = "SELECT * FROM link_category;";
+    const SQL_GET_BY_ID = "SELECT * FROM link_category WHERE id = :id;";
+    const SQL_INSERT = "INSERT INTO link_category(name,description) VALUES (:name,:description);";
+    const SQL_UPDATE = "UPDATE link_category SET name=:name,description=:description WHERE id=:id";
+    const SQL_DELETE = "DELETE FROM link_category WHERE id=:id";
+
     const REQUIRED_POST_FIELDS = ['name'];
     const REQUIRED_PUT_FIELDS = ['name'];
 
-
-    const SQL_INSERT_STATEMENT = "INSERT INTO link_category(name,description) VALUES (:name,:description);";
-
-
-    const SQL_UPDATE_STATEMENT = "UPDATE link_category SET name=:name,description=:description WHERE id=:id";
-    const SQL_DELETE_LINK_CATEGORY_BY_ID = "DELETE FROM link_category WHERE id=:id";
     private $id, $name, $description;
 
     /**
@@ -73,9 +74,12 @@ class LinkCategory implements iModel
         }
     }
 
+    /**
+     * Returns associated array representation of model
+     * @return array
+     */
     public function toArray()
     {
-        // TODO: check with API description
         return array(
             'id' => $this->id,
             'name' => $this->name,
@@ -91,6 +95,11 @@ class LinkCategory implements iModel
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
     }
 
+    /**
+     * Returns model from db array
+     * @param $db_array
+     * @return LinkCategory
+     */
     public static function fromDBArray($db_array)
     {
         return new LinkCategory(
@@ -100,6 +109,11 @@ class LinkCategory implements iModel
         );
     }
 
+    /**
+     * Returns model from JSON
+     * @param $json
+     * @return LinkCategory
+     */
     public static function fromJSON($json)
     {
         return new LinkCategory(
@@ -109,6 +123,10 @@ class LinkCategory implements iModel
         );
     }
 
+    /**
+     * Returns associative array for sql querying
+     * @return array
+     */
     public function toDBArray()
     {
         $db_array = array(
