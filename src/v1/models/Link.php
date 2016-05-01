@@ -5,27 +5,17 @@ require_once 'iModel.php';
 
 class Link implements iModel
 {
+    const SQL_GET_ALL = "SELECT * FROM link;";
+    const SQL_GET_BY_ID = "SELECT * FROM link WHERE id = :id;";
     const REQUIRED_POST_FIELDS = ['text','url','link_category_id','document_id','document_timestamp'];
-    const SQL_INSERT_STATEMENT = "
+    const SQL_INSERT = "
         INSERT INTO link(id,text,description,url,link_category_id,document_id,document_timestamp,link_document_id)
-        VALUES (null,
-        :text,
-        :description,
-        :url,
-        :link_category_id,
-        :document_id,
-        :document_timestamp,
-        :link_document_id);";
-    const SQL_UPDATE_STATEMENT = "
-      UPDATE link SET
-      text=:text,
-      description=:description,
-      url=:url,
-      link_category_id=:link_category_id,
-      document_id=:document_id,
-      document_timestamp=:document_timestamp,
-      link_document_id=:link_document_id
-      WHERE id=:id";
+        VALUES (null,:text,:description,:url,:link_category_id,:document_id,:document_timestamp,:link_document_id);";
+    const SQL_UPDATE = "UPDATE link SET text=:text, description=:description, url=:url,
+      link_category_id=:link_category_id, document_id=:document_id, document_timestamp=:document_timestamp,
+      link_document_id=:link_document_id WHERE id=:id";
+    const SQL_DELETE = "DELETE FROM link WHERE id = :id;";
+
     const SQL_GET_LINKS_BY_DOCUMENT_ID_AND_LINK_CATEGORY_ID =
         "SELECT * FROM link WHERE link_category_id=:link_category_id AND document_id=:document_id;";
     const GET_LINK_CATEGORY_IDS_BY_DOCUMENT_ID =
@@ -35,15 +25,8 @@ class Link implements iModel
         (SELECT DISTINCT link_category_id FROM link WHERE document_id = :document_id);";
     const SQL_GET_LINKS_BY_DOCUMENT_ID = "SELECT * FROM link WHERE document_id = :document_id AND
           document_timestamp = :document_timestamp;";
-    private
-        $id,
-        $text,
-        $description,
-        $url,
-        $link_category_id,
-        $document_id,
-        $document_timestamp,
-        $link_document_id;
+
+    private $id, $text, $description, $url, $link_category_id, $document_id, $document_timestamp, $link_document_id;
 
     /**
      * Link constructor.
@@ -189,6 +172,11 @@ class Link implements iModel
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
     }
 
+    /**
+     * Returns model from db array
+     * @param $db_array
+     * @return Link
+     */
     public static function fromDBArray($db_array)
     {
         return new Link(
@@ -203,8 +191,14 @@ class Link implements iModel
         );
     }
 
+    /**
+     * Returns model from JSON
+     * @param $json
+     * @return Link
+     */
     public static function fromJSON($json)
     {
+
         return new Link(
             (array_key_exists('id', $json)) ? $json['id'] : null,
             $json['text'],
@@ -217,6 +211,10 @@ class Link implements iModel
         );
     }
 
+    /**
+     * Returns associative array for sql querying
+     * @return array
+     */
     public function toDBArray()
     {
         $db_array = array(
