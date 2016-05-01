@@ -7,8 +7,6 @@ require_once 'Link.php';
 
 class Document implements iModel
 {
-    const REQUIRED_POST_FIELDS = ['title', 'sequence', 'documentTypeId','topicId'];
-    const REQUIRED_PUT_FIELDS = ['title', 'sequence', 'documentTypeId','topicId'];
 
     const SQL_INSERT = "INSERT INTO document(title,description,status_id,sequence,document_type_id,topic_id,
                                   comment,standard_id,prev_document_id, internal_id)
@@ -36,6 +34,9 @@ class Document implements iModel
 
     const SQL_GET_MAX_TIMESTAMP = "SELECT MAX(timestamp) FROM document WHERE id = :id;";
     const SQL_GET_PROFILE_IDS = "SELECT DISTINCT id FROM document WHERE standard_id = :id;";
+
+    const REQUIRED_POST_FIELDS = ['title', 'sequence', 'documentTypeId','topicId'];
+    const REQUIRED_PUT_FIELDS = ['title', 'sequence', 'documentTypeId','topicId'];
 
     private
         $id,
@@ -325,6 +326,11 @@ class Document implements iModel
         );
     }
 
+    /**
+     * Returns model from JSON
+     * @param $json
+     * @return Document
+     */
     public static function fromJSON($json)
     {
         $document = new Document(
@@ -350,6 +356,10 @@ class Document implements iModel
         return $document;
     }
 
+    /**
+     * Returns associative array for sql querying
+     * @return array
+     */
     public function toDBArray()
     {
         $db_array = array(

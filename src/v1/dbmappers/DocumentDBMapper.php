@@ -7,6 +7,9 @@ require_once __DIR__. "/../dbmappers/DocumentFieldValueDBMapper.php";
 
 class DocumentDBMapper extends DBMapper
 {
+    /**
+     * DocumentDBMapper constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -39,17 +42,6 @@ class DocumentDBMapper extends DBMapper
         return $response;
 
     }
-
-    /**
-     * Returns document from database based on model
-     * @param $id
-     * @return DBError|Document
-     */
-    public function get($model)
-    {
-        $this->getById($model->getId());
-    }
-
 
     /**
      * Adds new document to database, returns id if success, error otherwise
