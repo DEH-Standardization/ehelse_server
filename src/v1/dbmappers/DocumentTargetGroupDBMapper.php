@@ -7,6 +7,9 @@ require_once __DIR__.'/../models/DocumentTargetGroup.php';
 class DocumentTargetGroupDBMapper extends DBMapper
 {
 
+    /**
+     * DocumentTargetGroupDBMapper constructor.
+     */
     public function __construct()
     {
         parent::__construct();
