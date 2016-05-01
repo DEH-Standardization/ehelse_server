@@ -1,5 +1,8 @@
 <?php
-require_once "ApplicationError.php";
+
+require_once 'ApplicationError.php';
+require_once __DIR__.'/../responses/Response.php';
+
 /**
  * Error message for database errors
  */
