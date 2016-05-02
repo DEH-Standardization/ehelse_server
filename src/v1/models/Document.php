@@ -8,28 +8,16 @@ require_once 'Link.php';
 class Document implements iModel
 {
 
-    const SQL_INSERT = "INSERT INTO document(title,description,status_id,sequence,document_type_id,topic_id,
-                                  comment,standard_id,prev_document_id, internal_id)
-                                  VALUES (:title,:description,:status_id,:sequence,:document_type_id,:topicId,
-                                  :comment,:standard_id,:prev_document_id, :internal_id);";
-    const SQL_UPDATE = "INSERT INTO document(id,title,description,status_id,sequence,document_type_id,topic_id,
-                                  comment,standard_id,prev_document_id, internal_id)
-                                  VALUES (
-                                  :id,
-                                  :title,
-                                  :description,
-                                  :status_id,
-                                  :sequence,
-                                  :document_type_id,
-                                  :topicId,
-                                  :comment,
-                                  :standard_id,
-                                  :prev_document_id,
-                                  :internal_id)";
+    const SQL_INSERT = "INSERT INTO document(title,description,status_id,sequence,document_type_id,topic_id, comment,
+      standard_id,prev_document_id, internal_id) VALUES (:title, :description, :status_id, :sequence, :document_type_id,
+      :topicId, :comment, :standard_id, :prev_document_id, :internal_id);";
+    const SQL_UPDATE = "INSERT INTO document(id,title,description,status_id,sequence,document_type_id,topic_id,comment,
+      standard_id,prev_document_id, internal_id) VALUES (:id, :title, :description, :status_id,:sequence,
+      :document_type_id, :topicId, :comment, :standard_id, :prev_document_id, :internal_id)";
     const SQL_GET_BY_ID = "SELECT * FROM document WHERE id = :id AND is_archived = 0 AND (id,timestamp) IN
-                (SELECT id, MAX(timestamp) FROM document GROUP BY id)";
+      (SELECT id, MAX(timestamp) FROM document GROUP BY id)";
     const SQL_GET_ALL = "SELECT * FROM document WHERE is_archived = 0 AND (id,timestamp) IN (SELECT id, MAX(timestamp)
-                  FROM document GROUP BY id);";
+      FROM document GROUP BY id);";
     const SQL_DELETE = "UPDATE document SET is_archived = 1 WHERE id = :id AND timestamp = :timestamp;";
 
     const SQL_GET_MAX_TIMESTAMP = "SELECT MAX(timestamp) FROM document WHERE id = :id;";
@@ -307,6 +295,11 @@ class Document implements iModel
         return json_encode($this->toArray(), JSON_PRETTY_PRINT);
     }
 
+    /**
+     * Returns model from db array
+     * @param $db_array
+     * @return Document
+     */
     public static function fromDBArray($db_array)
     {
         return new Document(

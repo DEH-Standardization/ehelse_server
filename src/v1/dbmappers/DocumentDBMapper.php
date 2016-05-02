@@ -7,6 +7,7 @@ require_once __DIR__. "/../dbmappers/DocumentFieldValueDBMapper.php";
 
 class DocumentDBMapper extends DBMapper
 {
+
     /**
      * DocumentDBMapper constructor.
      */
