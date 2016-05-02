@@ -5,71 +5,20 @@ require_once __DIR__ . '/../dbmappers/DBMapper.php';
 
 class UserDBMapper extends DBMapper
 {
+    /**
+     * UserDBMapper constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->model = 'User';
+    }
 
     /**
-     * Adds new topic to database
+     * Reset password for user
      * @param $user
-     * @return DBError|null|string
+     * @return DBError|null
      */
-    public function add($user)
-    {
-        $response = null;
-        try {
-            $this->queryDBWithAssociativeArray(User::SQL_INSERT_STATEMENT, $user->toDBArray());
-            $response = $this->connection->lastInsertId();
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-
-    public function update($user)
-    {
-        $response = null;
-        try {
-            $this->queryDBWithAssociativeArray(User::SQL_UPDATE_STATEMENT, $user->toDBArray());
-            $response = $this->connection->lastInsertId();
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-
-    public function getAll()
-    {
-        $response = null;
-        $sql = "SELECT * FROM user";
-        try {
-            $result = $this->queryDB($sql, array());
-            $raw = $result->fetchAll();
-            $objects = [];
-            foreach($raw as $raw_item){
-                array_push($objects, User::fromDBArray($raw_item));
-            }
-            $response = $objects;
-
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-
-    public function getById($id)
-    {
-        $response = null;
-        $sql = "SELECT * FROM user WHERE id = ?";
-        try {
-            $result = $this->queryDB($sql, array($id));
-            $raw = $result->fetch();
-            if($raw){
-                $response = User::fromDBArray($raw);
-            }
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-
     public function resetPassword($user)
     {
         $response = null;
@@ -82,6 +31,11 @@ class UserDBMapper extends DBMapper
         return $response;
     }
 
+    /**
+     * Returns user by email
+     * @param $email
+     * @return DBError|mixed|null
+     */
     public function getByEmail($email)
     {
         $response = null;
@@ -93,19 +47,5 @@ class UserDBMapper extends DBMapper
         }
         return $response;
     }
-    
-
-    public function deleteById($id)
-    {
-        $response = null;
-        try {
-            $this->queryDBWithAssociativeArray(User::SQL_DELETE_USER_BY_ID,array(":id"=>$id));
-            $response = array();
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-
 
 }

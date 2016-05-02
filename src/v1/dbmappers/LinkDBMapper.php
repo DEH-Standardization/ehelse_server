@@ -7,95 +7,22 @@ require_once __DIR__.'/../errors/DBError.php';
 
 class LinkDBMapper extends DBMapper
 {
-    private $table_name = 'link';
 
     /**
-     * Returns link
-     * @param $id
-     * @return DBError|Link
+     * LinkDBMapper constructor.
      */
-    public function get($link)
+    public function __construct()
     {
-        $this->getById($link->getId());
+        parent::__construct();
+        $this->model = 'Link';
     }
 
     /**
-     * Returns link based on id
-     * @param $id
-     * @return DBError|Link
-     */
-    public function getById($id)
-    {
-        $response = null;
-        $sql = $sql = "SELECT * FROM $this->table_name WHERE id = ?;";
-        try {
-            $result = $this->queryDB($sql, array($id));
-            $raw = $result->fetch();
-            if($raw){
-                $response =  Link::fromDBArray($raw);
-            }
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-
-    /**
-     * Returns all links
+     * Returns links from a link category in a document
+     * @param $link_category_id
+     * @param $document_id
      * @return array|DBError
      */
-    public function getAll()
-    {
-        $response = null;
-        $sql = "SELECT * FROM $this->table_name";
-        try {
-            $result = $this->queryDB($sql, array());
-            $raw = $result->fetchAll();
-            $objects = [];
-            foreach($raw as $raw_item){
-                array_push($objects, Link::fromDBArray($raw_item));
-            }
-            $response = $objects;
-
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-
-    /**
-     * Adds element to database, and returns id of inserted element
-     * @param $document_version
-     * @return DBError|string
-     */
-    public function add($link)
-    {
-        $response = null;
-        try {
-            $this->queryDBWithAssociativeArray(Link::SQL_INSERT_STATEMENT, $link->toDBArray());
-            $response = $this->connection->lastInsertId();
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-
-    /**
-     * Updates element in database, and returns id of updated element
-     * @param $document_version
-     * @return DBError|string
-     */
-    public function update($link)
-    {
-        $response = null;
-        try {
-            $this->queryDBWithAssociativeArray($link::SQL_UPDATE_STATEMENT, $link->toDBArray());
-            $response = $link->getId();
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
     public function getLinksByDocumentIdAndLinkCategoryId($link_category_id, $document_id)
     {
         try {
@@ -116,6 +43,11 @@ class LinkDBMapper extends DBMapper
         return $response;
     }
 
+    /**
+     * Return all link categories a document contains
+     * @param $document_id
+     * @return array|DBError
+     */
     public function getLinkCategoriesIdByDocumentId($document_id)
     {
         try {
@@ -135,6 +67,12 @@ class LinkDBMapper extends DBMapper
         return $response;
     }
 
+    /**
+     * Return all links a document contains
+     * @param $document_id
+     * @param $document_timestamp
+     * @return array|DBError
+     */
     public function getLinksByDocumentId($document_id, $document_timestamp)
     {
         try {
@@ -155,6 +93,11 @@ class LinkDBMapper extends DBMapper
         return $response;
     }
 
+    /**
+     * Return all link categories a document contains
+     * @param $document_id
+     * @return array|DBError
+     */
     public function getLinkCategoriesByDocumentId($document_id)
     {
         try {
@@ -174,6 +117,12 @@ class LinkDBMapper extends DBMapper
         return $response;
     }
 
+    /**
+     * Add multiple links to a document version
+     * @param $links
+     * @param $id
+     * @param $timestamp
+     */
     public function addMultiple($links, $id, $timestamp)
     {
         foreach ($links as $link) {

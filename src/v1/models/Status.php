@@ -4,6 +4,7 @@ require_once __DIR__ . '/iModel.php';
 
 class Status implements iModel
 {
+
     const SQL_GET_ALL = "SELECT * FROM status;";
     const SQL_GET_BY_ID = "SELECT * FROM status WHERE id = :id;";
     const SQL_INSERT = "INSERT INTO status VALUES (null, :name, :description);";
@@ -94,6 +95,11 @@ class Status implements iModel
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
     }
 
+    /**
+     * Returns JSON representation of model
+     * @param $db_array
+     * @return Action
+     */
     public static function fromDBArray($db_array)
     {
         return new Action(
@@ -102,6 +108,11 @@ class Status implements iModel
             $db_array['description']);
     }
 
+    /**
+     * Returns model from JSONy
+     * @param $json
+     * @return Action
+     */
     public static function fromJSON($json)
     {
         return new Action(
@@ -110,6 +121,10 @@ class Status implements iModel
             $json['description']);
     }
 
+    /**
+     * Returns associative array for sql querying
+     * @return array
+     */
     public function toDBArray()
     {
         $db_array = array(

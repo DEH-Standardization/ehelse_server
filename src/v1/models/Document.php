@@ -7,35 +7,24 @@ require_once 'Link.php';
 
 class Document implements iModel
 {
-    const REQUIRED_POST_FIELDS = ['title', 'sequence', 'documentTypeId','topicId'];
-    const REQUIRED_PUT_FIELDS = ['title', 'sequence', 'documentTypeId','topicId'];
 
-    const SQL_INSERT = "INSERT INTO document(title,description,status_id,sequence,document_type_id,topic_id,
-                                  comment,standard_id,prev_document_id, internal_id)
-                                  VALUES (:title,:description,:status_id,:sequence,:document_type_id,:topicId,
-                                  :comment,:standard_id,:prev_document_id, :internal_id);";
-    const SQL_UPDATE = "INSERT INTO document(id,title,description,status_id,sequence,document_type_id,topic_id,
-                                  comment,standard_id,prev_document_id, internal_id)
-                                  VALUES (
-                                  :id,
-                                  :title,
-                                  :description,
-                                  :status_id,
-                                  :sequence,
-                                  :document_type_id,
-                                  :topicId,
-                                  :comment,
-                                  :standard_id,
-                                  :prev_document_id,
-                                  :internal_id)";
+    const SQL_INSERT = "INSERT INTO document(title,description,status_id,sequence,document_type_id,topic_id, comment,
+      standard_id,prev_document_id, internal_id, his_number) VALUES (:title, :description, :status_id, :sequence,
+      :document_type_id, :topicId, :comment, :standard_id, :prev_document_id, :internal_id, :his_number);";
+    const SQL_UPDATE = "INSERT INTO document(id,title,description,status_id,sequence,document_type_id,topic_id,comment,
+      standard_id,prev_document_id, internal_id, his_number) VALUES (:id, :title, :description, :status_id,:sequence,
+      :document_type_id, :topicId, :comment, :standard_id, :prev_document_id, :internal_id, :his_number)";
     const SQL_GET_BY_ID = "SELECT * FROM document WHERE id = :id AND is_archived = 0 AND (id,timestamp) IN
-                (SELECT id, MAX(timestamp) FROM document GROUP BY id)";
+      (SELECT id, MAX(timestamp) FROM document GROUP BY id)";
     const SQL_GET_ALL = "SELECT * FROM document WHERE is_archived = 0 AND (id,timestamp) IN (SELECT id, MAX(timestamp)
-                  FROM document GROUP BY id);";
+      FROM document GROUP BY id);";
     const SQL_DELETE = "UPDATE document SET is_archived = 1 WHERE id = :id AND timestamp = :timestamp;";
 
     const SQL_GET_MAX_TIMESTAMP = "SELECT MAX(timestamp) FROM document WHERE id = :id;";
     const SQL_GET_PROFILE_IDS = "SELECT DISTINCT id FROM document WHERE standard_id = :id;";
+
+    const REQUIRED_POST_FIELDS = ['title', 'sequence', 'documentTypeId','topicId'];
+    const REQUIRED_PUT_FIELDS = ['title', 'sequence', 'documentTypeId','topicId'];
 
     private
         $id,
@@ -51,6 +40,7 @@ class Document implements iModel
         $prev_document_id,
         $is_archived,
         $internal_id,
+        $his_number,
         $profiles,
         $target_groups,
         $fields,
@@ -72,10 +62,11 @@ class Document implements iModel
      * @param $standard_id
      * @param $prev_document_id
      * @param $internal_id
+     * @param $his_number
      */
-    public function __construct($id, $timestamp, $title, $description, $sequence,
-                                $topic_id, $comment, $status_id, $document_type_id,
-                                $standard_id, $prev_document_id, $is_archived, $internal_id)
+    public function __construct($id, $timestamp, $title, $description, $sequence, $topic_id, $comment, $status_id,
+                                $document_type_id, $standard_id, $prev_document_id, $is_archived, $internal_id,
+                                $his_number)
     {
         $this->id = $id;
         $this->timestamp = $timestamp;
@@ -90,6 +81,7 @@ class Document implements iModel
         $this->prev_document_id = $prev_document_id;
         $this->is_archived = $is_archived;
         $this->internal_id = $internal_id;
+        $this->his_number = $his_number;
         $this->target_groups = [];
         $this->links = [];
     }
@@ -290,6 +282,7 @@ class Document implements iModel
             'standardId' => $this->standard_id,
             'previousDocumentId' => $this->prev_document_id,
             'internalId' => $this->internal_id,
+            'hisNumber' => $this->his_number,
             'profiles' => $this->profiles,
             'links' => $this->links,
             'fields' => $this->fields,
@@ -306,6 +299,11 @@ class Document implements iModel
         return json_encode($this->toArray(), JSON_PRETTY_PRINT);
     }
 
+    /**
+     * Returns model from db array
+     * @param $db_array
+     * @return Document
+     */
     public static function fromDBArray($db_array)
     {
         return new Document(
@@ -321,10 +319,16 @@ class Document implements iModel
             $db_array['standard_id'],
             $db_array['prev_document_id'],
             $db_array['is_archived'],
-            $db_array['internal_id']
+            $db_array['internal_id'],
+            $db_array['his_number']
         );
     }
 
+    /**
+     * Returns model from JSON
+     * @param $json
+     * @return Document
+     */
     public static function fromJSON($json)
     {
         $document = new Document(
@@ -340,7 +344,8 @@ class Document implements iModel
             (array_key_exists('standardId', $json)) ? $json['standardId'] : null,
             (array_key_exists('previousDocumentId', $json)) ? $json['previousDocumentId'] : null,
             null,
-            (array_key_exists('internalId', $json)) ? $json['internalId'] : null
+            (array_key_exists('internalId', $json)) ? $json['internalId'] : null,
+            (array_key_exists('hisNumber', $json)) ? $json['hisNumber'] : null
         );
 
         $document->setLinks((array_key_exists('links', $json)) ? $json['links'] : []);
@@ -350,6 +355,10 @@ class Document implements iModel
         return $document;
     }
 
+    /**
+     * Returns associative array for sql querying
+     * @return array
+     */
     public function toDBArray()
     {
         $db_array = array(
@@ -362,7 +371,8 @@ class Document implements iModel
             ':comment' => $this->comment,
             ':standard_id' => $this->standard_id,
             ':prev_document_id' => $this->prev_document_id,
-            ':internal_id' => $this->internal_id
+            ':internal_id' => $this->internal_id,
+            ':his_number' => $this->his_number
         );
         if ($this->id) {
             $db_array[':id'] = $this->id;

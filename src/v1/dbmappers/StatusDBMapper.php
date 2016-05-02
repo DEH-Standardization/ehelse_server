@@ -7,8 +7,10 @@ require_once __DIR__.'/../errors/DBError.php';
 
 class StatusDBMapper extends DBMapper
 {
-    private $table_name = 'status';
 
+    /**
+     * StatusDBMapper constructor.
+     */
     public function __construct()
     {
         parent::__construct();

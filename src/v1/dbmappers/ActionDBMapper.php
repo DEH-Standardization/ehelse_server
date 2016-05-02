@@ -7,6 +7,9 @@ require_once __DIR__.'/../errors/DBError.php';
 
 class ActionDBMapper extends DBMapper
 {
+    /**
+     * ActionDBMapper constructor.
+     */
     public function __construct()
     {
         parent::__construct();

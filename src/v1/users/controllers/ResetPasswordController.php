@@ -58,7 +58,7 @@ class ResetPasswordController extends ResponseController
                     if ($reset_password_user) {
                         EmailSender::sendEmail($email, $password, $email_type);   // Sending Email notification
                         $response = new Response(json_encode(   // TODO: should this be moved? Might make more sense to use a own class.
-                            array('message' => ResetPasswordController::RESET_PASSWORD_ACCEPTED_STRING),
+                            array('message' => ResetPasswordController::RESET_PASSWORD_ACCEPTED_MESSAGE),
                             JSON_PRETTY_PRINT), Response::STATUS_CODE_ACCEPTED
                         );
                     } else {
