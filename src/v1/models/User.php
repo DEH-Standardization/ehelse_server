@@ -7,11 +7,15 @@ class User
     const REQUIRED_PUT_FIELDS = ['name', 'email'];
     const REQUIRED_PASSWORD_PUT_FIELD = ['password'];
     const REQUIRED_PASSWORD_RESET_FIELD = ['email'];
-    const SQL_INSERT_STATEMENT = "INSERT INTO user(name,profile_image,email,pw_date_edited) VALUES (:name,:profile_image,:email,NOW());";
-    const SQL_UPDATE_STATEMENT = "UPDATE user SET name=:name,profile_image=:profile_image,email=:email,pw_date_edited=NOW() WHERE id = :id;";
+
+    const SQL_GET_BY_ID = "SELECT * FROM user WHERE id = :id";
+    const SQL_GET_ALL = "SELECT * FROM user";
+    const SQL_INSERT = "INSERT INTO user(name,profile_image,email,pw_date_edited) VALUES (:name,:profile_image,:email,NOW());";
+    const SQL_UPDATE = "UPDATE user SET name=:name,profile_image=:profile_image,email=:email,pw_date_edited=NOW() WHERE id = :id;";
+    const SQL_DELETE = "DELETE FROM user WHERE id=:id";
+
     const SQL_UPDATE_PASSWORD_STATEMENT = "UPDATE user SET password_hash=:password_hash, pw_date_edited=NOW() WHERE id = :id;";
     const SQL_GET_USER_BY_EMAIL = "SELECT * FROM user WHERE email=:email";
-    const SQL_DELETE_USER_BY_ID = "DELETE FROM user WHERE id=:id";
 
 
     private
