@@ -3,6 +3,7 @@
 require_once 'DBMapper.php';
 require_once __DIR__.'/../errors/DBError.php';
 require_once __DIR__.'/../models/DocumentTargetGroup.php';
+require_once __DIR__.'/../errors/MethodNotAllowedError.php';
 
 class DocumentTargetGroupDBMapper extends DBMapper
 {
@@ -16,17 +17,24 @@ class DocumentTargetGroupDBMapper extends DBMapper
         $this->model = 'DocumentTargetGroup';
     }
 
+    public function update($object)
+    {
+        return new MethodNotAllowedError('Method not allowed for DocumentTargetGroup');
+    }
+
+    public function getById($id)
+    {
+        return new MethodNotAllowedError('Method not allowed for DocumentTargetGroup');
+    }
 
     public function delete($model)
     {
-        // TODO: Implement delete() method.
-        throw new Exception("Not implemented error");
+        return new MethodNotAllowedError('Method not allowed for DocumentTargetGroup');
     }
 
     public function deleteById($id)
     {
-        // TODO: Implement deleteById() method.
-        throw new Exception("Not implemented error");
+        return new MethodNotAllowedError('Method not allowed for DocumentTargetGroup');
     }
 
 
