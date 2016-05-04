@@ -13,8 +13,8 @@ class DocumentField implements iModel
       mandatory = :mandatory, document_type_id = :document_type_id WHERE id = :id;";
     const SQL_DELETE = "DELETE FROM document_field WHERE id = :id";
 
-    const REQUIRED_POST_FIELDS = ['name', 'sequence', 'mandatory', 'document_type_id'];
-    const REQUIRED_PUT_FIELDS = ['name', 'sequence', 'mandatory', 'document_type_id'];
+    const REQUIRED_POST_FIELDS = ['name', 'sequence', 'mandatory', 'documentTypeId'];
+    const REQUIRED_PUT_FIELDS = ['name', 'sequence', 'mandatory', 'documentTypeId'];
 
     private $id, $name, $description, $sequence, $mandatory, $document_type_id;
 
