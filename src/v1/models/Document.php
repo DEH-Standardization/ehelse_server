@@ -117,12 +117,7 @@ class Document implements iModel
      */
     public function setTitle($title)
     {
-        if (strlen($title) > ModelValidation::TITLE_MAX_LENGTH) {
-            $this->title = ModelValidation::getValidTitle($title);
-            echo "Title is too long, set to: " . $this->title;
-        } else {
-            $this->title = $title;
-        }
+        $this->title = ModelValidation::getValidTitle($title);
     }
 
     public function getDescription()
@@ -136,12 +131,7 @@ class Document implements iModel
      */
     public function setDescription($description)
     {
-        if (strlen($description) > ModelValidation::DESCRIPTION_MAX_LENGTH) {
-            $this->description = ModelValidation::getValidDescription($description);
-            echo "Description is too long, set to: " . $this->description;
-        } else {
-            $this->description = $description;
-        }
+        $this->description = ModelValidation::getValidDescription($description);
     }
 
     public function getSequence()
@@ -175,12 +165,7 @@ class Document implements iModel
      */
     public function setComment($comment)
     {
-        if (strlen($comment) > ModelValidation::COMMENT_MAX_LENGTH) {
-            $this->comment = ModelValidation::getValidComment($comment);
-            echo "Comment is too long, set to: " . $this->comment;
-        } else {
-            $this->comment = $comment;
-        }
+        $this->comment = ModelValidation::getValidComment($comment);
     }
 
     public function getStatusId()
