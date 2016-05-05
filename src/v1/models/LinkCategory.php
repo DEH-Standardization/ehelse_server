@@ -26,8 +26,8 @@ class LinkCategory implements iModel
     public function __construct($id, $name, $description)
     {
         $this->id = $id;
-        $this->name = $name;
-        $this->description = $description;
+        $this->setName($name);
+        $this->setDescription($description);
     }
 
     public function getId()
@@ -46,13 +46,7 @@ class LinkCategory implements iModel
      */
     public function setName($name)
     {
-        if (strlen($name) > ModelValidation::NAME_MAX_LENGTH) {
-            $this->name = ModelValidation::getValidName($name);
-            echo "Name is too long, set to: " . $this->name;
-        }
-        else {
-            $this->name = $name;
-        }
+        $this->name = ModelValidation::getValidName($name);
     }
 
     public function getDescription()
@@ -66,12 +60,7 @@ class LinkCategory implements iModel
      */
     public function setDescription($description)
     {
-        if (strlen($description) > ModelValidation::DESCRIPTION_MAX_LENGTH) {
-            $this->description = ModelValidation::getValidDescription($description);
-            echo "Description is too long, set to: " . $this->description;
-        } else {
-            $this->description = $description;
-        }
+        $this->description = ModelValidation::getValidDescription($description);
     }
 
     /**
@@ -117,9 +106,9 @@ class LinkCategory implements iModel
     public static function fromJSON($json)
     {
         return new LinkCategory(
-            $json['id'],
-            $json['name'],
-            $json['description']
+            getValueFromArray($json,'id'),
+            getValueFromArray($json,'name'),
+            getValueFromArray($json,'description')
         );
     }
 
