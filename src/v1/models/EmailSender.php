@@ -4,7 +4,7 @@ class EmailSender
 {
     const REGISTER_EMAIL = 1;
     const RESET_PASSWORD_EMAIL = 2;
-    const FROM = "From: <noreplay@ehelseEditor.no> \r\n";
+    const FROM = "From: <noreplay@ehelseEditor.no> \r\n";   // TODO: check this.
 
 
     public static function sendEmail($to, $password, $email_type)
