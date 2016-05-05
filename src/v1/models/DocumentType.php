@@ -26,7 +26,7 @@ class DocumentType implements iModel
     public function __construct($id, $name)
     {
         $this->id = $id;
-        $this->name = $name;
+        $this->setName($name);
     }
 
     public function getId()
@@ -45,13 +45,7 @@ class DocumentType implements iModel
      */
     public function setName($name)
     {
-        if (strlen($name) > ModelValidation::NAME_MAX_LENGTH) {
-            $this->name = ModelValidation::getValidName($name);
-            echo "Name is too long, set to: " . $this->name;
-        }
-        else {
-            $this->name = $name;
-        }
+        $this->name = ModelValidation::getValidName($name);
     }
 
     /**
@@ -95,7 +89,7 @@ class DocumentType implements iModel
         return new DocumentType(
             getValueFromArray($json,'id'),
             getValueFromArray($json,'name')
-            );
+        );
     }
 
     /**
