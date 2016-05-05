@@ -12,6 +12,7 @@ class ModelValidation
     const COMMENT_MAX_LENGTH = 1024;
     const FIELD_VALUE_MAX_LENGTH = 1024;
     const URL_MAX_LENGTH = 256;
+    const ABBREVIATION_MAX_LENGTH = 128;
 
     /**
      * Returns a valid title, if title is longer than max length, the excess characters are removed
@@ -27,7 +28,7 @@ class ModelValidation
     }
 
     /**
-     * Returns a valid description, if title is longer than max length, the excess characters are removed
+     * Returns a valid description, if description is longer than max length, the excess characters are removed
      * @param $description
      * @return string
      */
@@ -39,6 +40,11 @@ class ModelValidation
         return substr($description, 0, self::DESCRIPTION_MAX_LENGTH);
     }
 
+    /**
+     * Returns a valid text, if text is longer than max length, the excess characters are removed
+     * @param $text
+     * @return null|string
+     */
     public static function getValidText($text)
     {
         if ($text === null) {
@@ -48,7 +54,7 @@ class ModelValidation
     }
 
     /**
-     * Returns a valid comment, if title is longer than max length, the excess characters are removed
+     * Returns a valid comment, if comment is longer than max length, the excess characters are removed
      * @param $comment
      * @return string
      */
@@ -60,6 +66,12 @@ class ModelValidation
         return substr($comment, 0, self::COMMENT_MAX_LENGTH);
     }
 
+    /**
+     * Return valid string, if string is longer than max length, the excess characters are removed
+     * @param $value
+     * @param $max_length
+     * @return string
+     */
     public static function getValidString($value, $max_length)
     {
         return substr($value, 0, $max_length);
@@ -67,7 +79,7 @@ class ModelValidation
     
 
     /**
-     * Returns a valid name, if title is longer than max length, the excess characters are removed
+     * Returns a valid name, if name is longer than max length, the excess characters are removed
      * @param $name
      * @return string
      */
@@ -80,7 +92,7 @@ class ModelValidation
     }
 
     /**
-     * Returns a valid title, if title is longer than max length, the excess characters are removed
+     * Returns a valid field value, if field value is longer than max length, the excess characters are removed
      * @param $title
      * @return string
      */
@@ -92,12 +104,30 @@ class ModelValidation
         return substr($field_value, 0, self::FIELD_VALUE_MAX_LENGTH);
     }
 
+    /**
+     * Returns a valid url, if url is longer than max length, the excess characters are removed
+     * @param $url
+     * @return null|string
+     */
     public static function getValidURL($url)
     {
         if ($url === null) {
             return null;
         }
         return substr($url, 0, self::URL_MAX_LENGTH);
+    }
+
+    /**
+     * Returns a valid abbreviation, if abbreviation is longer than max length, the excess characters are removed
+     * @param $abbreviation
+     * @return null|string
+     */
+    public static function getValidAbbreviation($abbreviation)
+    {
+        if ($abbreviation === null) {
+            return null;
+        }
+        return substr($abbreviation, 0, self::URL_MAX_LENGTH);
     }
 
 }
