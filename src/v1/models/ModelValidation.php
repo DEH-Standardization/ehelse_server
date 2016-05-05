@@ -11,13 +11,13 @@ class ModelValidation
     const DESCRIPTION_MAX_LENGTH = 1024;
     const COMMENT_MAX_LENGTH = 1024;
     const FIELD_VALUE_MAX_LENGTH = 1024;
+    const URL_MAX_LENGTH = 256;
 
     /**
      * Returns a valid title, if title is longer than max length, the excess characters are removed
      * @param $title
      * @return string
      */
-
     public static function getValidTitle($title)
     {
         if ($title === null) {
@@ -90,6 +90,14 @@ class ModelValidation
             return null;
         }
         return substr($field_value, 0, self::FIELD_VALUE_MAX_LENGTH);
+    }
+
+    public static function getValidURL($url)
+    {
+        if ($url === null) {
+            return null;
+        }
+        return substr($url, 0, self::URL_MAX_LENGTH);
     }
 
 }
