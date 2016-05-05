@@ -28,7 +28,7 @@ class DocumentFieldValue implements iModel
     public function __construct($document_field_id, $value, $document_id, $document_timestamp)
     {
         $this->document_field_id = $document_field_id;
-        $this->value = $value;
+        $this->setValue($value);
         $this->document_id = $document_id;
         $this->document_timestamp = $document_timestamp;
     }
@@ -60,12 +60,7 @@ class DocumentFieldValue implements iModel
      */
     public function setValue($value)
     {
-        if (strlen($value) > ModelValidation::FIELD_VALUE_MAX_LENGTH) {
-            $this->value = ModelValidation::getValidFieldValue($value);
-            echo "Value is too long, set to: " . $this->value;
-        } else {
-            $this->value = $value;;
-        }
+        $this->value = ModelValidation::getValidFieldValue($value);
     }
 
     public function getDocumentId()
@@ -132,10 +127,10 @@ class DocumentFieldValue implements iModel
     public static function fromJSON($json)
     {
         return new DocumentFieldValue(
-            $json['fieldId'],
-            $json['value'],
-            $json['documentId'],
-            $json['documentTimestamp']
+            getValueFromArray($json,'fieldId'),
+            getValueFromArray($json,'value'),
+            getValueFromArray($json,'documentId'),
+            getValueFromArray($json,'documentTimestamp')
         );
     }
 
