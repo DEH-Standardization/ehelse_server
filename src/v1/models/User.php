@@ -26,6 +26,16 @@ class User
         $password_hash,
         $pw_date_edited;
 
+    public function __construct($id, $name, $email, $profile_image, $password_hash, $pw_date_edited)
+    {
+        $this->id=$id;
+        $this->setName($name);
+        $this->setEmail($email);
+        $this->password_hash=$password_hash;
+        $this->profile_image=$profile_image;
+        $this->pw_date_edited=$pw_date_edited;
+    }
+
     public static function login($user)
     {
         $GLOBALS["CURRENT_USER"] = $user;
@@ -60,16 +70,6 @@ class User
     public function getEmail()
     {
         return $this->email;
-    }
-
-    public function __construct($id, $name, $email, $profile_image, $password_hash, $pw_date_edited)
-    {
-        $this->id=$id;
-        $this->name = $name;
-        $this->email=$email;
-        $this->password_hash=$password_hash;
-        $this->profile_image=$profile_image;
-        $this->pw_date_edited=$pw_date_edited;
     }
 
     public function toArray()
@@ -174,7 +174,7 @@ class User
     public static function fromJSON($json)
     {
         return new User(
-            (array_key_exists('id', $json)) ? $json['id'] : null,
+            getValueFromArray($json,'id'),
             getValueFromArray($json,'name'),
             getValueFromArray($json,'email'),
             getValueFromArray($json,'profileImage'),
