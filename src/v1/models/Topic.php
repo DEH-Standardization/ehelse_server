@@ -100,13 +100,7 @@ class Topic implements iModel
      */
     public function setDescription($description)
     {
-        if (strlen($description) > ModelValidation::DESCRIPTION_MAX_LENGTH) {
-            $this->description = ModelValidation::getValidDescription($description);
-            echo "Description is too long, set to: " . $this->description;
-        }
-        else {
-            $this->description = $description;
-        }
+         $this->description = ModelValidation::getValidDescription($description);
     }
 
     public function getParentId()
@@ -131,13 +125,7 @@ class Topic implements iModel
 
     public function setComment($comment)
     {
-        if (strlen($comment) > ModelValidation::COMMENT_MAX_LENGTH) {
-            $this->description = ModelValidation::getValidComment($comment);
-            echo "Comment is too long, set to: " . $this->comment;
-        }
-        else {
-            $this->comment = $comment;
-        }
+        $this->description = ModelValidation::getValidComment($comment);
     }
 
     public function getComment()
@@ -231,14 +219,15 @@ class Topic implements iModel
     public static function fromJSON($json)
     {
         return new Topic(
-            (array_key_exists('id', $json)) ? $json['id'] : null,
-            (array_key_exists('timestamp', $json)) ? $json['timestamp'] : null,
-            $json['title'],
-            (array_key_exists('description', $json)) ? $json['description'] : null,
-            $json['sequence'],
-            (array_key_exists('parentId', $json)) ? $json['parentId'] : null,
-            (array_key_exists('comment', $json)) ? $json['comment'] : null,
-            (array_key_exists('children', $json)) ? $json['children'] : null
+            getValueFromArray($json,'id'),
+
+            getValueFromArray($json,'timestamp'),
+            getValueFromArray($json,'title'),
+            getValueFromArray($json,'description'),
+            getValueFromArray($json,'sequence'),
+            getValueFromArray($json,'parentId'),
+            getValueFromArray($json,'comment'),
+            getValueFromArray($json,'children')
         );
     }
 
