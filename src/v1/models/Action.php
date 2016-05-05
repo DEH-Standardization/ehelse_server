@@ -11,8 +11,8 @@ class Action implements iModel
     const SQL_UPDATE = "UPDATE action SET name = :name, description = :description WHERE id = :id;";
     const SQL_DELETE = "DELETE FROM action WHERE id = :id;";
 
-    const REQUIRED_POST_FIELDS = ['name', 'description'];
-    const REQUIRED_PUT_FIELDS = ['name', 'description'];
+    const REQUIRED_POST_FIELDS = ['name'];
+    const REQUIRED_PUT_FIELDS = ['name'];
 
     private $id, $name, $description;
 
@@ -104,9 +104,10 @@ class Action implements iModel
     public static function fromJSON($json)
     {
         return new Action(
-            $json['id'],
-            $json['name'],
-            $json['description']);
+            getValueFromArray($json,'id'),
+            getValueFromArray($json,'name'),
+            getValueFromArray($json,'description')
+        );
     }
 
     /**
