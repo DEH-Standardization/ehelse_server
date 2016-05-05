@@ -317,25 +317,25 @@ class Document implements iModel
     public static function fromJSON($json)
     {
         $document = new Document(
-            (array_key_exists('id', $json)) ? $json['id'] : null,
-            (array_key_exists('timestamp', $json)) ? $json['timestamp'] : null,
-            $json['title'],
-            (array_key_exists('description', $json)) ? $json['description'] : null,
-            $json['sequence'],
-            $json['topicId'],
-            (array_key_exists('comment', $json)) ? $json['comment'] : null,
-            (array_key_exists('statusId', $json)) ? $json['statusId'] : null,
-            $json['documentTypeId'],
-            (array_key_exists('standardId', $json)) ? $json['standardId'] : null,
-            (array_key_exists('previousDocumentId', $json)) ? $json['previousDocumentId'] : null,
+            getValueFromArray($json, 'id'),
+            getValueFromArray($json, 'timestamp'),
+            getValueFromArray($json, 'title'),
+            getValueFromArray($json, 'description'),
+            getValueFromArray($json, 'sequence'),
+            getValueFromArray($json, 'topicId'),
+            getValueFromArray($json, 'comment'),
+            getValueFromArray($json, 'statusId'),
+            getValueFromArray($json, 'documentTypeId'),
+            getValueFromArray($json, 'standardId'),
+            getValueFromArray($json, 'previousDocumentId'),
             null,
-            (array_key_exists('internalId', $json)) ? $json['internalId'] : null,
-            (array_key_exists('hisNumber', $json)) ? $json['hisNumber'] : null
+            getValueFromArray($json, 'internalId'),
+            getValueFromArray($json, 'hisNumber')
         );
 
-        $document->setLinks((array_key_exists('links', $json)) ? $json['links'] : []);
-        $document->setFields((array_key_exists('fields', $json)) ? $json['fields'] : []);
-        $document->setTargetGroups((array_key_exists('targetGroups', $json)) ? $json['targetGroups'] : []);
+        $document->setLinks(getValueFromArray($json, 'links'));
+        $document->setFields(getValueFromArray($json, 'fields'));
+        $document->setTargetGroups(getValueFromArray($json, 'targetGroups'));
 
         return $document;
     }
