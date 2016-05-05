@@ -20,6 +20,9 @@ class ModelValidation
 
     public static function getValidTitle($title)
     {
+        if ($title === null) {
+            return null;
+        }
         return substr($title, 0, self::TITLE_MAX_LENGTH);
     }
 
@@ -30,11 +33,17 @@ class ModelValidation
      */
     public static function getValidDescription($description)
     {
+        if ($description === null) {
+            return null;
+        }
         return substr($description, 0, self::DESCRIPTION_MAX_LENGTH);
     }
 
     public static function getValidText($text)
     {
+        if ($text === null) {
+            return null;
+        }
         return substr($text, 0, self::TEXT_MAX_LENGTH);
     }
 
@@ -45,6 +54,9 @@ class ModelValidation
      */
     public static function getValidComment($comment)
     {
+        if ($comment === null) {
+            return null;
+        }
         return substr($comment, 0, self::COMMENT_MAX_LENGTH);
     }
 
@@ -61,6 +73,9 @@ class ModelValidation
      */
     public static function getValidName($name)
     {
+        if ($name === null) {
+            return null;
+        }
         return substr($name, 0, self::NAME_MAX_LENGTH);
     }
 
@@ -71,6 +86,9 @@ class ModelValidation
      */
     public static function getValidFieldValue($field_value)
     {
+        if ($field_value === null) {
+            return null;
+        }
         return substr($field_value, 0, self::FIELD_VALUE_MAX_LENGTH);
     }
 
