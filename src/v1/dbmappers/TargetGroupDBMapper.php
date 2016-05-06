@@ -7,101 +7,41 @@ require_once __DIR__.'/../errors/DBError.php';
 
 class TargetGroupDBMapper extends DBMapper
 {
-    public function get($target_group)
+    /**
+     * TargetGroupDBMapper constructor.
+     */
+    public function __construct()
     {
-        $this->getById($target_group->getId());
+        parent::__construct();
+        $this->model = 'TargetGroup';
     }
 
-    public function getById($id)
+    /**
+     * Returns tree structure of target groups
+     * @return array
+     */
+    public function getTargetGroupAsThree()
     {
-        $response = null;
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "SELECT *
-                FROM $dbName.target_group
-                WHERE id = ?;";
-        $parameters = array($id);
-        try {
-            $result = $this->queryDB($sql, $parameters);
-            if ($result->rowCount() === 1) {
-                $row = $result->fetch();
-                return new TargetGroup(
-                    $row['id'],
-                    $row['name'],
-                    $row['description']);
+        $target_group_three = [];
+        $target_group_dict = array();
+        $target_group_children = array();
+        $target_group_list = $this->getAll();
+        foreach ($target_group_list as $target_group) {
+            $parent_id = $target_group->getParentId();
+            if ($parent_id == null) {
+                array_push($target_group_three, $target_group);
             } else {
-                $response = new DBError("Returned " . $result->rowCount() .
-                    " profiles, expected 1");
+                if (!array_key_exists($parent_id, $target_group_children)) {
+                    $target_group_children[$parent_id] = array();
+                }
+                array_push($target_group_children[$parent_id], $target_group);
             }
-        } catch(PDOException $e) {
-            $response = new DBError($e);
+            $target_group_dict[$target_group->getID()] = $target_group;
         }
-        return $response;
+        foreach ($target_group_children as $parent => $children) {
+            $target_group_dict[$parent]->addChildren($children);
+        }
+        return $target_group_three;
     }
-
-    public function getAll()
-    {
-        $response = null;
-        $target_groups= array();
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "select * from $dbName.target_group";
-        try {
-            $result = $this->queryDB($sql, null);
-            foreach ($result as $row) {
-                array_push($target_groups, new TargetGroup(
-                    $row['id'],
-                    $row['name'],
-                    $row['description']));
-            }
-            if (count($target_groups) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                return $target_groups;
-            }
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-
-    public function add($target_group)
-    {
-        $response = null;
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "INSERT INTO $db_name.target_group
-                VALUES (null, ?, ?);";
-        $parameters = array(
-            $target_group->getName(),
-            $target_group->getDescription());
-        try {
-            $this->queryDB($sql, $parameters);
-            $response = $this->connection->lastInsertId();
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-
-    public function update($target_group)
-    {
-        if(!$this->isValidId($target_group->getId(), "target_group")) {
-            return new DBError("Invalid id");
-        }
-        $response = null;
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "UPDATE $db_name.target_group
-                SET name = ?, description = ?
-                WHERE id = ?;";
-        $parameters = array(
-            $target_group->getName(),
-            $target_group->getDescription(),
-            $target_group->getId());
-        try {
-            $this->queryDB($sql, $parameters);
-            return $target_group->getId();
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-
+    
 }

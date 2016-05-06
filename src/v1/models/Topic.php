@@ -1,10 +1,30 @@
 <?php
-require_once __DIR__.'/../dbmappers/TopicDBMapper.php';
 
-/**
- * Class Topic Model
- */
-class Topic{
+require_once __DIR__ . '/../dbmappers/TopicDBMapper.php';
+require_once __DIR__ . '/iModel.php';
+
+class Topic implements iModel
+{
+    const SQL_GET_ALL = "SELECT * FROM topic WHERE is_archived = 0 AND (id,timestamp) IN (SELECT id, MAX(timestamp)
+                  FROM topic GROUP BY id);";
+
+    const SQL_GET_BY_ID = "SELECT * FROM topic WHERE id = :id AND is_archived = 0 AND (id,timestamp) IN
+                (SELECT id, MAX(timestamp) FROM topic GROUP BY id)";
+    const SQL_INSERT = "INSERT INTO topic VALUES (null, null, :title, :description, :sequence, :parent_id, :comment, 0);";
+    const SQL_UPDATE = "INSERT INTO topic VALUES (:id, null, :title, :description, :sequence, :parent_id, :comment, 0);";
+    //const SQL_DELETE = "DELETE FROM action WHERE id = :id;";  // TODO: delete this
+    const SQL_GET_DOCUMENTS_BY_TOPIC_ID = "SELECT DISTINCT * FROM document WHERE is_archived = 0 AND (id,timestamp) IN
+                ( SELECT id, MAX(timestamp)FROM document GROUP BY id) AND topic_id = :topic_id;";
+
+    const SQL_GET_SUBTOPICS = "SELECT * FROM topic WHERE parent_id = :id AND is_archived = 0 AND (id,timestamp) IN
+                ( SELECT id, MAX(timestamp)FROM topic GROUP BY id);";
+    const SQL_GET_MAX_TIMESTAMP = "SELECT MAX(timestamp) FROM topic WHERE id = :id;";
+    const SQL_DELETE = "UPDATE topic SET is_archived = 1 WHERE id = :id AND
+                timestamp = :timestamp;";
+
+    const REQUIRED_POST_FIELDS = ['title', 'sequence'];
+    const REQUIRED_PUT_FIELDS = ['id','title', 'sequence'];
+
     private $id, $timestamp, $title, $description, $sequence, $parent_id, $comment, $children, $documents;
 
     /**
@@ -29,30 +49,6 @@ class Topic{
         $this->documents = [];
         $this->children = [];
     }
-
-    /**
-     * Returns a new topic with previus inserted id
-     * @param $title
-     * @param $description
-     * @param $number
-     * @param $is_in_catalog
-     * @param $sequence
-     * @param $parent_id
-     * @return DBError|null|string|Topic
-     */
-    /*  NOT IN USE
-    public static function createNewTopic($title, $description, $number, $is_in_catalog, $sequence, $parent_id)
-    {
-
-        $mapper = new TopicDbMapper();
-        $result = $mapper->add(new Topic(null,null,$title, $description, $number, $is_in_catalog, $sequence, $parent_id));
-        if ($result instanceof DBError) {
-            return $result;
-        } else {
-            return $mapper->getTopicById($result);
-        }
-    }
-    */
 
     public static function getLastInsertedTopic()
     {
@@ -85,9 +81,9 @@ class Topic{
      */
     public function  setTitle($title)
     {
-        if (strlen($title) > ModelValidation::getTitleMaxLength()) {
+        if (strlen($title) > ModelValidation::TITLE_MAX_LENGTH) {
             $this->title = ModelValidation::getValidTitle($title);
-            echo "Title is too long. Title set to: " . $this->title;
+            echo "Title is too long, set to: " . $this->title;
         } else {
             $this->title = $title;
         }
@@ -104,9 +100,9 @@ class Topic{
      */
     public function setDescription($description)
     {
-        if (strlen($description) > ModelValidation::getDescriptionMaxLength($description)) {
+        if (strlen($description) > ModelValidation::DESCRIPTION_MAX_LENGTH) {
             $this->description = ModelValidation::getValidDescription($description);
-            echo "description is too long. Description set to: " . $this->description;
+            echo "Description is too long, set to: " . $this->description;
         }
         else {
             $this->description = $description;
@@ -135,9 +131,9 @@ class Topic{
 
     public function setComment($comment)
     {
-        if (strlen($comment) > ModelValidation::getCommentMaxLength($comment)) {
+        if (strlen($comment) > ModelValidation::COMMENT_MAX_LENGTH) {
             $this->description = ModelValidation::getValidComment($comment);
-            echo "comment is too long, set to: " . $this->comment;
+            echo "Comment is too long, set to: " . $this->comment;
         }
         else {
             $this->comment = $comment;
@@ -149,13 +145,17 @@ class Topic{
         return $this->comment;
     }
 
+    /**
+     * Returns JSON representation of model
+     * @return string
+     */
     public function toJSON()
     {
         return json_encode($this->toArray(),JSON_PRETTY_PRINT);
     }
 
     /**
-     * Returns associated array
+     * Returns associated array representation of model
      * @return array
      */
     public function toArray()
@@ -174,7 +174,7 @@ class Topic{
             'title' => $this->title,
             'description' => $this->description,
             'sequence' => $this->sequence,
-            'parent' => $this->parent_id,
+            'parentId' => $this->parent_id,
             'comment' => $this->comment,
             'children' => $children,
             'documents' => $documents);
@@ -223,4 +223,41 @@ class Topic{
         array_push($this->documents, $document);
     }
 
+    /**
+     * Returns model from JSON
+     * @param $json
+     * @return Topic
+     */
+    public static function fromJSON($json)
+    {
+        return new Topic(
+            (array_key_exists('id', $json)) ? $json['id'] : null,
+            (array_key_exists('timestamp', $json)) ? $json['timestamp'] : null,
+            $json['title'],
+            (array_key_exists('description', $json)) ? $json['description'] : null,
+            $json['sequence'],
+            (array_key_exists('parentId', $json)) ? $json['parentId'] : null,
+            (array_key_exists('comment', $json)) ? $json['comment'] : null,
+            (array_key_exists('children', $json)) ? $json['children'] : null
+        );
+    }
+
+    /**
+     * Returns associative array for sql querying
+     * @return array
+     */
+    public function toDBArray()
+    {
+        $db_array = array(
+            ':title' => $this->title,
+            ':description' => $this->description,
+            ':sequence' => $this->sequence,
+            ':parent_id' => $this->parent_id,
+            ':comment' => $this->comment
+        );
+        if($this->id){
+            $db_array[':id'] = $this->id;
+        }
+        return $db_array;
+    }
 }

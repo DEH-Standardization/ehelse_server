@@ -13,128 +13,9 @@ class TopicDbMapper extends DBMapper
     public function __construct()
     {
         parent::__construct();
+        $this->model = 'Topic';
     }
 
-    /**
-     * Returns topic based on topic id
-     * @param $id
-     * @return null|Topic
-     */
-    public function getTopicById($id)
-    {
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "SELECT *
-                FROM andrkje_ehelse_db.topic WHERE id = ? and (id,timestamp) IN
-                ( SELECT id, MAX(timestamp)
-                  FROM andrkje_ehelse_db.topic
-                  GROUP BY id)";
-        $result = $this->queryDB($sql, array($id));
-        if ($result->rowCount() == 1) {
-            $row = $result->fetch();
-            return new Topic(
-                $row['id'],
-                $row['timestamp'],
-                $row['title'],
-                $row['description'],
-                $row['sequence'],
-                $row['parent_id'],
-                $row['comment']);
-        } else {
-            trigger_error($result->errorInfo(), E_USER_ERROR);
-        }
-        return null;
-    }
-
-    /**
-     * Returns list of standards based on id
-     * @param $id
-     * @return array|DBError|null
-     */
-    public function getStandardsByTopicId($id)
-    {
-        $response = null;
-        $standards = array();
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        /*$sql = "select * from $db_name.standard
-                where topic_id = ?;";
-        */
-        $sql = "SELECT *
-                FROM andrkje_ehelse_db.standard WHERE topic_id = ? and (id,timestamp) IN
-                ( SELECT id, MAX(timestamp)
-                  FROM andrkje_ehelse_db.standard
-                  GROUP BY id);";
-
-        try {
-            $result = $this->queryDB($sql, array($id));
-            foreach($result as $row) {
-                array_push($standards, new Standard(
-                    $row['id'],
-                    $row['timestamp'],
-                    $row['title'],
-                    $row['description'],
-                    $row['sequence'],
-                    $row['topic_id'],
-                    $row['comment']));
-            }
-            if (count($standards) == 0) {
-                $response = new DBError("Did not return any results on id: ".$id);
-            } else {
-                return $standards;
-            }
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-
-    /**
-     * Returns list of standards based on id
-     * @param $id
-     * @return array|DBError|null
-     */
-    public function getProfileByTopicId($id)
-    {
-        $response = null;
-        $profiles = array();
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "SELECT *
-                FROM andrkje_ehelse_db.profile WHERE topic_id = ? and (id,timestamp) IN
-                ( SELECT id, MAX(timestamp)
-                  FROM andrkje_ehelse_db.profile
-                  GROUP BY id);";
-
-        try {
-            $result = $this->queryDB($sql, array($id));
-            foreach($result as $row) {
-                array_push($profiles, new Profile(
-                    $row['id'],
-                    $row['timestamp'],
-                    $row['title'],
-                    $row['description'],
-                    $row['sequence'],
-                    $row['topic_id'],
-                    $row['comment']));
-            }
-            if (count($profiles) == 0) {
-                $response = new DBError("Did not return any results on id: ".$id);
-            } else {
-                return $profiles;
-            }
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-
-    /**
-     * Returns list of standards
-     * @param $id
-     * @return array|DBError|null
-     */
-    public function getStandardsByTopic($topic)
-    {
-        return $this->getSubtopicsByTopicId($topic->getId());
-    }
 
     /**
      * Returns a list of subtopics to a topic from it's id
@@ -144,32 +25,11 @@ class TopicDbMapper extends DBMapper
     public function getSubtopicsByTopicId($id)
     {
         $response = null;
-        $topics = array();
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        //$sql = "select * from $db_name.topic where parent_id = ?";
-
-        $sql = "SELECT *
-                FROM andrkje_ehelse_db.topic WHERE parent_id = ? and (id,timestamp) IN
-                ( SELECT id, MAX(timestamp)
-                  FROM andrkje_ehelse_db.topic
-                  GROUP BY id);";
-
         try {
-            $result = $this->queryDB($sql, array($id));
-            foreach($result as $row) {
-                array_push($topics, new Topic(
-                    $row['id'],
-                    $row['timestamp'],
-                    $row['title'],
-                    $row['description'],
-                    $row['sequence'],
-                    $row['parent_id'],
-                    $row['comment']));
-            }
-            if (count($topics) == 0) {
-                $response = new DBError("Did not return any results on id: ".$id);
-            } else {
-                return $topics;
+            $result = $this->queryDBWithAssociativeArray(Topic::SQL_GET_SUBTOPICS, array('id' => $id));
+            $raw = $result->fetch();
+            if($raw){
+                $response = Topic::fromDBArray($raw);
             }
         } catch(PDOException $e) {
             $response = new DBError($e);
@@ -177,160 +37,37 @@ class TopicDbMapper extends DBMapper
         return $response;
     }
 
+
     /**
-     * Returns list of all earlier logged versions based on id
+     * Deletes topic by id by setting is_archived = 1
      * @param $id
      * @return array|DBError|null
      */
-    public function getAllLoggedTopicsByTopicId($id)
+    public function deleteById($id)
     {
         $response = null;
-        $topics = array();
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "select * from $db_name.topic where id = ?";
-
         try {
-            $result = $this->queryDB($sql, array($id));
-            foreach($result as $row) {
-                array_push($topics, new Topic(
-                    $row['id'],
-                    $row['timestamp'],
-                    $row['title'],
-                    $row['description'],
-                    $row['sequence'],
-                    $row['parent_id'],
-                    $row['comment']));
-            }
-            if (count($topics) == 0) {
-                $response = new DBError("Did not return any results on id: ".$id);
-            } else {
-                return $topics;
-            }
+            $timestamp = $this->queryDBWithAssociativeArray(
+                Topic::SQL_GET_MAX_TIMESTAMP, array(':id' => $id)
+            )->fetch()[0];  // gets the string representation of timestamp from database
+            $this->queryDBWithAssociativeArray(
+                Topic::SQL_DELETE,
+                array(
+                    ':id' => $id,
+                    ':timestamp' => $timestamp)
+            );
+            $response = [];
         } catch(PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
+
     }
 
     /**
-     * Returns list of all earlier logged versions based on id
-     * @param $topic
-     * @return array|DBError|null
+     * Return tree representation of topics
+     * @return array
      */
-    public function getAllLoggedTopicsByTopic($topic)
-    {
-        return getAllLoggedTopicsByTopic($topic->getId());
-    }
-
-    /**
-     * Adds new topic to database
-     * @param $topic
-     * @return DBError|null|string
-     */
-    public function add($topic)
-    {
-        $response = null;
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "INSERT INTO $db_name.topic
-                VALUES (null, now(), ?, ?, ?, ?, ?);";
-        $parameters = array(
-            $topic->getTitle(),
-            $topic->getDescription(),
-            $topic->getSequence(),
-            $topic->getParentId(),
-            $topic->getComment()
-        );
-        try {
-            $this->queryDB($sql, $parameters);
-            $response = $this->connection->lastInsertId();
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-
-    /**
-     * Updates topic in database
-     * @param $topic
-     * @return DBError|null|string
-     */
-    public function update($topic)
-    {
-        if(!$this->isValidId($topic->getId(), "topic")) {
-            return new DBError("Invalid id");
-        }
-        $response = null;
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "INSERT INTO $db_name.topic
-                VALUES (?, now(), ?, ?, ?, ?, ?);";
-        $parameters = array(
-            $topic->getId(),
-            $topic->getTitle(),
-            $topic->getDescription(),
-            $topic->getSequence(),
-            $topic->getParentId(),
-            $topic->getComment()
-        );
-        try {
-            $this->queryDB($sql, $parameters);
-            $response = $this->connection->lastInsertId();
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-
-
-    public function getAllIds()
-    {
-        $response = null;
-        $topics = array();
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "SELECT id
-                FROM $dbName.topic";
-        try {
-            $result = $this->queryDB($sql, array());
-            foreach ($result as $row) {
-                array_push($topics, $row['id']);
-            }
-            if (count($topics) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                return $topics;
-            }
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-
-    public function getAll()
-    {
-        $response = null;
-        $dbName = DbCommunication::getInstance()->getDatabaseName();
-        $sql = "SELECT *
-                FROM $dbName.topic WHERE(id,timestamp) IN
-                ( SELECT id, MAX(timestamp)
-                  FROM $dbName.topic
-                  GROUP BY id);";
-        try {
-            $result = $this->queryDB($sql, array());
-            $topics_raw = $result->fetchAll();
-            $topics = [];
-            foreach($topics_raw as $topic_raw){
-                array_push($topics, Topic::fromDBArray($topic_raw));
-            }
-            if (count($topics) === 0) {
-                $response = new DBError("Did not return any results");
-            } else {
-                $response = $topics;
-            }
-        } catch(PDOException $e) {
-            $response = new DBError($e);
-        }
-        return $response;
-    }
-
     public function getTopicsAsThree()
     {
         $topic_three = [];
@@ -356,4 +93,45 @@ class TopicDbMapper extends DBMapper
         return $topic_three;
     }
 
+    /**
+     * Returns true if topic with id has any subtopics
+     * @param $id
+     * @return bool
+     */
+    public function hasSubtopic($id)
+    {
+        $has_subtopics = false;
+        try {
+            $result = $this->queryDBWithAssociativeArray(Topic::SQL_GET_SUBTOPICS, array(':id' => $id));
+            if ($result->fetchAll())
+                $has_subtopics = true;
+            else
+                $has_subtopics = false;
+        } catch(PDOException $e) {
+            printf($e);     // TODO: find a better way to handle this
+            $has_subtopics = false; // does this make sense?
+        }
+        return $has_subtopics;
+    }
+
+    /**
+     * Returns true if topic with id has any sybtopics
+     * @param $id
+     * @return bool
+     */
+    public function hasDocuments($id)
+    {
+        $has_documents = false;
+        try {
+            $result = $this->queryDBWithAssociativeArray(Topic::SQL_GET_DOCUMENTS_BY_TOPIC_ID, array(':topic_id' => $id));
+            if ($result->fetchAll())
+                $has_documents = true;
+            else
+                $has_documents = false;
+        } catch(PDOException $e) {
+            printf($e);     // TODO: find a better way to handle this
+            $has_documents = false; // does this make sense?
+        }
+        return $has_documents;
+    }
 }
