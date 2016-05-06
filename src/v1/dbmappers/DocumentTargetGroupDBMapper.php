@@ -1,9 +1,9 @@
 <?php
 
 require_once 'DBMapper.php';
-require_once __DIR__.'/../errors/DBError.php';
-require_once __DIR__.'/../models/DocumentTargetGroup.php';
-require_once __DIR__.'/../errors/MethodNotAllowedError.php';
+require_once __DIR__ . '/../errors/DBError.php';
+require_once __DIR__ . '/../models/DocumentTargetGroup.php';
+require_once __DIR__ . '/../errors/MethodNotAllowedError.php';
 
 class DocumentTargetGroupDBMapper extends DBMapper
 {
@@ -44,7 +44,8 @@ class DocumentTargetGroupDBMapper extends DBMapper
      * @param $document_timestamp
      * @return array|DBError
      */
-    public function getTargetGroupsByDocumentIdAndDocumentTimestamp($document_id, $document_timestamp) {
+    public function getTargetGroupsByDocumentIdAndDocumentTimestamp($document_id, $document_timestamp)
+    {
         try {
             $result = $this->queryDBWithAssociativeArray(DocumentTargetGroup::GET_DOCUMENT_TARGET_GROUPS_BY_DOCUMENT_ID,
                 array(
@@ -53,12 +54,12 @@ class DocumentTargetGroupDBMapper extends DBMapper
                 ));
             $raw = $result->fetchAll();
             $objects = [];
-            foreach($raw as $raw_item){
+            foreach ($raw as $raw_item) {
                 array_push($objects, DocumentTargetGroup::fromDBArray($raw_item));
             }
             $response = $objects;
 
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;

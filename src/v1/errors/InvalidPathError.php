@@ -14,7 +14,7 @@ class InvalidPathError extends ApplicationError
     public function __construct()
     {
         $this->title = "Error: Invalid path";
-        if(array_key_exists('PATH_INFO', $_SERVER)){
+        if (array_key_exists('PATH_INFO', $_SERVER)) {
             $this->path = $_SERVER['PATH_INFO'];
         }
         $this->message = "Invalid path <{$this->path}>";

@@ -23,8 +23,8 @@ class Document implements iModel
     const SQL_GET_MAX_TIMESTAMP = "SELECT MAX(timestamp) FROM document WHERE id = :id;";
     const SQL_GET_PROFILE_IDS = "SELECT DISTINCT id FROM document WHERE standard_id = :id;";
 
-    const REQUIRED_POST_FIELDS = ['title', 'sequence', 'documentTypeId','topicId'];
-    const REQUIRED_PUT_FIELDS = ['title', 'sequence', 'documentTypeId','topicId'];
+    const REQUIRED_POST_FIELDS = ['title', 'sequence', 'documentTypeId', 'topicId'];
+    const REQUIRED_PUT_FIELDS = ['title', 'sequence', 'documentTypeId', 'topicId'];
 
     private
         $id,
@@ -117,12 +117,7 @@ class Document implements iModel
      */
     public function setTitle($title)
     {
-        if (strlen($title) > ModelValidation::TITLE_MAX_LENGTH) {
-            $this->title = ModelValidation::getValidTitle($title);
-            echo "Title is too long, set to: " . $this->title;
-        } else {
-            $this->title = $title;
-        }
+        $this->title = ModelValidation::getValidTitle($title);
     }
 
     public function getDescription()
@@ -136,12 +131,7 @@ class Document implements iModel
      */
     public function setDescription($description)
     {
-        if (strlen($description) > ModelValidation::DESCRIPTION_MAX_LENGTH) {
-            $this->description = ModelValidation::getValidDescription($description);
-            echo "Description is too long, set to: " . $this->description;
-        } else {
-            $this->description = $description;
-        }
+        $this->description = ModelValidation::getValidDescription($description);
     }
 
     public function getSequence()
@@ -175,12 +165,7 @@ class Document implements iModel
      */
     public function setComment($comment)
     {
-        if (strlen($comment) > ModelValidation::COMMENT_MAX_LENGTH) {
-            $this->comment = ModelValidation::getValidComment($comment);
-            echo "Comment is too long, set to: " . $this->comment;
-        } else {
-            $this->comment = $comment;
-        }
+        $this->comment = ModelValidation::getValidComment($comment);
     }
 
     public function getStatusId()
@@ -332,25 +317,25 @@ class Document implements iModel
     public static function fromJSON($json)
     {
         $document = new Document(
-            (array_key_exists('id', $json)) ? $json['id'] : null,
-            (array_key_exists('timestamp', $json)) ? $json['timestamp'] : null,
-            $json['title'],
-            (array_key_exists('description', $json)) ? $json['description'] : null,
-            $json['sequence'],
-            $json['topicId'],
-            (array_key_exists('comment', $json)) ? $json['comment'] : null,
-            (array_key_exists('statusId', $json)) ? $json['statusId'] : null,
-            $json['documentTypeId'],
-            (array_key_exists('standardId', $json)) ? $json['standardId'] : null,
-            (array_key_exists('previousDocumentId', $json)) ? $json['previousDocumentId'] : null,
+            getValueFromArray($json, 'id'),
+            getValueFromArray($json, 'timestamp'),
+            getValueFromArray($json, 'title'),
+            getValueFromArray($json, 'description'),
+            getValueFromArray($json, 'sequence'),
+            getValueFromArray($json, 'topicId'),
+            getValueFromArray($json, 'comment'),
+            getValueFromArray($json, 'statusId'),
+            getValueFromArray($json, 'documentTypeId'),
+            getValueFromArray($json, 'standardId'),
+            getValueFromArray($json, 'previousDocumentId'),
             null,
-            (array_key_exists('internalId', $json)) ? $json['internalId'] : null,
-            (array_key_exists('hisNumber', $json)) ? $json['hisNumber'] : null
+            getValueFromArray($json, 'internalId'),
+            getValueFromArray($json, 'hisNumber')
         );
 
-        $document->setLinks((array_key_exists('links', $json)) ? $json['links'] : []);
-        $document->setFields((array_key_exists('fields', $json)) ? $json['fields'] : []);
-        $document->setTargetGroups((array_key_exists('targetGroups', $json)) ? $json['targetGroups'] : []);
+        $document->setLinks(getValueFromArray($json, 'links'));
+        $document->setFields(getValueFromArray($json, 'fields'));
+        $document->setTargetGroups(getValueFromArray($json, 'targetGroups'));
 
         return $document;
     }

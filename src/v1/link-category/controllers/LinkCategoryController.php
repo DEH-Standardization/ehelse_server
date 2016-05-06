@@ -1,11 +1,11 @@
 <?php
 
-require_once __DIR__.'/../../responses/Response.php';
-require_once __DIR__.'/../../responses/ResponseController.php';
-require_once __DIR__.'/../../errors/InvalidPathError.php';
-require_once __DIR__.'/../../errors/ErrorController.php';
-require_once __DIR__.'/../../dbmappers/LinkCategoryDBMapper.php';
-require_once __DIR__.'/../../models/LinkCategory.php';
+require_once __DIR__ . '/../../responses/Response.php';
+require_once __DIR__ . '/../../responses/ResponseController.php';
+require_once __DIR__ . '/../../errors/InvalidPathError.php';
+require_once __DIR__ . '/../../errors/ErrorController.php';
+require_once __DIR__ . '/../../dbmappers/LinkCategoryDBMapper.php';
+require_once __DIR__ . '/../../models/LinkCategory.php';
 
 class LinkCategoryController extends ResponseController
 {

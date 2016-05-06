@@ -1,6 +1,5 @@
 <?php
 
-
 require_once __DIR__ . '/../models/Action.php';
 require_once __DIR__ . '/../responses/Response.php';
 require_once __DIR__ . '/../responses/ErrorResponse.php';
@@ -10,6 +9,12 @@ require_once __DIR__ . '/../responses/ResponseController.php';
 class ActionController extends ResponseController
 {
 
+    /**
+     * ActionController constructor.
+     * @param $path
+     * @param $method
+     * @param $body
+     */
     public function __construct($path, $method, $body)
     {
         $this->init($path, $method, $body);

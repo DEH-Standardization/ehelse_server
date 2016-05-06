@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__.'/ModelValidation.php';
+require_once __DIR__ . '/ModelValidation.php';
 require_once 'iModel.php';
 
 class DocumentField implements iModel
@@ -30,8 +30,8 @@ class DocumentField implements iModel
     public function __construct($id, $name, $description, $sequence, $mandatory, $document_type_id)
     {
         $this->id = $id;
-        $this->name = $name;
-        $this->description = $description;
+        $this->setName($name);
+        $this->setDescription($description);
         $this->sequence = $sequence;
         $this->mandatory = $mandatory;
         $this->document_type_id = $document_type_id;
@@ -49,13 +49,7 @@ class DocumentField implements iModel
 
     public function setName($name)
     {
-        if (strlen($name) > ModelValidation::NAME_MAX_LENGTH) {
-            $this->name = ModelValidation::getValidName($name);
-            return "Name is too long, set to: " . $this->name;
-        }
-        else {
-            $this->name = $name;
-        }
+        $this->name = ModelValidation::getValidName($name);
     }
 
     public function getDescription()
@@ -65,13 +59,7 @@ class DocumentField implements iModel
 
     public function setDescription($description)
     {
-        if (strlen($description) > ModelValidation::DESCRIPTION_MAX_LENGTH) {
-            $this->description = ModelValidation::getValidDescription($description);
-            return "Description is too long, set to: " . $this->description;
-        }
-        else {
-            $this->description = $description;
-        }
+        $this->description = ModelValidation::getValidDescription($description);
     }
 
     public function getSequence()
@@ -126,7 +114,7 @@ class DocumentField implements iModel
      */
     public function toJSON()
     {
-        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+        return json_encode($this->toArray(), JSON_PRETTY_PRINT);
     }
 
     /**
@@ -137,12 +125,12 @@ class DocumentField implements iModel
     public static function fromJSON($json)
     {
         return new DocumentField(
-            getValueFromArray($json,'id'),
-            getValueFromArray($json,'name'),
-            getValueFromArray($json,'description'),
-            getValueFromArray($json,'sequence'),
-            getValueFromArray($json,'mandatory'),
-            getValueFromArray($json,'documentTypeId')
+            getValueFromArray($json, 'id'),
+            getValueFromArray($json, 'name'),
+            getValueFromArray($json, 'description'),
+            getValueFromArray($json, 'sequence'),
+            getValueFromArray($json, 'mandatory'),
+            getValueFromArray($json, 'documentTypeId')
         );
     }
 
@@ -176,7 +164,7 @@ class DocumentField implements iModel
             ':mandatory' => $this->mandatory,
             ':document_type_id' => $this->document_type_id
         );
-        if($this->id){
+        if ($this->id) {
             $db_array[':id'] = $this->id;
         }
         return $db_array;

@@ -18,7 +18,7 @@ class DbCommunication
      */
     public static function getInstance()
     {
-        if(!self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
         return self::$instance;
@@ -36,10 +36,8 @@ class DbCommunication
         try {
             $this->connection = new PDO("mysql:host={$this->server};dbname={$this->database_name};charset=utf8", $this->username, $this->password);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // set the PDO error mode to exception
-        }
-        catch(PDOException $e)
-        {
-            trigger_error("Failed to connect to MySQL: " . $e , E_USER_ERROR);
+        } catch (PDOException $e) {
+            trigger_error("Failed to connect to MySQL: " . $e, E_USER_ERROR);
         }
     }
 

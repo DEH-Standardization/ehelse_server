@@ -19,27 +19,24 @@ class APIV1Controller implements iController
 
     public function __construct($path, $method, $body)
     {
-        if($_SERVER && array_key_exists('PHP_AUTH_USER', $_SERVER)){
+        if ($_SERVER && array_key_exists('PHP_AUTH_USER', $_SERVER)) {
             $email = $_SERVER['PHP_AUTH_USER'];
             $password = $_SERVER['PHP_AUTH_PW'];
             $user = User::authenticate($email, $password);
-            if($user) {
+            if ($user) {
                 define("AUTHENTICATED", true);
                 User::login($user);
-            }
-            else{
+            } else {
                 define("AUTHENTICATED", false);
             }
 
-        }
-        else{
+        } else {
             define("AUTHENTICATED", false);
         }
 
         $part = $path[0];
         $path = trimPath($path, 1);
-        switch($part)
-        {
+        switch ($part) {
             case 'documents':
                 $this->controller = new DocumentController($path, $method, $body);
                 break;

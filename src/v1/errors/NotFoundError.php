@@ -14,7 +14,7 @@ class NotFoundError extends ApplicationError
     public function __construct()
     {
         $this->title = "Error: Not Found";
-        if(array_key_exists('PATH_INFO', $_SERVER)){
+        if (array_key_exists('PATH_INFO', $_SERVER)) {
             $this->path = $_SERVER['PATH_INFO'];
         }
         $this->message = "Resource <{$this->path}> not found";
