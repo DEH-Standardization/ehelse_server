@@ -5,7 +5,7 @@ require_once 'iModel.php';
 
 class DocumentField implements iModel
 {
-    const SQL_GET_ALL = "SELECT * FROM document_field;";
+    const SQL_GET_ALL = "SELECT * FROM document_field ORDER BY sequence;";
     const SQL_GET_BY_ID = "SELECT * FROM document_field WHERE id = :id;";
     const SQL_INSERT = "INSERT INTO document_field VALUES (null, :name, :description, :sequence, :mandatory,
       :document_type_id);";
