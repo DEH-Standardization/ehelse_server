@@ -28,12 +28,12 @@ class User
 
     public function __construct($id, $name, $email, $profile_image, $password_hash, $pw_date_edited)
     {
-        $this->id=$id;
+        $this->id = $id;
         $this->setName($name);
         $this->setEmail($email);
-        $this->password_hash=$password_hash;
-        $this->profile_image=$profile_image;
-        $this->pw_date_edited=$pw_date_edited;
+        $this->password_hash = $password_hash;
+        $this->profile_image = $profile_image;
+        $this->pw_date_edited = $pw_date_edited;
     }
 
     public static function login($user)
@@ -82,6 +82,7 @@ class User
             "pwDateEdited" => $this->pw_date_edited
         );
     }
+
     public function toDBArray()
     {
         $db_array = array(
@@ -89,14 +90,15 @@ class User
             ":profile_image" => $this->profile_image,
             ":email" => $this->email
         );
-        if($this->id){
+        if ($this->id) {
             $db_array[":id"] = $this->id;
         }
         return $db_array;
     }
 
-    public function toResetPasswordDBArray(){
-        if(! $this->password_hash){
+    public function toResetPasswordDBArray()
+    {
+        if (!$this->password_hash) {
             die("Missing password");
         }
         return array(
@@ -108,20 +110,20 @@ class User
     public function setName($name)
     {
         return $this->setStringProperty(
-            $field="name",
-            $value=$name,
-            $max_length=User::MAX_LENGTH_NAME,
-            $error_message_field_name="Name");
+            $field = "name",
+            $value = $name,
+            $max_length = User::MAX_LENGTH_NAME,
+            $error_message_field_name = "Name");
     }
 
 
     public function setEmail($email)
     {
         return $this->setStringProperty(
-            $field="email",
-            $value=$email,
-            $max_length=User::MAX_LENGTH_NAME,
-            $error_message_field_name="Email");
+            $field = "email",
+            $value = $email,
+            $max_length = User::MAX_LENGTH_NAME,
+            $error_message_field_name = "Email");
     }
 
     protected function setStringProperty($field, $value, $max_length, $error_massage_field_name)
@@ -174,10 +176,10 @@ class User
     public static function fromJSON($json)
     {
         return new User(
-            getValueFromArray($json,'id'),
-            getValueFromArray($json,'name'),
-            getValueFromArray($json,'email'),
-            getValueFromArray($json,'profileImage'),
+            getValueFromArray($json, 'id'),
+            getValueFromArray($json, 'name'),
+            getValueFromArray($json, 'email'),
+            getValueFromArray($json, 'profileImage'),
             null,
             null
         );
@@ -187,7 +189,7 @@ class User
     {
         $response = null;
         $user = User::byEmail($email);
-        if(password_verify($password, $user->getPasswordHash())){
+        if (password_verify($password, $user->getPasswordHash())) {
             $response = $user;
         }
         return $response;

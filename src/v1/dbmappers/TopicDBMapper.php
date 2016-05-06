@@ -1,7 +1,8 @@
 <?php
 require_once "DBMapper.php";
-require_once __DIR__. "/../models/Topic.php";
-require_once __DIR__. "/../errors/DBError.php";
+require_once __DIR__ . "/../models/Topic.php";
+require_once __DIR__ . "/../errors/DBError.php";
+
 /**
  *
  */
@@ -28,10 +29,10 @@ class TopicDbMapper extends DBMapper
         try {
             $result = $this->queryDBWithAssociativeArray(Topic::SQL_GET_SUBTOPICS, array('id' => $id));
             $raw = $result->fetch();
-            if($raw){
+            if ($raw) {
                 $response = Topic::fromDBArray($raw);
             }
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
@@ -57,7 +58,7 @@ class TopicDbMapper extends DBMapper
                     ':timestamp' => $timestamp)
             );
             $response = [];
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
@@ -74,20 +75,19 @@ class TopicDbMapper extends DBMapper
         $topic_dict = array();
         $topic_children = array();
         $topic_list = $this->getAll();
-        foreach($topic_list as $topic){
+        foreach ($topic_list as $topic) {
             $parent_id = $topic->getParentId();
-            if($parent_id == null){
+            if ($parent_id == null) {
                 array_push($topic_three, $topic);
-            }
-            else{
-                if(!array_key_exists($parent_id, $topic_children)){
+            } else {
+                if (!array_key_exists($parent_id, $topic_children)) {
                     $topic_children[$parent_id] = array();
                 }
                 array_push($topic_children[$parent_id], $topic);
             }
             $topic_dict[$topic->getID()] = $topic;
         }
-        foreach($topic_children as $parent =>  $children){
+        foreach ($topic_children as $parent => $children) {
             $topic_dict[$parent]->addChildren($children);
         }
         return $topic_three;
@@ -107,7 +107,7 @@ class TopicDbMapper extends DBMapper
                 $has_subtopics = true;
             else
                 $has_subtopics = false;
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             printf($e);     // TODO: find a better way to handle this
             $has_subtopics = false; // does this make sense?
         }
@@ -128,7 +128,7 @@ class TopicDbMapper extends DBMapper
                 $has_documents = true;
             else
                 $has_documents = false;
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             printf($e);     // TODO: find a better way to handle this
             $has_documents = false; // does this make sense?
         }

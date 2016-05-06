@@ -1,9 +1,9 @@
 <?php
 
 require_once "DBMapper.php";
-require_once __DIR__. "/../models/Document.php";
-require_once __DIR__. "/../errors/DBError.php";
-require_once __DIR__. "/../dbmappers/DocumentFieldValueDBMapper.php";
+require_once __DIR__ . "/../models/Document.php";
+require_once __DIR__ . "/../errors/DBError.php";
+require_once __DIR__ . "/../dbmappers/DocumentFieldValueDBMapper.php";
 
 class DocumentDBMapper extends DBMapper
 {
@@ -37,7 +37,7 @@ class DocumentDBMapper extends DBMapper
                     ':timestamp' => $timestamp)
             );
             $response = [];
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
@@ -111,12 +111,12 @@ class DocumentDBMapper extends DBMapper
                 array(':topic_id' => $topic_id));
             $raw = $result->fetchAll();
             $objects = [];
-            foreach($raw as $raw_item){
+            foreach ($raw as $raw_item) {
                 array_push($objects, Document::fromDBArray($raw_item));
             }
             $response = $objects;
 
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
@@ -134,12 +134,12 @@ class DocumentDBMapper extends DBMapper
             $result = $this->queryDBWithAssociativeArray(Document::SQL_GET_PROFILES, array(':id' => $id));
             $raw = $result->fetchAll();
             $objects = [];
-            foreach($raw as $raw_item){
+            foreach ($raw as $raw_item) {
                 array_push($objects, Document::fromDBArray($raw_item));
             }
             $response = $objects;
 
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
@@ -157,12 +157,12 @@ class DocumentDBMapper extends DBMapper
             $result = $this->queryDBWithAssociativeArray(Document::SQL_GET_PROFILE_IDS, array(':id' => $id));
             $raw = $result->fetchAll();
             $objects = [];
-            foreach($raw as $raw_item){
+            foreach ($raw as $raw_item) {
                 array_push($objects, array('id' => $raw_item['id']));
             }
             $response = $objects;
 
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;

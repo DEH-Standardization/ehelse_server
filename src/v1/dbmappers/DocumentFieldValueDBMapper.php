@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__.'/../models/DocumentFieldValue.php';
+require_once __DIR__ . '/../models/DocumentFieldValue.php';
 
 class DocumentFieldValueDBMapper extends DBMapper
 {
@@ -28,12 +28,12 @@ class DocumentFieldValueDBMapper extends DBMapper
             ));
             $raw = $result->fetchAll();
             $objects = [];
-            foreach($raw as $raw_item){
+            foreach ($raw as $raw_item) {
                 array_push($objects, DocumentFieldValue::fromDBArray($raw_item));
             }
             $response = $objects;
 
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
@@ -54,7 +54,6 @@ class DocumentFieldValueDBMapper extends DBMapper
             $this->add(DocumentFieldValue::fromJSON($field));
         }
     }
-
 
 
 }

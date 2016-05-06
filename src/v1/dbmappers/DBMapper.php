@@ -28,23 +28,22 @@ abstract class DBMapper implements iDbMapper
      */
     protected function queryDB($sql, $columns)
     {
-        if(isAssoc($columns)){
+        if (isAssoc($columns)) {
             throw new Exception("Assosiative array. Use other query");
         }
         $sql_query = $sql;
         $stmt = $this->connection->prepare($sql_query);
-        if(!$stmt) {
+        if (!$stmt) {
             trigger_error("Could not prepare the SQL query: " . $sql_query . ", " . $this->connection->errorInfo(), E_USER_ERROR);
         }
 
         for ($i = 0; $i < count($columns); $i++) {
-            $stmt->bindParam(($i+1), $columns[$i]);
+            $stmt->bindParam(($i + 1), $columns[$i]);
         }
-        try{
+        try {
 
             $stmt->execute();
-        }
-        catch(Exception $e){
+        } catch (Exception $e) {
             $stmt = new DBError($e);
         }
 
@@ -54,7 +53,7 @@ abstract class DBMapper implements iDbMapper
     protected function queryDBWithAssociativeArray($sql, $associative_array)
     {
         $stmt = $this->connection->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        if(!$stmt) {
+        if (!$stmt) {
             trigger_error("Could not prepare the SQL query: " . $sql . ", " . $this->connection->errorInfo(), E_USER_ERROR);
         }
 
@@ -71,10 +70,10 @@ abstract class DBMapper implements iDbMapper
         try {
             $result = $this->queryDB($sql, array($id));
             $r = $result->fetch();
-            if ($result->rowCount() > 0){
+            if ($result->rowCount() > 0) {
                 $valid = true;
             }
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $valid = new DBError($e);
         }
         return $valid;
@@ -90,10 +89,10 @@ abstract class DBMapper implements iDbMapper
         try {
             $result = $this->queryDBWithAssociativeArray($model::SQL_GET_BY_ID, $parameters);
             $raw = $result->fetch();
-            if($raw){
+            if ($raw) {
                 $response = $model::fromDBArray($raw);
             }
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
@@ -102,7 +101,7 @@ abstract class DBMapper implements iDbMapper
     public function getAll()
     {
         $response = null;
-        $array= array();
+        $array = array();
         $model = $this->model;
         try {
             $result = $this->queryDBWithAssociativeArray($model::SQL_GET_ALL, array());
@@ -110,7 +109,7 @@ abstract class DBMapper implements iDbMapper
                 array_push($array, $model::fromDBArray($row));
             }
             $response = $array;
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
@@ -123,7 +122,7 @@ abstract class DBMapper implements iDbMapper
         try {
             $this->queryDBWithAssociativeArray($model::SQL_INSERT, $object->toDBArray());
             $response = $this->connection->lastInsertId();
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
@@ -136,7 +135,7 @@ abstract class DBMapper implements iDbMapper
         try {
             $this->queryDBWithAssociativeArray($model::SQL_UPDATE, $object->toDBArray());
             return $object->getId();
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
@@ -146,7 +145,6 @@ abstract class DBMapper implements iDbMapper
     {
         $this->getById($object->getId());
     }
-
 
 
     public function delete($object)
@@ -159,9 +157,9 @@ abstract class DBMapper implements iDbMapper
         $response = null;
         $model = $this->model;
         try {
-            $this->queryDBWithAssociativeArray($model::SQL_DELETE,array(":id"=>$id));
+            $this->queryDBWithAssociativeArray($model::SQL_DELETE, array(":id" => $id));
             $response = array();
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;

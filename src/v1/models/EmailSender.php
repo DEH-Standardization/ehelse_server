@@ -31,7 +31,7 @@ class EmailSender
                 <p>Passordet for $to har blitt satt til:</p>
                 <h2>$password</h2>
             </body></html>";
-            $is_sent = self::send($to,$subject, $message);
+            $is_sent = self::send($to, $subject, $message);
         }
         return $is_sent;
     }
@@ -51,7 +51,7 @@ class EmailSender
                 <h2>$password</h2>
                 <p>Vennligst bytt passord ved første innlogging.</p>
             </body></html>";
-            $is_sent = self::send($to,$subject, $message);
+            $is_sent = self::send($to, $subject, $message);
         }
         return $is_sent;
     }

@@ -23,7 +23,7 @@ class Topic implements iModel
                 timestamp = :timestamp;";
 
     const REQUIRED_POST_FIELDS = ['title', 'sequence'];
-    const REQUIRED_PUT_FIELDS = ['id','title', 'sequence'];
+    const REQUIRED_PUT_FIELDS = ['id', 'title', 'sequence'];
 
     private $id, $timestamp, $title, $description, $sequence, $parent_id, $comment, $children, $documents;
 
@@ -37,7 +37,7 @@ class Topic implements iModel
      * @param $parent_id
      * @param $comment
      */
-    public function __construct($id, $timestamp, $title, $description, $sequence , $parent_id, $comment)
+    public function __construct($id, $timestamp, $title, $description, $sequence, $parent_id, $comment)
     {
         $this->id = $id;
         $this->timestamp = $timestamp;
@@ -70,7 +70,7 @@ class Topic implements iModel
         $this->timestamp = $timestamp;
     }
 
-    public function  getTitle()
+    public function getTitle()
     {
         return $this->title;
     }
@@ -79,7 +79,7 @@ class Topic implements iModel
      * Sets title if it is valid
      * @param $description
      */
-    public function  setTitle($title)
+    public function setTitle($title)
     {
         if (strlen($title) > ModelValidation::TITLE_MAX_LENGTH) {
             $this->title = ModelValidation::getValidTitle($title);
@@ -100,7 +100,7 @@ class Topic implements iModel
      */
     public function setDescription($description)
     {
-         $this->description = ModelValidation::getValidDescription($description);
+        $this->description = ModelValidation::getValidDescription($description);
     }
 
     public function getParentId()
@@ -139,7 +139,7 @@ class Topic implements iModel
      */
     public function toJSON()
     {
-        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+        return json_encode($this->toArray(), JSON_PRETTY_PRINT);
     }
 
     /**
@@ -149,11 +149,11 @@ class Topic implements iModel
     public function toArray()
     {
         $children = [];
-        foreach($this->children as $child){
+        foreach ($this->children as $child) {
             array_push($children, $child->toArray());
         }
         $documents = [];
-        foreach($this->documents as $document){
+        foreach ($this->documents as $document) {
             array_push($documents, $document->toArray());
         }
         $assoc = array(
@@ -201,6 +201,7 @@ class Topic implements iModel
     {
         array_push($this->children, $child);
     }
+
     public function addChildren($children)
     {
         $this->children = array_merge($this->children, $children);
@@ -219,15 +220,15 @@ class Topic implements iModel
     public static function fromJSON($json)
     {
         return new Topic(
-            getValueFromArray($json,'id'),
+            getValueFromArray($json, 'id'),
 
-            getValueFromArray($json,'timestamp'),
-            getValueFromArray($json,'title'),
-            getValueFromArray($json,'description'),
-            getValueFromArray($json,'sequence'),
-            getValueFromArray($json,'parentId'),
-            getValueFromArray($json,'comment'),
-            getValueFromArray($json,'children')
+            getValueFromArray($json, 'timestamp'),
+            getValueFromArray($json, 'title'),
+            getValueFromArray($json, 'description'),
+            getValueFromArray($json, 'sequence'),
+            getValueFromArray($json, 'parentId'),
+            getValueFromArray($json, 'comment'),
+            getValueFromArray($json, 'children')
         );
     }
 
@@ -244,7 +245,7 @@ class Topic implements iModel
             ':parent_id' => $this->parent_id,
             ':comment' => $this->comment
         );
-        if($this->id){
+        if ($this->id) {
             $db_array[':id'] = $this->id;
         }
         return $db_array;

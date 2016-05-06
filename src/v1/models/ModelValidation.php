@@ -76,7 +76,7 @@ class ModelValidation
     {
         return substr($value, 0, $max_length);
     }
-    
+
 
     /**
      * Returns a valid name, if name is longer than max length, the excess characters are removed

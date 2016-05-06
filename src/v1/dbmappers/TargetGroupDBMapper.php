@@ -2,8 +2,8 @@
 
 require_once 'DBMapper.php';
 require_once 'DbCommunication.php';
-require_once __DIR__.'/../models/TargetGroup.php';
-require_once __DIR__.'/../errors/DBError.php';
+require_once __DIR__ . '/../models/TargetGroup.php';
+require_once __DIR__ . '/../errors/DBError.php';
 
 class TargetGroupDBMapper extends DBMapper
 {
@@ -43,5 +43,5 @@ class TargetGroupDBMapper extends DBMapper
         }
         return $target_group_three;
     }
-    
+
 }

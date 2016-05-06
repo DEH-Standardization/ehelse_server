@@ -65,7 +65,7 @@ class DocumentType implements iModel
      */
     public function toJSON()
     {
-        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+        return json_encode($this->toArray(), JSON_PRETTY_PRINT);
     }
 
     /**
@@ -87,8 +87,8 @@ class DocumentType implements iModel
     public static function fromJSON($json)
     {
         return new DocumentType(
-            getValueFromArray($json,'id'),
-            getValueFromArray($json,'name')
+            getValueFromArray($json, 'id'),
+            getValueFromArray($json, 'name')
         );
     }
 
@@ -101,7 +101,7 @@ class DocumentType implements iModel
         $db_array = array(
             ":name" => $this->name
         );
-        if($this->id){
+        if ($this->id) {
             $db_array[":id"] = $this->id;
         }
         return $db_array;

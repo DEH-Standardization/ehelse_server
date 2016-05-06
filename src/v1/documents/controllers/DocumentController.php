@@ -1,6 +1,6 @@
 <?php
 
-require_once  __DIR__ . '/../../responses/ResponseController.php';
+require_once __DIR__ . '/../../responses/ResponseController.php';
 require_once __DIR__ . '/../../models/Document.php';
 require_once __DIR__ . '/../../errors/MalformedJSONFormatError.php';
 require_once __DIR__ . '/../../responses/ErrorResponse.php';
@@ -40,7 +40,7 @@ class DocumentController extends ResponseController
 
         $documents = $document_mapper->getAll();
 
-        if($documents === null) {
+        if ($documents === null) {
             return new ErrorResponse(new NotFoundError());
         }
 
@@ -53,7 +53,7 @@ class DocumentController extends ResponseController
             array_push($document_array, $document->toArray());
         }
 
-        $json = json_encode(array( "documents" => $document_array), JSON_PRETTY_PRINT);
+        $json = json_encode(array("documents" => $document_array), JSON_PRETTY_PRINT);
         return new Response($json);
     }
 
@@ -182,7 +182,7 @@ class DocumentController extends ResponseController
         $document_mapper = new DocumentDBMapper();
         $document = $document_mapper->getById($id);
 
-        if($document === null) {
+        if ($document === null) {
             return new ErrorResponse(new NotFoundError());
         }
 

@@ -171,7 +171,7 @@ class DocumentTargetGroup implements iModel
      */
     public function toJSON()
     {
-        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+        return json_encode($this->toArray(), JSON_PRETTY_PRINT);
     }
 
     public static function fromDBArray($db_array)
@@ -190,26 +190,26 @@ class DocumentTargetGroup implements iModel
     public static function fromJSON($json)
     {
         return new DocumentTargetGroup(
-            getValueFromArray($json,'targetGroupId'),
-            getValueFromArray($json,'deadline'),
-            getValueFromArray($json,'description'),
-            getValueFromArray($json,'actionId'),
-            getValueFromArray($json,'mandatoryId'),
-            getValueFromArray($json,'documentId'),
-            getValueFromArray($json,'documentTimestamp')
+            getValueFromArray($json, 'targetGroupId'),
+            getValueFromArray($json, 'deadline'),
+            getValueFromArray($json, 'description'),
+            getValueFromArray($json, 'actionId'),
+            getValueFromArray($json, 'mandatoryId'),
+            getValueFromArray($json, 'documentId'),
+            getValueFromArray($json, 'documentTimestamp')
         );
     }
 
     public function toDBArray()
     {
-       return array(
-           ':target_group_id' => $this->target_group_id,
-           ':deadline' => $this->deadline,
-           ':description' => $this->description,
-           ':action_id' => $this->action_id,
-           ':mandatory_id' => $this->mandatory_id,
-           ':document_id' => $this->document_id,
-           ':document_timestamp' => $this->document_timestamp
-       );
+        return array(
+            ':target_group_id' => $this->target_group_id,
+            ':deadline' => $this->deadline,
+            ':description' => $this->description,
+            ':action_id' => $this->action_id,
+            ':mandatory_id' => $this->mandatory_id,
+            ':document_id' => $this->document_id,
+            ':document_timestamp' => $this->document_timestamp
+        );
     }
 }

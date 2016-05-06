@@ -29,7 +29,7 @@ class ApplicationError
      */
     public function __toString()
     {
-        return $this->title . "<br>".$this->message;
+        return $this->title . "<br>" . $this->message;
     }
 
     public function toJSON()

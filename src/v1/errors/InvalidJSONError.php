@@ -8,7 +8,6 @@ class InvalidJSONError extends ApplicationError
      * Error constructor.
      * @param $method
      */
-
     public function __construct($body)
     {
         $this->title = "Error: Invalid JSON";

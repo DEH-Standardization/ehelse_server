@@ -23,8 +23,8 @@ class Document implements iModel
     const SQL_GET_MAX_TIMESTAMP = "SELECT MAX(timestamp) FROM document WHERE id = :id;";
     const SQL_GET_PROFILE_IDS = "SELECT DISTINCT id FROM document WHERE standard_id = :id;";
 
-    const REQUIRED_POST_FIELDS = ['title', 'sequence', 'documentTypeId','topicId'];
-    const REQUIRED_PUT_FIELDS = ['title', 'sequence', 'documentTypeId','topicId'];
+    const REQUIRED_POST_FIELDS = ['title', 'sequence', 'documentTypeId', 'topicId'];
+    const REQUIRED_PUT_FIELDS = ['title', 'sequence', 'documentTypeId', 'topicId'];
 
     private
         $id,

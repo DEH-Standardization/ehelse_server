@@ -101,7 +101,7 @@ class DocumentFieldValue implements iModel
      */
     public function toJSON()
     {
-        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+        return json_encode($this->toArray(), JSON_PRETTY_PRINT);
     }
 
     /**
@@ -127,10 +127,10 @@ class DocumentFieldValue implements iModel
     public static function fromJSON($json)
     {
         return new DocumentFieldValue(
-            getValueFromArray($json,'fieldId'),
-            getValueFromArray($json,'value'),
-            getValueFromArray($json,'documentId'),
-            getValueFromArray($json,'documentTimestamp')
+            getValueFromArray($json, 'fieldId'),
+            getValueFromArray($json, 'value'),
+            getValueFromArray($json, 'documentId'),
+            getValueFromArray($json, 'documentTimestamp')
         );
     }
 

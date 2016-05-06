@@ -1,8 +1,8 @@
 <?php
 
 require_once "DBMapper.php";
-require_once __DIR__. "/../models/DocumentType.php";
-require_once __DIR__. "/../errors/DBError.php";
+require_once __DIR__ . "/../models/DocumentType.php";
+require_once __DIR__ . "/../errors/DBError.php";
 
 
 class DocumentTypeDBMapper extends DBMapper
@@ -17,5 +17,5 @@ class DocumentTypeDBMapper extends DBMapper
         $this->model = 'DocumentType';
     }
 
-    
+
 }

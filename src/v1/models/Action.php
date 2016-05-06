@@ -80,7 +80,7 @@ class Action implements iModel
      */
     public function toJSON()
     {
-        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+        return json_encode($this->toArray(), JSON_PRETTY_PRINT);
     }
 
     /**
@@ -104,9 +104,9 @@ class Action implements iModel
     public static function fromJSON($json)
     {
         return new Action(
-            getValueFromArray($json,'id'),
-            getValueFromArray($json,'name'),
-            getValueFromArray($json,'description')
+            getValueFromArray($json, 'id'),
+            getValueFromArray($json, 'name'),
+            getValueFromArray($json, 'description')
         );
     }
 
@@ -120,7 +120,7 @@ class Action implements iModel
             ':name' => $this->name,
             ':description' => $this->description
         );
-        if($this->id){
+        if ($this->id) {
             $db_array[':id'] = $this->id;
         }
         return $db_array;

@@ -7,7 +7,7 @@ class Link implements iModel
 {
     const SQL_GET_ALL = "SELECT * FROM link;";
     const SQL_GET_BY_ID = "SELECT * FROM link WHERE id = :id;";
-    const REQUIRED_POST_FIELDS = ['text','url','link_category_id','document_id','document_timestamp'];
+    const REQUIRED_POST_FIELDS = ['text', 'url', 'link_category_id', 'document_id', 'document_timestamp'];
     const SQL_INSERT = "
         INSERT INTO link(id,text,description,url,link_category_id,document_id,document_timestamp,link_document_id)
         VALUES (null,:text,:description,:url,:link_category_id,:document_id,:document_timestamp,:link_document_id);";
@@ -157,7 +157,7 @@ class Link implements iModel
      */
     public function toJSON()
     {
-        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+        return json_encode($this->toArray(), JSON_PRETTY_PRINT);
     }
 
     /**
@@ -188,14 +188,14 @@ class Link implements iModel
     {
 
         return new Link(
-            getValueFromArray($json,'id'),
-            getValueFromArray($json,'text'),
-            getValueFromArray($json,'description'),
-            getValueFromArray($json,'url'),
-            getValueFromArray($json,'linkCategoryId'),
-            getValueFromArray($json,'documentId'),
-            getValueFromArray($json,'documentTimestamp'),
-            getValueFromArray($json,'linkDocumentId')
+            getValueFromArray($json, 'id'),
+            getValueFromArray($json, 'text'),
+            getValueFromArray($json, 'description'),
+            getValueFromArray($json, 'url'),
+            getValueFromArray($json, 'linkCategoryId'),
+            getValueFromArray($json, 'documentId'),
+            getValueFromArray($json, 'documentTimestamp'),
+            getValueFromArray($json, 'linkDocumentId')
         );
     }
 
@@ -214,7 +214,7 @@ class Link implements iModel
             ':document_timestamp' => $this->document_timestamp,
             ':link_document_id' => $this->link_document_id
         );
-        if($this->id){
+        if ($this->id) {
             $db_array[":id"] = $this->id;
         }
         return $db_array;
