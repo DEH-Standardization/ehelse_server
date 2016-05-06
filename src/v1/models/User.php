@@ -133,7 +133,7 @@ class User
             $value = ModelValidation::getValidString($value, $max_length);
             $message = "{$error_massage_field_name} is too long. {$error_massage_field_name} set to: {$value}";
         }
-        $this[$field] = $value;
+        $this->$field = $value;
         return $message;
     }
 
