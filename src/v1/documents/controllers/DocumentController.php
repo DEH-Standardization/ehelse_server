@@ -154,12 +154,15 @@ class DocumentController extends ResponseController
         $document_mapper = new DocumentDBMapper();
         $document = Document::fromJSON($this->body);
 
+        // Check that internal id is set
         if ($document->getInternalId() === null) {
             return new ErrorResponse(new InvalidJSONError('Internal id cannot be null.'));
         }
+        // Check that internal id is unique
         if (!$document_mapper->isValidInternalId($document->getInternalId())) {
            return new ErrorResponse(new InvalidJSONError('Internal id is not unique.'));
         }
+        // Check that HIS number is unique, if it set
         if (!$document_mapper->isValidHisNumber($document->getHisNumber())) {
             return new ErrorResponse(new InvalidJSONError('HIS number is not unique.'));
         }
@@ -217,15 +220,24 @@ class DocumentController extends ResponseController
         $document_mapper = new DocumentDBMapper();
         $document = Document::fromJSON($this->body);
 
+        // Check that internal id is set
         if ($document->getInternalId() === null) {
             return new ErrorResponse(new InvalidJSONError('Internal id cannot be null.'));
         }
-        $original_internal_id = $document_mapper->getById($this->id)->getInternalId();
-        if ($document->getInternalId() != $original_internal_id) {
+        $original_document = $document_mapper->getById($this->id);
+        // If internal id differs from previous version, check check if the new internal id is unique
+        if ($document->getInternalId() != $original_document->getInternalId()) {
             if (!$document_mapper->isValidInternalId($document->getInternalId())) {
                 return new ErrorResponse(new InvalidJSONError('Internal id is not unique.'));
             }
         }
+        // If HIS number differs from previous version, check check if the new HS number is unique
+        if ($document->getHisNumber() != $original_document->getHisNumber()) {
+            if (!$document_mapper->isValidHisNumber($document->getHisNumber())) {
+                return new ErrorResponse(new InvalidJSONError('HIS number is not unique.'));
+            }
+        }
+
         $document->setId($this->id);
         $result = $document_mapper->update($document);
         if (!$result instanceof DBError) {
