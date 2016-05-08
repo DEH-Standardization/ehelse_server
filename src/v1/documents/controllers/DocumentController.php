@@ -161,17 +161,12 @@ class DocumentController extends ResponseController
            return new ErrorResponse(new InvalidJSONError('Internal id is not unique.'));
         }
 
-
-
         $result = $document_mapper->add($document);
         if (!$result instanceof DBError) {
             return $this->getById($result);
         } else {
             $response = $result->toJSON();
         }
-
-
-
 
         return new Response($response);
     }
@@ -218,6 +213,16 @@ class DocumentController extends ResponseController
         $response = null;
         $document_mapper = new DocumentDBMapper();
         $document = Document::fromJSON($this->body);
+
+        if ($document->getInternalId() === null) {
+            return new ErrorResponse(new InvalidJSONError('Internal id cannot be null.'));
+        }
+        $original_internal_id = $document_mapper->getById($this->id)->getInternalId();
+        if ($document->getInternalId() != $original_internal_id) {
+            if (!$document_mapper->isValidInternalId($document->getInternalId())) {
+                return new ErrorResponse(new InvalidJSONError('Internal id is not unique.'));
+            }
+        }
         $document->setId($this->id);
         $result = $document_mapper->update($document);
         if (!$result instanceof DBError) {
@@ -225,6 +230,7 @@ class DocumentController extends ResponseController
         } else {
             $response = $result->toJSON();
         }
+
         return new Response($response);
     }
 
