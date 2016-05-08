@@ -22,7 +22,8 @@ class Document implements iModel
 
     const SQL_GET_MAX_TIMESTAMP = "SELECT MAX(timestamp) FROM document WHERE id = :id;";
     const SQL_GET_PROFILE_IDS = "SELECT DISTINCT id FROM document WHERE standard_id = :id;";
-    const SQL_GET_INTERNAL_ID = "SELECT internal_id FROM document WHERE internal_id = :internal_id;";
+    const SQL_GET_INTERNAL_ID = "SELECT internal_id FROM document  WHERE is_archived = 0 AND internal_id = :internal_id
+      AND (id,timestamp) IN (SELECT id, MAX(timestamp) FROM document GROUP BY id);";
 
     const REQUIRED_POST_FIELDS = ['title', 'sequence', 'documentTypeId', 'topicId'];
     const REQUIRED_PUT_FIELDS = ['title', 'sequence', 'documentTypeId', 'topicId'];

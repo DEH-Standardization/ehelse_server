@@ -160,7 +160,7 @@ class DocumentController extends ResponseController
         if (!$document_mapper->isValidInternalId($document->getInternalId())) {
            return new ErrorResponse(new InvalidJSONError('Internal id is not unique.'));
         }
-        
+
 
 
         $result = $document_mapper->add($document);
