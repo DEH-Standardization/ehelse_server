@@ -168,4 +168,26 @@ class DocumentDBMapper extends DBMapper
         return $response;
     }
 
+    public function isValidInternalId($internal_id)
+    {
+        $response = null;
+        try {
+            $result = $this->queryDBWithAssociativeArray(
+                Document::SQL_GET_INTERNAL_ID,
+                array(':internal_id' => $internal_id));
+            $raw = $result->fetchAll();
+
+            if ($raw) {
+                $response = false;
+            } else {
+                $response = true;
+            }
+
+        } catch (PDOException $e) {
+            $response = false;
+        }
+        return $response;
+
+    }
+
 }
