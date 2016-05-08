@@ -153,12 +153,21 @@ class DocumentController extends ResponseController
         $response = null;
         $document_mapper = new DocumentDBMapper();
         $document = Document::fromJSON($this->body);
-        $result = $document_mapper->add($document);
-        if (!$result instanceof DBError) {
-            return $this->getById($result);
+
+        if ($document_mapper->isValidInternalId($document->getInternalId())) {
+
+            $result = $document_mapper->add($document);
+            if (!$result instanceof DBError) {
+                return $this->getById($result);
+            } else {
+                $response = $result->toJSON();
+            }
         } else {
-            $response = $result->toJSON();
+            $response = new ErrorResponse(new InvalidJSONError('Internal id is not unique.'));
         }
+
+        if ($response instanceof ErrorResponse)
+            return $response;
         return new Response($response);
     }
 
