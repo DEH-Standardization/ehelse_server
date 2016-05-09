@@ -19,6 +19,7 @@ class APIV1Controller implements iController
 
     public function __construct($path, $method, $body)
     {
+        /*
         if ($_SERVER && array_key_exists('PHP_AUTH_USER', $_SERVER)) {
             $email = $_SERVER['PHP_AUTH_USER'];
             $password = $_SERVER['PHP_AUTH_PW'];
@@ -33,7 +34,7 @@ class APIV1Controller implements iController
         } else {
             define("AUTHENTICATED", false);
         }
-
+*/
         $part = $path[0];
         $path = trimPath($path, 1);
         switch ($part) {

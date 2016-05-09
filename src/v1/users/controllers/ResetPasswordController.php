@@ -1,6 +1,10 @@
 <?php
 
 require_once __DIR__.'/../../models/EmailSender.php';
+require_once __DIR__.'/../../responses/ResponseController.php';
+require_once __DIR__.'/../../errors/ErrorController.php';
+require_once __DIR__.'/../../errors/InvalidPathError.php';
+
 class ResetPasswordController extends ResponseController
 {
     const PASSWORD_LENGTH = 12;
