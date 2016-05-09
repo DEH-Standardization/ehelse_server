@@ -23,14 +23,14 @@ class MainController implements iController
             $this->api_version = "";
         }
 
-        //check if the url ended with '/', if se delete
+        // Check if the url ended with '/', if se delete
         if (end($path) == '') {
             $ak = array_keys($path);
             unset($path[end($ak)]);
         }
         $path = trimPath($path, 1);
 
-        // authenticate user
+        // Authenticate user
         $this->authenticateUser();
 
         $requires_authentication = true;
@@ -42,11 +42,11 @@ class MainController implements iController
             $requires_authentication = false;
         }
 
-        // if user is not set and method requires authentication, returns AuthenticationError
+        // If user is not set and method requires authentication, returns AuthenticationError
         if (!array_key_exists('CURRENT_USER', $GLOBALS) && $requires_authentication) {
             $this->controller = new ErrorController(new AuthenticationError($method));
         } else {
-            // check api version
+            // Chose API version
             switch ($this->api_version) {
                 case 'v1':
                     $this->controller = new APIV1Controller($path, $method, $body);
