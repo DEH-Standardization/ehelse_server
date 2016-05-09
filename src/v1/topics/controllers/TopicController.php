@@ -40,44 +40,16 @@ class TopicController extends ResponseController
     protected function getAll()
     {
         $mapper = new TopicDbMapper();
-        $topics = $mapper->getTopicsAsThree();
+        $topics = $mapper->getTopicsAsThree();  // Retrieves tree representation of topics
         $topics_array = [];
         foreach ($topics as $topic) {
             $array = $topic->toArray();
-            //$array['documents'] = $this->getDocuments($topic->getId()); // Adds all documents
             array_push($topics_array, $array);
         }
 
         $json = json_encode(array("topics" => $topics_array), JSON_PRETTY_PRINT);
 
         return new Response($json);
-    }
-
-
-    /**
-     * Function creating a new topic.
-     * @return Response
-     */
-    protected function create()
-    {
-        $missing_fields = TopicController::validateJSONFormat($this->body, Topic::REQUIRED_POST_FIELDS);
-        if (!$missing_fields) {
-            $mapper = new TopicDbMapper();
-            $assoc = $this->body;
-            $topic = Topic::fromJSON($assoc);
-            $response = $mapper->add($topic);
-
-
-            if ($response instanceof DBError) {
-                $response = new ErrorResponse($response);
-            } else {
-                $this->id = $response;
-                $response = $this->get();
-            }
-        } else {
-            $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
-        }
-        return $response;
     }
 
     /**
@@ -95,6 +67,11 @@ class TopicController extends ResponseController
         }
     }
 
+    /**
+     * Returns topic array with children
+     * @param $id
+     * @return mixed
+     */
     private function getChildren($id)
     {
         $controller = new TopicDbMapper();
@@ -132,6 +109,8 @@ class TopicController extends ResponseController
         $documents = $document_mapper->getDocumentsByTopicId($topic_id);
 
         $documents_array = array();
+
+        // Sets profiles, links, fields and target groups for each document
         foreach ($documents as $document) {
             $document->setTargetGroups(DocumentController::getTargetGroups($document));
             $document->setLinks(DocumentController::getLinks($document));
@@ -141,14 +120,14 @@ class TopicController extends ResponseController
             array_push($documents_array, $document_array);
         }
 
-        usort($documents_array, function ($a, $b)   // Sort document list on sequence
+        // Sort document list on sequence
+        usort($documents_array, function ($a, $b)
         {
             return $a['sequence'] - $b['sequence'];
         });
 
         return $documents_array;
     }
-
 
     /**
      * Function deleting a topic.
@@ -158,11 +137,11 @@ class TopicController extends ResponseController
     {
         $mapper = new TopicDbMapper();
 
+        // Check if topic has subtopics or documents, deleting is not allowed if topic is not empty
         if (!($mapper->hasSubtopic($this->id) || $mapper->hasDocuments($this->id)))
             return new Response($mapper->deleteById($this->id), Response::STATUS_CODE_NO_CONTENT);
         else
             return new ErrorResponse(new CantDeleteError());
     }
-
 
 }
