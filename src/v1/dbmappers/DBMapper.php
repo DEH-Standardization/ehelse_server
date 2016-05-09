@@ -23,63 +23,26 @@ abstract class DBMapper implements iDbMapper
      * Method is sending a SQL query to the database, and a list of parameters
      *  used in the query. The result from database is returned.
      * @param $sql
-     * @param $columns
+     * @param $associative_array
      * @return PDOStatement
      */
-    protected function queryDB($sql, $columns)
-    {
-        if (isAssoc($columns)) {
-            throw new Exception("Assosiative array. Use other query");
-        }
-        $sql_query = $sql;
-        $stmt = $this->connection->prepare($sql_query);
-        if (!$stmt) {
-            trigger_error("Could not prepare the SQL query: " . $sql_query . ", " . $this->connection->errorInfo(), E_USER_ERROR);
-        }
-
-        for ($i = 0; $i < count($columns); $i++) {
-            $stmt->bindParam(($i + 1), $columns[$i]);
-        }
-        try {
-
-            $stmt->execute();
-        } catch (Exception $e) {
-            $stmt = new DBError($e);
-        }
-
-        return $stmt;
-    }
-
     protected function queryDBWithAssociativeArray($sql, $associative_array)
     {
-        $stmt = $this->connection->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        if (!$stmt) {
+        $statement = $this->connection->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        if (!$statement) {
             trigger_error("Could not prepare the SQL query: " . $sql . ", " . $this->connection->errorInfo(), E_USER_ERROR);
         }
 
-        $stmt->execute($associative_array);
+        $statement->execute($associative_array);
 
-        return $stmt;
+        return $statement;
     }
 
-    protected function isValidId($id, $table_name)
-    {
-        $valid = false;
-        $db_name = DBCommunication::getInstance()->getDatabaseName();
-        $sql = "select * from $db_name.$table_name where id = ?";
-        try {
-            $result = $this->queryDB($sql, array($id));
-            $r = $result->fetch();
-            if ($result->rowCount() > 0) {
-                $valid = true;
-            }
-        } catch (PDOException $e) {
-            $valid = new DBError($e);
-        }
-        return $valid;
-    }
-
-
+    /**
+     * Returns element by id
+     * @param $id
+     * @return DBError|null
+     */
     public function getById($id)
     {
         $response = null;
@@ -98,6 +61,10 @@ abstract class DBMapper implements iDbMapper
         return $response;
     }
 
+    /**
+     * Returns all elements
+     * @return array|DBError|null
+     */
     public function getAll()
     {
         $response = null;
@@ -115,6 +82,11 @@ abstract class DBMapper implements iDbMapper
         return $response;
     }
 
+    /**
+     * Add element to do database
+     * @param $object
+     * @return DBError|null|string
+     */
     public function add($object)
     {
         $response = null;
@@ -128,6 +100,11 @@ abstract class DBMapper implements iDbMapper
         return $response;
     }
 
+    /**
+     * Update element in database
+     * @param $object
+     * @return DBError|null
+     */
     public function update($object)
     {
         $response = null;
@@ -141,17 +118,30 @@ abstract class DBMapper implements iDbMapper
         return $response;
     }
 
+    /**
+     * Returns version of element stored in database
+     * @param $object
+     */
     public function get($object)
     {
         $this->getById($object->getId());
     }
 
-
+    /**
+     * Delete element from database
+     * @param $object
+     * @return array|DBError|null
+     */
     public function delete($object)
     {
         return $this->deleteById($object->getId());
     }
 
+    /**
+     * Delete element in database by id
+     * @param $id
+     * @return array|DBError|null
+     */
     public function deleteById($id)
     {
         $response = null;
