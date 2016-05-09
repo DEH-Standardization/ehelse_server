@@ -21,6 +21,7 @@ class Document implements iModel
     const SQL_DELETE = "UPDATE document SET is_archived = 1 WHERE id = :id AND timestamp = :timestamp;";
 
     const SQL_GET_MAX_TIMESTAMP = "SELECT MAX(timestamp) FROM document WHERE id = :id;";
+    const SQL_GET_NEXT_DOCUMENT_ID_BY_PREV_DOCUMENT_ID = "SELECT id from document WHERE prev_document_id = :id";
     const SQL_GET_PROFILE_IDS = "SELECT DISTINCT id FROM document WHERE standard_id = :id;";
     const SQL_GET_INTERNAL_ID = "SELECT internal_id FROM document  WHERE is_archived = 0 AND internal_id = :internal_id
       AND (id,timestamp) IN (SELECT id, MAX(timestamp) FROM document GROUP BY id);";
@@ -42,6 +43,7 @@ class Document implements iModel
         $document_type_id,
         $standard_id,
         $prev_document_id,
+        $next_document_id,
         $is_archived,
         $internal_id,
         $his_number,
@@ -194,12 +196,12 @@ class Document implements iModel
 
     public function getNextDocumentId()
     {
-        return $this->standard_id;
+        return $this->next_document_id;
     }
 
-    public function setNextDocumentId($standard_id)
+    public function setNextDocumentId($next_document_id)
     {
-        $this->standard_id = $standard_id;
+        $this->next_document_id = $next_document_id;
     }
 
     public function getPrevDocumentId()
@@ -280,6 +282,7 @@ class Document implements iModel
             'documentTypeId' => $this->document_type_id,
             'standardId' => $this->standard_id,
             'previousDocumentId' => $this->prev_document_id,
+            'nextDocumentId' => $this->next_document_id,
             'internalId' => $this->internal_id,
             'hisNumber' => $this->his_number,
             'profiles' => $this->profiles,
