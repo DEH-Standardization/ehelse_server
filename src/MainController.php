@@ -39,7 +39,11 @@ class MainController implements iController
         if ($method == Response::REQUEST_METHOD_GET || $method == Response::REQUEST_METHOD_OPTIONS ||
             ($method == Response::REQUEST_METHOD_POST && $path[0] == 'users' && $path[1] == 'reset-password')
         ) {
-            $requires_authentication = false;
+            if ($method == Response::REQUEST_METHOD_GET && $path[0] == 'users') {
+                $requires_authentication = true;
+            } else {
+                $requires_authentication = false;
+            }
         }
 
         // If user is not set and method requires authentication, returns AuthenticationError
