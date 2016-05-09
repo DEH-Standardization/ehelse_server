@@ -88,9 +88,11 @@ class DocumentDBMapper extends DBMapper
         $document_link_db_mapper = new LinkDBMapper();
         $document_field_db_mapper = new DocumentFieldValueDBMapper();
 
+        // Store current document id and timestamp
         $id = $document->getId();
         $timestamp = $document->getTimestamp();
 
+        // Add all target groups, links and fields
         $document_target_group_db_mapper->addMultiple($target_groups, $id, $timestamp);
         $document_link_db_mapper->addMultiple($links, $id, $timestamp);
         $document_field_db_mapper->addMultiple($fields, $id, $timestamp);
@@ -180,9 +182,10 @@ class DocumentDBMapper extends DBMapper
             $result = $this->queryDBWithAssociativeArray(
                 Document::SQL_GET_INTERNAL_ID,
                 array(':internal_id' => $internal_id));
-            $raw = $result->fetchAll();
+            $raw_internal_id = $result->fetchAll();
 
-            if ($raw) {
+            // if raw internal id exists, internal id is invalid
+            if ($raw_internal_id) {
                 $response = false;
             } else {
                 $response = true;
@@ -206,9 +209,10 @@ class DocumentDBMapper extends DBMapper
             $result = $this->queryDBWithAssociativeArray(
                 Document::SQL_GET_HIS_NUMBER,
                 array(':his_number' => $his_number));
-            $raw = $result->fetchAll();
+            $raw_his_number = $result->fetchAll();
 
-            if ($raw) {
+            // if raw his number exists, his number is invalid
+            if ($raw_his_number) {
                 $response = false;
             } else {
                 $response = true;
