@@ -23,13 +23,15 @@ class MainController implements iController
             $this->api_version = "";
         }
 
-
         //check if the url ended with '/', if se delete
         if (end($path) == '') {
             $ak = array_keys($path);
             unset($path[end($ak)]);
         }
         $path = trimPath($path, 1);
+
+        // authenticate user
+        $this->authenticateUser();
 
         $requires_authentication = true;
 
@@ -53,6 +55,26 @@ class MainController implements iController
                     $this->controller = new ErrorController(new InvalidPathError());
                     break;
             }
+        }
+    }
+
+    /**
+     * Authenticates user
+     */
+    public function authenticateUser()
+    {
+        if ($_SERVER && array_key_exists('PHP_AUTH_USER', $_SERVER)) {
+            $email = $_SERVER['PHP_AUTH_USER'];
+            $password = $_SERVER['PHP_AUTH_PW'];
+            $user = User::authenticate($email, $password);
+            if ($user) {
+                define("AUTHENTICATED", true);
+                User::login($user);
+            } else {
+                define("AUTHENTICATED", false);
+            }
+        } else {
+            define("AUTHENTICATED", false);
         }
     }
 
