@@ -81,12 +81,7 @@ class Topic implements iModel
      */
     public function setTitle($title)
     {
-        if (strlen($title) > ModelValidation::TITLE_MAX_LENGTH) {
-            $this->title = ModelValidation::getValidTitle($title);
-            echo "Title is too long, set to: " . $this->title;
-        } else {
-            $this->title = $title;
-        }
+        $this->title = ModelValidation::getValidTitle($title);
     }
 
     public function getDescription()
