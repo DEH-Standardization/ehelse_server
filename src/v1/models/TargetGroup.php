@@ -70,12 +70,7 @@ class TargetGroup implements iModel
      */
     public function setName($name)
     {
-        if (strlen($name) > ModelValidation::NAME_MAX_LENGTH) {
-            $this->name = ModelValidation::getValidName($name);
-            echo "Name is too long, set to: " . $this->name;
-        } else {
-            $this->name = $name;
-        }
+        $this->name = ModelValidation::getValidName($name);
     }
 
     public function getDescription()
@@ -89,17 +84,12 @@ class TargetGroup implements iModel
      */
     public function setDescription($description)
     {
-        if (strlen($description) > ModelValidation::DESCRIPTION_MAX_LENGTH) {
-            $this->description = ModelValidation::getValidDescription($description);
-            echo "Description is too long, set to: " . $this->description;
-        } else {
-            $this->description = $description;
-        }
+        $this->description = ModelValidation::getValidDescription($description);
     }
 
     public function setAbbreviation($abbreviation)
     {
-
+        $this->abbreviation = ModelValidation::getValidAbbreviation($abbreviation);
     }
 
     /**

@@ -10,7 +10,12 @@ require_once __DIR__ . '/../responses/ResponseController.php';
 class MandatoryController extends ResponseController
 {
 
-
+    /**
+     * MandatoryController constructor.
+     * @param $path
+     * @param $method
+     * @param $body
+     */
     public function __construct($path, $method, $body)
     {
         $this->init($path, $method, $body);

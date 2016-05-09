@@ -3,7 +3,7 @@ require_once 'ApplicationError.php';
 
 class CantDeleteError extends ApplicationError
 {
-    protected $response_code = Response::STATUS_CODE_METHOD_NOT_ALLOWED;    // TODO: find a better code
+    protected $response_code = Response::STATUS_CODE_BAD_REQUEST;
 
     /**
      * Constructor for cant delete error.

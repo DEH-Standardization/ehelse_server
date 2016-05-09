@@ -37,7 +37,6 @@ class DocumentController extends ResponseController
     protected function getAll()
     {
         $document_mapper = new DocumentDBMapper();
-
         $documents = $document_mapper->getAll();
 
         if ($documents === null) {
@@ -45,6 +44,8 @@ class DocumentController extends ResponseController
         }
 
         $document_array = array();
+
+        // Sets profiles, links, fields and target groups for each document
         foreach ($documents as $document) {
             $document->setProfiles($this->getProfiles($document));
             $document->setLinks($this->getLinks($document));
@@ -100,7 +101,7 @@ class DocumentController extends ResponseController
     public static function getProfiles($document)
     {
         $document_mapper = new DocumentDBMapper();
-        /*  Returns profiles (Document objects)
+        /*  // Returns profiles (Document objects)
 
         $profiles = $document_mapper->getProfiles($document->getId());
         $profiles_array = [];
@@ -212,6 +213,7 @@ class DocumentController extends ResponseController
             return new ErrorResponse(new NotFoundError());
         }
 
+        // Sets profiles, links, fields and target groups for document
         $document->setProfiles($this->getProfiles($document));
         $document->setLinks($this->getLinks($document));
         $document->setFields($this->getFields($document));
@@ -259,6 +261,5 @@ class DocumentController extends ResponseController
 
         return new Response($response);
     }
-
 
 }

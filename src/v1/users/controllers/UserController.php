@@ -44,9 +44,15 @@ class UserController extends ResponseController
         }
     }
 
-    protected static function getArrayFromObjectArray($array){
+    /**
+     * Returns array of array representation of the items
+     * @param $items
+     * @return array
+     */
+    protected static function getArrayFromObjectArray($items)
+    {
         $return_array = [];
-        foreach($array as $item){
+        foreach ($items as $item) {
             array_push($return_array, $item->toArray());
         }
         return $return_array;
@@ -58,11 +64,16 @@ class UserController extends ResponseController
         $users = $mapper->getAll();
         $users_array = UserController::getArrayFromObjectArray($users);
 
-        $json = json_encode(array( "users" => $users_array), JSON_PRETTY_PRINT);
+        $json = json_encode(array("users" => $users_array), JSON_PRETTY_PRINT);
 
         return new Response($json);
     }
 
+    /**
+     * Returns if an email address exists in database
+     * @param $email
+     * @return bool
+     */
     private function isValidEmail($email)
     {
         $mapper = new UserDBMapper();
@@ -74,35 +85,40 @@ class UserController extends ResponseController
         return false;
     }
 
+    /**
+     *
+     * @return ErrorResponse|Response
+     * @throws Exception
+     */
     protected function create()
     {
         $missing_fields = UserController::validateJSONFormat($this->body, User::REQUIRED_POST_FIELDS);
-        if( !$missing_fields ){
+
+        // Check that required fields are not missing
+        if (!$missing_fields) {
             $mapper = new UserDBMapper();
             $user = User::fromJSON($this->body);
 
-            if($this->isValidEmail($user->getEmail())) {
+            if ($this->isValidEmail($user->getEmail())) {
                 $db_response = $mapper->add($user);
-
 
                 if ($db_response instanceof DBError) {
                     $response = new ErrorResponse($db_response);
                 }
-                elseif(is_numeric($db_response)){
+                // If db_response is numeric, sets id, and sets new, random password to this user
+                elseif (is_numeric($db_response)) {
                     $this->id = $db_response;
                     ResetPasswordController::setNewPassword(
                         $this->body, EmailSender::REGISTER_EMAIL);  // Set random password and notify user by email
                     $response = $this->get();
-                }
-                else{
+                } else {
                     //todo not sure how best to handle this
                     throw new Exception("Not implemented error");
                 }
             } else {
                 $response = new ErrorResponse(new DuplicateUserError());
             }
-        }
-        else{
+        } else {
             $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
         }
         return $response;
@@ -112,10 +128,9 @@ class UserController extends ResponseController
     {
         $mapper = new UserDBMapper();
         $user = $mapper->getById($this->id);
-        if($user){
+        if ($user) {
             $response = new Response(json_encode($user->toArray(), JSON_PRETTY_PRINT));
-        }
-        else{
+        } else {
             $response = new ErrorResponse(new NotFoundError());
         }
         return $response;
@@ -123,39 +138,36 @@ class UserController extends ResponseController
 
     protected function update()
     {
-        /* if($GLOBALS['CURRENT_USER']->getId() == $this->id){*/
         $missing_fields = UserController::validateJSONFormat($this->body, User::REQUIRED_PUT_FIELDS);
 
-        if( !$missing_fields ){
+        // Check that required fields are not missing
+        if (!$missing_fields) {
             $mapper = new UserDBMapper();
             $json = $this->body;
             $json["id"] = $this->id;
-            $user=User::fromJSON($json);
+            $user = User::fromJSON($json);
             $db_response = $mapper->update($user);
 
             if ($db_response instanceof DBError) {
-                $response =  new ErrorResponse($db_response);
+                $response = new ErrorResponse($db_response);
+            } else {
+                $response = $this->get();
             }
-            else{
-                $response=$this->get();
-            }
-        }
-        else{
+        } else {
             $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
         }
         $this->controller = new ErrorController(new AuthenticationError($this->method));
-        /*}
-
-        else{
-            $response = new ErrorResponse(new AuthorizationError($this->method));
-        }*/
 
         return $response;
     }
 
+    /**
+     * Deletes user
+     * @return Response
+     */
     protected function delete()
     {
         $user_db_mapper = new UserDBMapper();
-        return new Response(json_encode($user_db_mapper->deleteById($this->id),JSON_PRETTY_PRINT));
+        return new Response(json_encode($user_db_mapper->deleteById($this->id), JSON_PRETTY_PRINT));
     }
 }

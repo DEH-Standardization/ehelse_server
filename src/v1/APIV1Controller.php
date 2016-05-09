@@ -17,26 +17,18 @@ class APIV1Controller implements iController
 {
     private $controller;
 
+    /**
+     * APIV1Controller constructor.
+     * @param $path
+     * @param $method
+     * @param $body
+     */
     public function __construct($path, $method, $body)
     {
-        /*
-        if ($_SERVER && array_key_exists('PHP_AUTH_USER', $_SERVER)) {
-            $email = $_SERVER['PHP_AUTH_USER'];
-            $password = $_SERVER['PHP_AUTH_PW'];
-            $user = User::authenticate($email, $password);
-            if ($user) {
-                define("AUTHENTICATED", true);
-                User::login($user);
-            } else {
-                define("AUTHENTICATED", false);
-            }
-
-        } else {
-            define("AUTHENTICATED", false);
-        }
-*/
         $part = $path[0];
         $path = trimPath($path, 1);
+
+        // Choose path
         switch ($part) {
             case 'documents':
                 $this->controller = new DocumentController($path, $method, $body);
@@ -74,6 +66,10 @@ class APIV1Controller implements iController
         }
     }
 
+    /**
+     * Returns response from controller
+     * @return ErrorResponse
+     */
     public function getResponse()
     {
         return $this->controller->getResponse();

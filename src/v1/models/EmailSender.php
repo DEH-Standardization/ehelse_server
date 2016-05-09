@@ -6,7 +6,13 @@ class EmailSender
     const RESET_PASSWORD_EMAIL = 2;
     const FROM = "From: <noreplay@ehelseEditor.no> \r\n";   // TODO: check this.
 
-
+    /**
+     * Sends email to email address $to by email type
+     * @param $to
+     * @param $password
+     * @param $email_type
+     * @return bool
+     */
     public static function sendEmail($to, $password, $email_type)
     {
         switch ($email_type) {
@@ -19,6 +25,12 @@ class EmailSender
         }
     }
 
+    /**
+     * Sends reset password email
+     * @param $to
+     * @param $password
+     * @return bool
+     */
     private static function sendResetPasswordEmail($to, $password)
     {
         $is_sent = false;
@@ -36,7 +48,12 @@ class EmailSender
         return $is_sent;
     }
 
-
+    /**
+     * Sends register email
+     * @param $to
+     * @param $password
+     * @return bool
+     */
     private static function sendRegisterEmail($to, $password)
     {
         $is_sent = false;
@@ -56,6 +73,13 @@ class EmailSender
         return $is_sent;
     }
 
+    /**
+     * Sends teh email
+     * @param $to
+     * @param $subject
+     * @param $message
+     * @return bool
+     */
     private static function send($to, $subject, $message)
     {
         $is_sent = false;

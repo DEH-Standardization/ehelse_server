@@ -17,21 +17,41 @@ class DocumentTargetGroupDBMapper extends DBMapper
         $this->model = 'DocumentTargetGroup';
     }
 
+    /**
+     * Update not allowed - returns MethodNotAllowedError
+     * @param $object
+     * @return MethodNotAllowedError
+     */
     public function update($object)
     {
         return new MethodNotAllowedError('Method not allowed for DocumentTargetGroup');
     }
 
+    /**
+     * GetById not allowed - returns MethodNotAllowedError
+     * @param $id
+     * @return MethodNotAllowedError
+     */
     public function getById($id)
     {
         return new MethodNotAllowedError('Method not allowed for DocumentTargetGroup');
     }
 
+    /**
+     * Delete not allowed - returns MethodNotAllowedError
+     * @param $model
+     * @return MethodNotAllowedError
+     */
     public function delete($model)
     {
         return new MethodNotAllowedError('Method not allowed for DocumentTargetGroup');
     }
 
+    /**
+     * DeleteById not allowed - returns MethodNotAllowedError
+     * @param $id
+     * @return MethodNotAllowedError
+     */
     public function deleteById($id)
     {
         return new MethodNotAllowedError('Method not allowed for DocumentTargetGroup');

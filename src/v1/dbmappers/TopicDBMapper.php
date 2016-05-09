@@ -75,11 +75,15 @@ class TopicDbMapper extends DBMapper
         $topic_dict = array();
         $topic_children = array();
         $topic_list = $this->getAll();
+
+        // Loop through all topics
         foreach ($topic_list as $topic) {
             $parent_id = $topic->getParentId();
+
             if ($parent_id == null) {
                 array_push($topic_three, $topic);
             } else {
+                // If parent id does not exist in $topic_children, set to children to empty array
                 if (!array_key_exists($parent_id, $topic_children)) {
                     $topic_children[$parent_id] = array();
                 }
@@ -87,9 +91,12 @@ class TopicDbMapper extends DBMapper
             }
             $topic_dict[$topic->getID()] = $topic;
         }
+
+        // For each parent, add child
         foreach ($topic_children as $parent => $children) {
             $topic_dict[$parent]->addChildren($children);
         }
+
         return $topic_three;
     }
 
@@ -115,7 +122,7 @@ class TopicDbMapper extends DBMapper
     }
 
     /**
-     * Returns true if topic with id has any sybtopics
+     * Returns true if topic with id has any subtopics
      * @param $id
      * @return bool
      */

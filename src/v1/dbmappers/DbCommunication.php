@@ -2,19 +2,16 @@
 
 require_once 'db_info.php';
 
-class DbCommunication
+class DBCommunication
 {
 
-    private $connection;
     private static $instance;
-    private $server;
-    private $username;
-    private $password;
-    private $database_name;
+
+    private $connection, $server, $username, $password, $database_name;
 
     /**
      * Returns an instance of the database communication.
-     * @return DbCommunication
+     * @return DBCommunication
      */
     public static function getInstance()
     {
@@ -25,7 +22,7 @@ class DbCommunication
     }
 
     /**
-     * DbCommunication constructor.
+     * DBCommunication constructor.
      */
     private function __construct()
     {
@@ -34,7 +31,10 @@ class DbCommunication
         $this->database_name = DB_NAME;
         $this->password = DB_PASSWORD;
         try {
-            $this->connection = new PDO("mysql:host={$this->server};dbname={$this->database_name};charset=utf8", $this->username, $this->password);
+            $this->connection = new PDO(
+                "mysql:host={$this->server};dbname={$this->database_name};charset=utf8",
+                $this->username,
+                $this->password);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // set the PDO error mode to exception
         } catch (PDOException $e) {
             trigger_error("Failed to connect to MySQL: " . $e, E_USER_ERROR);
@@ -43,7 +43,6 @@ class DbCommunication
 
     /**
      * Returns connection to the database.
-     *
      * @return PDO
      */
     public function getConnection()
@@ -57,11 +56,10 @@ class DbCommunication
     }
 
     /**
-     * Overrides the Clone function to prevent multiple instances of DbCommunication
+     * Overrides the Clone function to prevent multiple instances of DBCommunication
      */
     function __clone()
     {
     }
-
 
 }
