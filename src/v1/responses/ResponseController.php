@@ -7,6 +7,10 @@ abstract class ResponseController implements iController
 {
     protected $method, $body, $path, $controller, $id, $db_mapper, $list_name, $model;
 
+    /**
+     * Returns all elements from model
+     * @return Response
+     */
     protected function getAll()
     {
         $mapper = new $this->db_mapper();
@@ -21,10 +25,17 @@ abstract class ResponseController implements iController
         return new Response($json);
     }
 
+    /**
+     * Add new element to database
+     * @return ErrorResponse|Response
+     * @throws Exception
+     */
     protected function create()
     {
         $model = $this->model;
         $missing_fields = self::validateJSONFormat($this->body, $model::REQUIRED_POST_FIELDS);
+
+        // Check that required fields are not missing
         if (!$missing_fields) {
             $mapper = new $this->db_mapper();
             $object = $model::fromJSON($this->body);
@@ -45,11 +56,19 @@ abstract class ResponseController implements iController
         return $response;
     }
 
+    /**
+     * Returns "{}"
+     * @return Response
+     */
     protected function getOptions()
     {
         return new Response("{}");
     }
 
+    /**
+     * Returns element
+     * @return ErrorResponse|Response
+     */
     protected function get()
     {
         $mapper = new $this->db_mapper();
@@ -62,11 +81,16 @@ abstract class ResponseController implements iController
         return $response;
     }
 
+    /**
+     * Updates element
+     * @return ErrorResponse|Response
+     */
     protected function update()
     {
         $model = $this->model;
         $missing_fields = self::validateJSONFormat($this->body, $model::REQUIRED_PUT_FIELDS);
 
+        // Check that required fields are not missing
         if (!$missing_fields) {
             $mapper = new $this->db_mapper();
             $json = $this->body;
@@ -86,6 +110,10 @@ abstract class ResponseController implements iController
         return $response;
     }
 
+    /**
+     * Deletes elements
+     * @return Response
+     */
     protected function delete()
     {
         $db_mapper = new $this->db_mapper();
@@ -93,7 +121,10 @@ abstract class ResponseController implements iController
         return new Response(json_encode("{}", JSON_PRETTY_PRINT), Response::STATUS_CODE_NO_CONTENT);
     }
 
-
+    /**
+     * Choose method based on HTTP request method
+     * @return ErrorResponse|null|Response
+     */
     protected function handleRequest()
     {
         $response = null;
@@ -117,6 +148,11 @@ abstract class ResponseController implements iController
         return $response;
     }
 
+    /**
+     * Returns response
+     * @return ErrorResponse|null|Response
+     * @throws Exception
+     */
     public function getResponse()
     {
         $response = null;
@@ -141,6 +177,12 @@ abstract class ResponseController implements iController
         return $response;
     }
 
+    /**
+     * Initializes path, body and method
+     * @param $path
+     * @param $method
+     * @param $body
+     */
     protected function init($path, $method, $body)
     {
         $this->method = $method;
@@ -156,6 +198,12 @@ abstract class ResponseController implements iController
         }
     }
 
+    /**
+     * Returns missing fields if any fields are missing from JSON
+     * @param $json
+     * @param $required_fields
+     * @return array
+     */
     protected static function validateJSONFormat($json, $required_fields)
     {
         $missing_fields = [];
