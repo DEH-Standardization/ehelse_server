@@ -1,6 +1,6 @@
 <?php
 require_once "iDBMapper.php";
-require_once "DbCommunication.php";
+require_once "DBCommunication.php";
 
 /**
  * Class DBMapper
@@ -14,7 +14,7 @@ abstract class DBMapper implements iDbMapper
      */
     public function __construct()
     {
-        $this->connection = DbCommunication::getInstance()->getConnection();
+        $this->connection = DBCommunication::getInstance()->getConnection();
     }
 
     /**
@@ -65,7 +65,7 @@ abstract class DBMapper implements iDbMapper
     protected function isValidId($id, $table_name)
     {
         $valid = false;
-        $db_name = DbCommunication::getInstance()->getDatabaseName();
+        $db_name = DBCommunication::getInstance()->getDatabaseName();
         $sql = "select * from $db_name.$table_name where id = ?";
         try {
             $result = $this->queryDB($sql, array($id));
