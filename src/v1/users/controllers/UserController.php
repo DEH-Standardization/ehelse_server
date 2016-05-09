@@ -12,7 +12,12 @@ require_once __DIR__ . '/../../users/controllers/ResetPasswordController.php';
 
 class UserController extends ResponseController
 {
-
+    /**
+     * UserController constructor.
+     * @param $path
+     * @param $method
+     * @param $body
+     */
     public function __construct($path, $method, $body)
     {
         $this->body = $body;
@@ -36,11 +41,6 @@ class UserController extends ResponseController
             } else {
                 $this->controller = new ErrorController(new InvalidPathError());
             }
-        }
-
-        if (!array_key_exists('CURRENT_USER', $GLOBALS) && $this->method != Response::REQUEST_METHOD_OPTIONS) {
-            $this->controller = new ErrorController(new AuthenticationError($this->method));
-
         }
     }
 
