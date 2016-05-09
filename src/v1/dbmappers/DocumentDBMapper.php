@@ -99,6 +99,24 @@ class DocumentDBMapper extends DBMapper
     }
 
     /**
+     * Retrieving document id of document with prev_document_id = document_id
+     * @param $document_id
+     * @return DBError|mixed|null
+     */
+    public function getNextDocumentIdByDocumentId($document_id){
+        $response = null;
+        try {
+            $response = $this->queryDBWithAssociativeArray(
+                Document::SQL_GET_NEXT_DOCUMENT_ID_BY_PREV_DOCUMENT_ID, array(':id' => $document_id)
+            )->fetch();
+            $response = $response ? $response["id"] : null;
+        } catch (PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
+    }
+
+    /**
      * Returns all documents under a topic
      * @param $topic_id
      * @return array|DBError|null

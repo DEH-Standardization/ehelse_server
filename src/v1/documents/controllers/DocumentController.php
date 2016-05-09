@@ -50,6 +50,7 @@ class DocumentController extends ResponseController
             $document->setLinks($this->getLinks($document));
             $document->setFields($this->getFields($document));
             $document->setTargetGroups($this->getTargetGroups($document));
+            $document->setNextDocumentId($this->getNextDocumentId($document));
             array_push($document_array, $document->toArray());
         }
 
@@ -81,6 +82,17 @@ class DocumentController extends ResponseController
     }
 
     /**
+     * Retrieving id of document with prev_document_id pointing to document
+     * @param $document
+     * @return DBError|int|null
+     */
+    public static function getNextDocumentId($document){
+        $document_mapper = new DocumentDBMapper();
+        $next_document_id = $document_mapper->getNextDocumentIdByDocumentId($document->getId());
+        return $next_document_id;
+    }
+
+    /**
      * Retrieving all profiles under documents
      * @param $document
      * @return array
@@ -102,7 +114,6 @@ class DocumentController extends ResponseController
 
         return $profiles_array;
         */
-
         return $document_mapper->getProfileIds($document->getId());
     }
 
@@ -160,7 +171,7 @@ class DocumentController extends ResponseController
         }
         // Check that internal id is unique
         if (!$document_mapper->isValidInternalId($document->getInternalId())) {
-           return new ErrorResponse(new InvalidJSONError('Internal id is not unique.'));
+            return new ErrorResponse(new InvalidJSONError('Internal id is not unique.'));
         }
         // Check that HIS number is unique, if it set
         if (!$document_mapper->isValidHisNumber($document->getHisNumber())) {
