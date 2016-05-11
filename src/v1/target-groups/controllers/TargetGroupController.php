@@ -19,7 +19,7 @@ class TargetGroupController extends ResponseController
     {
         $this->init($path, $method, $body);
         $this->db_mapper = 'TargetGroupDBMapper';
-        $this->list_name = 'target_groups';
+        $this->list_name = 'targetGroups';
         $this->model = 'TargetGroup';
     }
 
