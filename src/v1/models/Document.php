@@ -27,6 +27,8 @@ class Document implements iModel
       AND (id,timestamp) IN (SELECT id, MAX(timestamp) FROM document GROUP BY id);";
     const SQL_GET_HIS_NUMBER = "SELECT his_number FROM document  WHERE is_archived = 0 AND his_number = :his_number
       AND (id,timestamp) IN (SELECT id, MAX(timestamp) FROM document GROUP BY id);";
+    const SQL_GET_PREVIOUS_DOCUMENT_ID = "SELECT prev_document_id FROM document  WHERE is_archived = 0 AND
+      prev_document_id = :previous_document_id AND (id,timestamp) IN (SELECT id, MAX(timestamp) FROM document GROUP BY id);";
 
     const REQUIRED_POST_FIELDS = ['title', 'sequence', 'documentTypeId', 'topicId'];
     const REQUIRED_PUT_FIELDS = ['title', 'sequence', 'documentTypeId', 'topicId'];

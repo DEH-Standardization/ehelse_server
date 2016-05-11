@@ -242,4 +242,26 @@ class DocumentDBMapper extends DBMapper
         return $response;
     }
 
+    public function isPreviousDocumentId($previous_document_id)
+    {
+        $response = null;
+        try {
+            $result = $this->queryDBWithAssociativeArray(
+                Document::SQL_GET_PREVIOUS_DOCUMENT_ID,
+                array(':previous_document_id' => $previous_document_id));
+            $raw_previous_document_id = $result->fetchAll();
+
+            // if raw previous document id exists, previous document id is invalid
+            if ($raw_previous_document_id) {
+                $response = false;
+            } else {
+                $response = true;
+            }
+
+        } catch (PDOException $e) {
+            $response = false;
+        }
+        return $response;
+    }
+
 }

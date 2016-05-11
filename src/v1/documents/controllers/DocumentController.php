@@ -87,7 +87,8 @@ class DocumentController extends ResponseController
      * @param $document
      * @return DBError|int|null
      */
-    public static function getNextDocumentId($document){
+    public static function getNextDocumentId($document)
+    {
         $document_mapper = new DocumentDBMapper();
         $next_document_id = $document_mapper->getNextDocumentIdByDocumentId($document->getId());
         return $next_document_id;
@@ -178,6 +179,10 @@ class DocumentController extends ResponseController
         if (!$document_mapper->isValidHisNumber($document->getHisNumber())) {
             return new ErrorResponse(new InvalidJSONError('HIS number is not unique.'));
         }
+        // Check that previous document id is unique, if it set
+        if (!$document_mapper->isPreviousDocumentId($document->getPrevDocumentId())) {
+            return new ErrorResponse(new InvalidJSONError('Previous document id is not unique.'));
+        }
 
         $result = $document_mapper->add($document);
         if (!$result instanceof DBError) {
@@ -249,6 +254,12 @@ class DocumentController extends ResponseController
         if ($document->getHisNumber() != $original_document->getHisNumber()) {
             if (!$document_mapper->isValidHisNumber($document->getHisNumber())) {
                 return new ErrorResponse(new InvalidJSONError('HIS number is not unique.'));
+            }
+        }
+        // If previous document id  differs from previous version, check check if the new previous document id is unique
+        if ($document->getPrevDocumentId() != $original_document->getPrevDocumentId()) {
+            if (!$document_mapper->isPreviousDocumentId($document->getPrevDocumentId())) {
+                return new ErrorResponse(new InvalidJSONError('Previous document id is not unique.'));
             }
         }
 
