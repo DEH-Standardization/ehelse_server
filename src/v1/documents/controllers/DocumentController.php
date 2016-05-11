@@ -218,6 +218,7 @@ class DocumentController extends ResponseController
         $document->setLinks($this->getLinks($document));
         $document->setFields($this->getFields($document));
         $document->setTargetGroups($this->getTargetGroups($document));
+        $document->setNextDocumentId($this->getNextDocumentId($document));
 
         $json = json_encode($document->toArray(), JSON_PRETTY_PRINT);
         return new Response($json);
