@@ -119,7 +119,7 @@ class Document implements iModel
 
     /**
      * Sets title if it is valid, return the n first characters if it is too long
-     * @param $description
+     * @param $title
      */
     public function setTitle($title)
     {
