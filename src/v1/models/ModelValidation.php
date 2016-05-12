@@ -5,14 +5,15 @@
 class ModelValidation
 {
     // Max length valid in database
-    const NAME_MAX_LENGTH = 128;
-    const TITLE_MAX_LENGTH = 128;
-    const TEXT_MAX_LENGTH = 128;
-    const DESCRIPTION_MAX_LENGTH = 1024;
-    const COMMENT_MAX_LENGTH = 1024;
-    const FIELD_VALUE_MAX_LENGTH = 1024;
-    const URL_MAX_LENGTH = 256;
+    const NAME_MAX_LENGTH = 512;
+    const TITLE_MAX_LENGTH = 512;
+    const TEXT_MAX_LENGTH = 512;
+    const DESCRIPTION_MAX_LENGTH = 2048;
+    const COMMENT_MAX_LENGTH = 2048;
+    const FIELD_VALUE_MAX_LENGTH = 2048;
+    const URL_MAX_LENGTH = 512;
     const ABBREVIATION_MAX_LENGTH = 128;
+
 
     /**
      * Returns a valid title, if title is longer than max length, the excess characters are removed
