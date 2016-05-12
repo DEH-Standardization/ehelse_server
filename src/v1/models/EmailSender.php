@@ -4,7 +4,7 @@ class EmailSender
 {
     const REGISTER_EMAIL = 1;
     const RESET_PASSWORD_EMAIL = 2;
-    const FROM = "From: <noreplay@ehelseEditor.no> \r\n";   // TODO: check this.
+    const FROM = "From: <ehelsetest@gmail.com> \r\n";
 
     /**
      * Sends email to email address $to by email type

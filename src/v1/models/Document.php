@@ -88,8 +88,8 @@ class Document implements iModel
         $this->standard_id = $standard_id;
         $this->prev_document_id = $prev_document_id;
         $this->is_archived = $is_archived;
-        $this->internal_id = $internal_id;
-        $this->his_number = $his_number;
+        $this->setInternalId($internal_id);
+        $this->setHisNumber($his_number);
         $this->target_groups = [];
         $this->links = [];
     }
@@ -149,7 +149,12 @@ class Document implements iModel
 
     public function setSequence($sequence)
     {
-        $this->sequence = $sequence;
+        if ($sequence < 0) {
+            $this->sequence = 0;
+        }
+        else {
+            $this->sequence = $sequence;
+        }
     }
 
     public function getTopicId()
@@ -264,6 +269,16 @@ class Document implements iModel
     public function getHisNumber()
     {
         return $this->his_number;
+    }
+
+    public function setHisNumber($his_number)
+    {
+        $this->his_number = ModelValidation::getValidHisNumber($his_number);
+    }
+
+    public function setInternalId($internal_id)
+    {
+        $this->internal_id = ModelValidation::getValidInternalId($internal_id);
     }
 
     /**
