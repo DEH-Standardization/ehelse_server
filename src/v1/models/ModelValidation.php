@@ -13,6 +13,65 @@ class ModelValidation
     const FIELD_VALUE_MAX_LENGTH = 2048;
     const URL_MAX_LENGTH = 512;
     const ABBREVIATION_MAX_LENGTH = 128;
+    const DEADLINE_MAX_LENGTH = 1024;
+    const INTERNAL_ID_MAX_LENGTH = 256;
+    const HIS_NUMBER_MAX_LENGTH = 256;
+    const EMAIL_MAX_LENGTH = 256;
+
+    /**
+     * Returns a his email, if email is longer than max length, the excess characters are removed
+     * @param $email
+     * @return string
+     */
+    public static function getValidEmail($email)
+    {
+        if ($email == null || !(filter_var($email, FILTER_VALIDATE_EMAIL))) {
+            return null;
+        }
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+
+        }
+        return substr($email, 0, self::EMAIL_MAX_LENGTH);
+    }
+
+    /**
+     * Returns a his number, if his number is longer than max length, the excess characters are removed
+     * @param $his_number
+     * @return string
+     */
+    public static function getValidHisNumber($his_number)
+    {
+        if ($his_number == null) {
+            return null;
+        }
+        return substr($his_number, 0, self::HIS_NUMBER_MAX_LENGTH);
+    }
+
+    /**
+     * Returns a internal id, if internal id is longer than max length, the excess characters are removed
+     * @param $internal_id
+     * @return string
+     */
+    public static function getValidInternalId($internal_id)
+    {
+        if ($internal_id == null) {
+            return null;
+        }
+        return substr($internal_id, 0, self::INTERNAL_ID_MAX_LENGTH);
+    }
+
+    /**
+     * Returns a deadline, if deadline is longer than max length, the excess characters are removed
+     * @param $deadline
+     * @return string
+     */
+    public static function getValidDeadline($deadline)
+    {
+        if ($deadline == null) {
+            return null;
+        }
+        return substr($deadline, 0, self::DEADLINE_MAX_LENGTH);
+    }
 
 
     /**
