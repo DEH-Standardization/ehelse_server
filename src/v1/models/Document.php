@@ -149,7 +149,12 @@ class Document implements iModel
 
     public function setSequence($sequence)
     {
-        $this->sequence = $sequence;
+        if ($sequence < 0) {
+            $this->sequence = 0;
+        }
+        else {
+            $this->sequence = $sequence;
+        }
     }
 
     public function getTopicId()
