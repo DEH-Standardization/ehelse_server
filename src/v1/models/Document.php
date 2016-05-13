@@ -21,10 +21,17 @@ class Document implements iModel
     const SQL_DELETE = "UPDATE document SET is_archived = 1 WHERE id = :id AND timestamp = :timestamp;";
 
     const SQL_GET_MAX_TIMESTAMP = "SELECT MAX(timestamp) FROM document WHERE id = :id;";
-    const SQL_GET_PROFILE_IDS = "SELECT DISTINCT id FROM document WHERE standard_id = :id;";
+    const SQL_GET_NEXT_DOCUMENT_ID_BY_PREV_DOCUMENT_ID = "SELECT id from document WHERE prev_document_id = :id";
+    const SQL_GET_PROFILE_IDS = "SELECT DISTINCT id FROM document WHERE is_archived = 0 AND standard_id = :id;";
+    const SQL_GET_INTERNAL_ID = "SELECT internal_id FROM document  WHERE is_archived = 0 AND internal_id = :internal_id
+      AND (id,timestamp) IN (SELECT id, MAX(timestamp) FROM document GROUP BY id);";
+    const SQL_GET_HIS_NUMBER = "SELECT his_number FROM document  WHERE is_archived = 0 AND his_number = :his_number
+      AND (id,timestamp) IN (SELECT id, MAX(timestamp) FROM document GROUP BY id);";
+    const SQL_GET_PREVIOUS_DOCUMENT_ID = "SELECT prev_document_id FROM document  WHERE is_archived = 0 AND
+      prev_document_id = :previous_document_id AND (id,timestamp) IN (SELECT id, MAX(timestamp) FROM document GROUP BY id);";
 
-    const REQUIRED_POST_FIELDS = ['title', 'sequence', 'documentTypeId','topicId'];
-    const REQUIRED_PUT_FIELDS = ['title', 'sequence', 'documentTypeId','topicId'];
+    const REQUIRED_POST_FIELDS = ['title', 'sequence', 'documentTypeId', 'topicId'];
+    const REQUIRED_PUT_FIELDS = ['title', 'sequence', 'documentTypeId', 'topicId'];
 
     private
         $id,
@@ -38,6 +45,7 @@ class Document implements iModel
         $document_type_id,
         $standard_id,
         $prev_document_id,
+        $next_document_id,
         $is_archived,
         $internal_id,
         $his_number,
@@ -80,8 +88,8 @@ class Document implements iModel
         $this->standard_id = $standard_id;
         $this->prev_document_id = $prev_document_id;
         $this->is_archived = $is_archived;
-        $this->internal_id = $internal_id;
-        $this->his_number = $his_number;
+        $this->setInternalId($internal_id);
+        $this->setHisNumber($his_number);
         $this->target_groups = [];
         $this->links = [];
     }
@@ -113,16 +121,11 @@ class Document implements iModel
 
     /**
      * Sets title if it is valid, return the n first characters if it is too long
-     * @param $description
+     * @param $title
      */
     public function setTitle($title)
     {
-        if (strlen($title) > ModelValidation::TITLE_MAX_LENGTH) {
-            $this->title = ModelValidation::getValidTitle($title);
-            echo "Title is too long, set to: " . $this->title;
-        } else {
-            $this->title = $title;
-        }
+        $this->title = ModelValidation::getValidTitle($title);
     }
 
     public function getDescription()
@@ -136,12 +139,7 @@ class Document implements iModel
      */
     public function setDescription($description)
     {
-        if (strlen($description) > ModelValidation::DESCRIPTION_MAX_LENGTH) {
-            $this->description = ModelValidation::getValidDescription($description);
-            echo "Description is too long, set to: " . $this->description;
-        } else {
-            $this->description = $description;
-        }
+        $this->description = ModelValidation::getValidDescription($description);
     }
 
     public function getSequence()
@@ -151,7 +149,12 @@ class Document implements iModel
 
     public function setSequence($sequence)
     {
-        $this->sequence = $sequence;
+        if ($sequence < 0) {
+            $this->sequence = 0;
+        }
+        else {
+            $this->sequence = $sequence;
+        }
     }
 
     public function getTopicId()
@@ -175,12 +178,7 @@ class Document implements iModel
      */
     public function setComment($comment)
     {
-        if (strlen($comment) > ModelValidation::COMMENT_MAX_LENGTH) {
-            $this->comment = ModelValidation::getValidComment($comment);
-            echo "Comment is too long, set to: " . $this->comment;
-        } else {
-            $this->comment = $comment;
-        }
+        $this->comment = ModelValidation::getValidComment($comment);
     }
 
     public function getStatusId()
@@ -205,12 +203,12 @@ class Document implements iModel
 
     public function getNextDocumentId()
     {
-        return $this->standard_id;
+        return $this->next_document_id;
     }
 
-    public function setNextDocumentId($standard_id)
+    public function setNextDocumentId($next_document_id)
     {
-        $this->standard_id = $standard_id;
+        $this->next_document_id = $next_document_id;
     }
 
     public function getPrevDocumentId()
@@ -263,6 +261,26 @@ class Document implements iModel
         $this->fields = $fields;
     }
 
+    public function getInternalId()
+    {
+        return $this->internal_id;
+    }
+
+    public function getHisNumber()
+    {
+        return $this->his_number;
+    }
+
+    public function setHisNumber($his_number)
+    {
+        $this->his_number = ModelValidation::getValidHisNumber($his_number);
+    }
+
+    public function setInternalId($internal_id)
+    {
+        $this->internal_id = ModelValidation::getValidInternalId($internal_id);
+    }
+
     /**
      * Returns associated array representation of model
      * @return array
@@ -281,6 +299,7 @@ class Document implements iModel
             'documentTypeId' => $this->document_type_id,
             'standardId' => $this->standard_id,
             'previousDocumentId' => $this->prev_document_id,
+            'nextDocumentId' => $this->next_document_id,
             'internalId' => $this->internal_id,
             'hisNumber' => $this->his_number,
             'profiles' => $this->profiles,
@@ -332,25 +351,25 @@ class Document implements iModel
     public static function fromJSON($json)
     {
         $document = new Document(
-            (array_key_exists('id', $json)) ? $json['id'] : null,
-            (array_key_exists('timestamp', $json)) ? $json['timestamp'] : null,
-            $json['title'],
-            (array_key_exists('description', $json)) ? $json['description'] : null,
-            $json['sequence'],
-            $json['topicId'],
-            (array_key_exists('comment', $json)) ? $json['comment'] : null,
-            (array_key_exists('statusId', $json)) ? $json['statusId'] : null,
-            $json['documentTypeId'],
-            (array_key_exists('standardId', $json)) ? $json['standardId'] : null,
-            (array_key_exists('previousDocumentId', $json)) ? $json['previousDocumentId'] : null,
+            getValueFromArray($json, 'id'),
+            getValueFromArray($json, 'timestamp'),
+            getValueFromArray($json, 'title'),
+            getValueFromArray($json, 'description'),
+            getValueFromArray($json, 'sequence'),
+            getValueFromArray($json, 'topicId'),
+            getValueFromArray($json, 'comment'),
+            getValueFromArray($json, 'statusId'),
+            getValueFromArray($json, 'documentTypeId'),
+            getValueFromArray($json, 'standardId'),
+            getValueFromArray($json, 'previousDocumentId'),
             null,
-            (array_key_exists('internalId', $json)) ? $json['internalId'] : null,
-            (array_key_exists('hisNumber', $json)) ? $json['hisNumber'] : null
+            getValueFromArray($json, 'internalId'),
+            getValueFromArray($json, 'hisNumber')
         );
 
-        $document->setLinks((array_key_exists('links', $json)) ? $json['links'] : []);
-        $document->setFields((array_key_exists('fields', $json)) ? $json['fields'] : []);
-        $document->setTargetGroups((array_key_exists('targetGroups', $json)) ? $json['targetGroups'] : []);
+        $document->setLinks(getValueFromArray($json, 'links'));
+        $document->setFields(getValueFromArray($json, 'fields'));
+        $document->setTargetGroups(getValueFromArray($json, 'targetGroups'));
 
         return $document;
     }

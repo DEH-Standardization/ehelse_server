@@ -1,6 +1,6 @@
 <?php
 
-require_once  __DIR__ . '/../../responses/ResponseController.php';
+require_once __DIR__ . '/../../responses/ResponseController.php';
 require_once __DIR__ . '/../../models/Document.php';
 require_once __DIR__ . '/../../errors/MalformedJSONFormatError.php';
 require_once __DIR__ . '/../../responses/ErrorResponse.php';
@@ -37,23 +37,25 @@ class DocumentController extends ResponseController
     protected function getAll()
     {
         $document_mapper = new DocumentDBMapper();
-
         $documents = $document_mapper->getAll();
 
-        if($documents === null) {
+        if ($documents === null) {
             return new ErrorResponse(new NotFoundError());
         }
 
         $document_array = array();
+
+        // Sets profiles, links, fields and target groups for each document
         foreach ($documents as $document) {
             $document->setProfiles($this->getProfiles($document));
             $document->setLinks($this->getLinks($document));
             $document->setFields($this->getFields($document));
             $document->setTargetGroups($this->getTargetGroups($document));
+            $document->setNextDocumentId($this->getNextDocumentId($document));
             array_push($document_array, $document->toArray());
         }
 
-        $json = json_encode(array( "documents" => $document_array), JSON_PRETTY_PRINT);
+        $json = json_encode(array("documents" => $document_array), JSON_PRETTY_PRINT);
         return new Response($json);
     }
 
@@ -81,6 +83,18 @@ class DocumentController extends ResponseController
     }
 
     /**
+     * Retrieving id of document with prev_document_id pointing to document
+     * @param $document
+     * @return DBError|int|null
+     */
+    public static function getNextDocumentId($document)
+    {
+        $document_mapper = new DocumentDBMapper();
+        $next_document_id = $document_mapper->getNextDocumentIdByDocumentId($document->getId());
+        return $next_document_id;
+    }
+
+    /**
      * Retrieving all profiles under documents
      * @param $document
      * @return array
@@ -88,7 +102,7 @@ class DocumentController extends ResponseController
     public static function getProfiles($document)
     {
         $document_mapper = new DocumentDBMapper();
-        /*  Returns profiles (Document objects)
+        /*  // Returns profiles (Document objects)
 
         $profiles = $document_mapper->getProfiles($document->getId());
         $profiles_array = [];
@@ -102,7 +116,6 @@ class DocumentController extends ResponseController
 
         return $profiles_array;
         */
-
         return $document_mapper->getProfileIds($document->getId());
     }
 
@@ -153,12 +166,31 @@ class DocumentController extends ResponseController
         $response = null;
         $document_mapper = new DocumentDBMapper();
         $document = Document::fromJSON($this->body);
+
+        // Check that internal id is set
+        if ($document->getInternalId() === null) {
+            return new ErrorResponse(new InvalidJSONError('Internal id cannot be null.'));
+        }
+        // Check that internal id is unique
+        if (!$document_mapper->isValidInternalId($document->getInternalId())) {
+            return new ErrorResponse(new InvalidJSONError('Internal id is not unique.'));
+        }
+        // Check that HIS number is unique, if it set
+        if (!$document_mapper->isValidHisNumber($document->getHisNumber())) {
+            return new ErrorResponse(new InvalidJSONError('HIS number is not unique.'));
+        }
+        // Check that previous document id is unique, if it set
+        if (!$document_mapper->isPreviousDocumentId($document->getPrevDocumentId())) {
+            return new ErrorResponse(new InvalidJSONError('Previous document id is not unique.'));
+        }
+
         $result = $document_mapper->add($document);
         if (!$result instanceof DBError) {
             return $this->getById($result);
         } else {
             $response = $result->toJSON();
         }
+
         return new Response($response);
     }
 
@@ -182,14 +214,16 @@ class DocumentController extends ResponseController
         $document_mapper = new DocumentDBMapper();
         $document = $document_mapper->getById($id);
 
-        if($document === null) {
+        if ($document === null) {
             return new ErrorResponse(new NotFoundError());
         }
 
+        // Sets profiles, links, fields and target groups for document
         $document->setProfiles($this->getProfiles($document));
         $document->setLinks($this->getLinks($document));
         $document->setFields($this->getFields($document));
         $document->setTargetGroups($this->getTargetGroups($document));
+        $document->setNextDocumentId($this->getNextDocumentId($document));
 
         $json = json_encode($document->toArray(), JSON_PRETTY_PRINT);
         return new Response($json);
@@ -204,6 +238,31 @@ class DocumentController extends ResponseController
         $response = null;
         $document_mapper = new DocumentDBMapper();
         $document = Document::fromJSON($this->body);
+
+        // Check that internal id is set
+        if ($document->getInternalId() === null) {
+            return new ErrorResponse(new InvalidJSONError('Internal id cannot be null.'));
+        }
+        $original_document = $document_mapper->getById($this->id);
+        // If internal id differs from previous version, check check if the new internal id is unique
+        if ($document->getInternalId() != $original_document->getInternalId()) {
+            if (!$document_mapper->isValidInternalId($document->getInternalId())) {
+                return new ErrorResponse(new InvalidJSONError('Internal id is not unique.'));
+            }
+        }
+        // If HIS number differs from previous version, check check if the new HS number is unique
+        if ($document->getHisNumber() != $original_document->getHisNumber()) {
+            if (!$document_mapper->isValidHisNumber($document->getHisNumber())) {
+                return new ErrorResponse(new InvalidJSONError('HIS number is not unique.'));
+            }
+        }
+        // If previous document id  differs from previous version, check check if the new previous document id is unique
+        if ($document->getPrevDocumentId() != $original_document->getPrevDocumentId()) {
+            if (!$document_mapper->isPreviousDocumentId($document->getPrevDocumentId())) {
+                return new ErrorResponse(new InvalidJSONError('Previous document id is not unique.'));
+            }
+        }
+
         $document->setId($this->id);
         $result = $document_mapper->update($document);
         if (!$result instanceof DBError) {
@@ -211,8 +270,8 @@ class DocumentController extends ResponseController
         } else {
             $response = $result->toJSON();
         }
+
         return new Response($response);
     }
-
 
 }

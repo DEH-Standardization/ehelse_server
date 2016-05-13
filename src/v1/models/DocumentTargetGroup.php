@@ -42,7 +42,7 @@ class DocumentTargetGroup implements iModel
     {
         $this->target_group_id = $target_group_id;
         $this->deadline = $deadline;
-        $this->description = $description;
+        $this->setDescription($description);
         $this->action_id = $action_id;
         $this->mandatory_id = $mandatory_id;
         $this->document_id = $document_id;
@@ -81,12 +81,7 @@ class DocumentTargetGroup implements iModel
      */
     public function setDescription($description)
     {
-        if (strlen($description) > ModelValidation::DESCRIPTION_MAX_LENGTH) {
-            $this->description = ModelValidation::getValidDescription($description);
-            echo "Description is too long, set to: " . $this->description;
-        } else {
-            $this->description = $description;
-        }
+        $this->description = ModelValidation::getValidDescription($description);
     }
 
     public function getActionId()
@@ -176,7 +171,7 @@ class DocumentTargetGroup implements iModel
      */
     public function toJSON()
     {
-        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+        return json_encode($this->toArray(), JSON_PRETTY_PRINT);
     }
 
     public static function fromDBArray($db_array)
@@ -195,26 +190,26 @@ class DocumentTargetGroup implements iModel
     public static function fromJSON($json)
     {
         return new DocumentTargetGroup(
-            $json['targetGroupId'],
-            (array_key_exists('deadline', $json)) ? $json['deadline'] : null,
-            (array_key_exists('description', $json)) ? $json['description'] : null,
-            $json['actionId'],
-            $json['mandatoryId'],
-            $json['documentId'],
-            $json['documentTimestamp']
+            getValueFromArray($json, 'targetGroupId'),
+            getValueFromArray($json, 'deadline'),
+            getValueFromArray($json, 'description'),
+            getValueFromArray($json, 'actionId'),
+            getValueFromArray($json, 'mandatoryId'),
+            getValueFromArray($json, 'documentId'),
+            getValueFromArray($json, 'documentTimestamp')
         );
     }
 
     public function toDBArray()
     {
-       return array(
-           ':target_group_id' => $this->target_group_id,
-           ':deadline' => $this->deadline,
-           ':description' => $this->description,
-           ':action_id' => $this->action_id,
-           ':mandatory_id' => $this->mandatory_id,
-           ':document_id' => $this->document_id,
-           ':document_timestamp' => $this->document_timestamp
-       );
+        return array(
+            ':target_group_id' => $this->target_group_id,
+            ':deadline' => $this->deadline,
+            ':description' => $this->description,
+            ':action_id' => $this->action_id,
+            ':mandatory_id' => $this->mandatory_id,
+            ':document_id' => $this->document_id,
+            ':document_timestamp' => $this->document_timestamp
+        );
     }
 }

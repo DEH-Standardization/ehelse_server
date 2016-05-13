@@ -4,6 +4,10 @@ require_once 'ApplicationError.php';
 
 class DuplicateUserError extends ApplicationError
 {
+
+    /**
+     * DuplicateUserError constructor.
+     */
     public function __construct()
     {
         $this->title = "Error: Duplicate user";

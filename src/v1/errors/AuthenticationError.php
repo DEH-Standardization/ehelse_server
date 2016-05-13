@@ -6,10 +6,14 @@ class AuthenticationError extends ApplicationError
     protected $response_code = Response::STATUS_CODE_UNAUTHORIZED,
         $path = "Undefined";
 
+    /**
+     * AuthenticationError constructor.
+     * @param $method
+     */
     public function __construct($method)
     {
         $this->title = "Error: Authentication Error";
-        if(array_key_exists('PATH_INFO', $_SERVER)){
+        if (array_key_exists('PATH_INFO', $_SERVER)) {
             $this->path = $_SERVER['PATH_INFO'];
         }
         $this->message = "You must authenticate at <{$this->path}> with method <$method>";

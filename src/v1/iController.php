@@ -1,6 +1,7 @@
 <?php
 
-interface iController{
+interface iController
+{
     /**
      * Method returning the response to the current request.
      * @return Response response to current request

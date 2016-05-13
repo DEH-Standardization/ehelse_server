@@ -8,6 +8,13 @@ require_once __DIR__ . '/../responses/ResponseController.php';
 
 class StatusController extends ResponseController
 {
+
+    /**
+     * StatusController constructor.
+     * @param $path
+     * @param $method
+     * @param $body
+     */
     public function __construct($path, $method, $body)
     {
         $this->init($path, $method, $body);

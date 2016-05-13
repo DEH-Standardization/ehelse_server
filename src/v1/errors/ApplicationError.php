@@ -18,6 +18,10 @@ class ApplicationError
         $this->message = $message;
     }
 
+    /**
+     * Returns response code
+     * @return mixed
+     */
     public function getResponseCode()
     {
         return $this->response_code;
@@ -29,9 +33,13 @@ class ApplicationError
      */
     public function __toString()
     {
-        return $this->title . "<br>".$this->message;
+        return $this->title . "<br>" . $this->message;
     }
 
+    /**
+     * Returns JSON representation
+     * @return string
+     */
     public function toJSON()
     {
         return json_encode(array(

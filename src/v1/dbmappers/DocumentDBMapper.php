@@ -1,9 +1,9 @@
 <?php
 
 require_once "DBMapper.php";
-require_once __DIR__. "/../models/Document.php";
-require_once __DIR__. "/../errors/DBError.php";
-require_once __DIR__. "/../dbmappers/DocumentFieldValueDBMapper.php";
+require_once __DIR__ . "/../models/Document.php";
+require_once __DIR__ . "/../errors/DBError.php";
+require_once __DIR__ . "/../dbmappers/DocumentFieldValueDBMapper.php";
 
 class DocumentDBMapper extends DBMapper
 {
@@ -37,7 +37,7 @@ class DocumentDBMapper extends DBMapper
                     ':timestamp' => $timestamp)
             );
             $response = [];
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
@@ -88,14 +88,34 @@ class DocumentDBMapper extends DBMapper
         $document_link_db_mapper = new LinkDBMapper();
         $document_field_db_mapper = new DocumentFieldValueDBMapper();
 
+        // Store current document id and timestamp
         $id = $document->getId();
         $timestamp = $document->getTimestamp();
 
+        // Add all target groups, links and fields
         $document_target_group_db_mapper->addMultiple($target_groups, $id, $timestamp);
         $document_link_db_mapper->addMultiple($links, $id, $timestamp);
         $document_field_db_mapper->addMultiple($fields, $id, $timestamp);
 
         return $document_id;
+    }
+
+    /**
+     * Retrieving document id of document with prev_document_id = document_id
+     * @param $document_id
+     * @return DBError|mixed|null
+     */
+    public function getNextDocumentIdByDocumentId($document_id){
+        $response = null;
+        try {
+            $response = $this->queryDBWithAssociativeArray(
+                Document::SQL_GET_NEXT_DOCUMENT_ID_BY_PREV_DOCUMENT_ID, array(':id' => $document_id)
+            )->fetch();
+            $response = $response ? $response["id"] : null;
+        } catch (PDOException $e) {
+            $response = new DBError($e);
+        }
+        return $response;
     }
 
     /**
@@ -111,12 +131,12 @@ class DocumentDBMapper extends DBMapper
                 array(':topic_id' => $topic_id));
             $raw = $result->fetchAll();
             $objects = [];
-            foreach($raw as $raw_item){
+            foreach ($raw as $raw_item) {
                 array_push($objects, Document::fromDBArray($raw_item));
             }
             $response = $objects;
 
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
@@ -134,12 +154,12 @@ class DocumentDBMapper extends DBMapper
             $result = $this->queryDBWithAssociativeArray(Document::SQL_GET_PROFILES, array(':id' => $id));
             $raw = $result->fetchAll();
             $objects = [];
-            foreach($raw as $raw_item){
+            foreach ($raw as $raw_item) {
                 array_push($objects, Document::fromDBArray($raw_item));
             }
             $response = $objects;
 
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
@@ -157,13 +177,89 @@ class DocumentDBMapper extends DBMapper
             $result = $this->queryDBWithAssociativeArray(Document::SQL_GET_PROFILE_IDS, array(':id' => $id));
             $raw = $result->fetchAll();
             $objects = [];
-            foreach($raw as $raw_item){
+            foreach ($raw as $raw_item) {
                 array_push($objects, array('id' => $raw_item['id']));
             }
             $response = $objects;
 
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
+        }
+        return $response;
+    }
+
+    /**
+     * Returns if internal id is unique
+     * @param $internal_id
+     * @return bool|null
+     */
+    public function isValidInternalId($internal_id)
+    {
+        $response = null;
+        try {
+            $result = $this->queryDBWithAssociativeArray(
+                Document::SQL_GET_INTERNAL_ID,
+                array(':internal_id' => $internal_id));
+            $raw_internal_id = $result->fetchAll();
+
+            // if raw internal id exists, internal id is invalid
+            if ($raw_internal_id) {
+                $response = false;
+            } else {
+                $response = true;
+            }
+
+        } catch (PDOException $e) {
+            $response = false;
+        }
+        return $response;
+    }
+
+    /**
+     * Returns if his number is unique
+     * @param $his_number
+     * @return bool|null
+     */
+    public function isValidHisNumber($his_number)
+    {
+        $response = null;
+        try {
+            $result = $this->queryDBWithAssociativeArray(
+                Document::SQL_GET_HIS_NUMBER,
+                array(':his_number' => $his_number));
+            $raw_his_number = $result->fetchAll();
+
+            // if raw his number exists, his number is invalid
+            if ($raw_his_number) {
+                $response = false;
+            } else {
+                $response = true;
+            }
+
+        } catch (PDOException $e) {
+            $response = false;
+        }
+        return $response;
+    }
+
+    public function isPreviousDocumentId($previous_document_id)
+    {
+        $response = null;
+        try {
+            $result = $this->queryDBWithAssociativeArray(
+                Document::SQL_GET_PREVIOUS_DOCUMENT_ID,
+                array(':previous_document_id' => $previous_document_id));
+            $raw_previous_document_id = $result->fetchAll();
+
+            // if raw previous document id exists, previous document id is invalid
+            if ($raw_previous_document_id) {
+                $response = false;
+            } else {
+                $response = true;
+            }
+
+        } catch (PDOException $e) {
+            $response = false;
         }
         return $response;
     }

@@ -1,11 +1,11 @@
 <?php
-require_once __DIR__.'/../../responses/Response.php';
-require_once __DIR__.'/../../responses/ResponseController.php';
-require_once __DIR__.'/../../errors/InvalidPathError.php';
-require_once __DIR__.'/../../errors/ErrorController.php';
-require_once __DIR__.'/../../dbmappers/TopicDBMapper.php';
-require_once __DIR__.'/../../models/Document.php';
-require_once __DIR__.'/../../errors/CantDeleteError.php';
+require_once __DIR__ . '/../../responses/Response.php';
+require_once __DIR__ . '/../../responses/ResponseController.php';
+require_once __DIR__ . '/../../errors/InvalidPathError.php';
+require_once __DIR__ . '/../../errors/ErrorController.php';
+require_once __DIR__ . '/../../dbmappers/TopicDBMapper.php';
+require_once __DIR__ . '/../../models/Document.php';
+require_once __DIR__ . '/../../errors/CantDeleteError.php';
 
 class TopicController extends ResponseController
 {
@@ -24,10 +24,10 @@ class TopicController extends ResponseController
         $this->list_name = 'topics';
         $this->model = 'Topic';
 
-        if(count($this->path) != 0){
-            if(count($this->path) == 1 && is_numeric($path[0])){
+        if (count($this->path) != 0) {
+            if (count($this->path) == 1 && is_numeric($path[0])) {
                 $this->id = $path[0];
-            }else{
+            } else {
                 $this->controller = new ErrorController(new InvalidPathError());
             }
         }
@@ -40,46 +40,16 @@ class TopicController extends ResponseController
     protected function getAll()
     {
         $mapper = new TopicDbMapper();
-        $topics = $mapper->getTopicsAsThree();
+        $topics = $mapper->getTopicsAsThree();  // Retrieves tree representation of topics
         $topics_array = [];
-        foreach($topics as $topic){
+        foreach ($topics as $topic) {
             $array = $topic->toArray();
-            //$array['documents'] = $this->getDocuments($topic->getId()); // Adds all documents
             array_push($topics_array, $array);
         }
 
-        $json = json_encode(array( "topics" => $topics_array), JSON_PRETTY_PRINT);
+        $json = json_encode(array("topics" => $topics_array), JSON_PRETTY_PRINT);
 
         return new Response($json);
-    }
-
-
-    /**
-     * Function creating a new topic.
-     * @return Response
-     */
-    protected function create()
-    {
-        $missing_fields = TopicController::validateJSONFormat($this->body, Topic::REQUIRED_POST_FIELDS);
-        if( !$missing_fields ){
-            $mapper = new TopicDbMapper();
-            $assoc = $this->body;
-            $topic = Topic::fromJSON($assoc);
-            $response = $mapper->add($topic);
-
-
-            if ($response instanceof DBError) {
-                $response = new ErrorResponse($response);
-            }
-            else{
-                $this->id = $response;
-                $response = $this->get();
-            }
-        }
-        else{
-            $response = new ErrorResponse(new MalformedJSONFormatError($missing_fields));
-        }
-        return $response;
     }
 
     /**
@@ -89,20 +59,24 @@ class TopicController extends ResponseController
     protected function get()
     {
         $result = $this->getChildren($this->id);
-        if($result){
+        if ($result) {
 
             return new Response(json_encode($result, JSON_PRETTY_PRINT));
-        }
-        else{
+        } else {
             return new ErrorResponse(new NotFoundError());
         }
     }
 
+    /**
+     * Returns topic array with children
+     * @param $id
+     * @return mixed
+     */
     private function getChildren($id)
     {
         $controller = new TopicDbMapper();
         $topic = $controller->getById($id);
-        if($topic){
+        if ($topic) {
             $result = $topic->toArray();
             $topic_children = $controller->getSubtopicsByTopicId($id);
 
@@ -119,7 +93,7 @@ class TopicController extends ResponseController
             }
             $result['children'] = $children;
 
-            $result['documents'] = array_merge($result['documents'],$this->getDocuments($id));
+            $result['documents'] = array_merge($result['documents'], $this->getDocuments($id));
             return $result;
         }
     }
@@ -135,6 +109,8 @@ class TopicController extends ResponseController
         $documents = $document_mapper->getDocumentsByTopicId($topic_id);
 
         $documents_array = array();
+
+        // Sets profiles, links, fields and target groups for each document
         foreach ($documents as $document) {
             $document->setTargetGroups(DocumentController::getTargetGroups($document));
             $document->setLinks(DocumentController::getLinks($document));
@@ -144,14 +120,14 @@ class TopicController extends ResponseController
             array_push($documents_array, $document_array);
         }
 
-        usort($documents_array, function ($a, $b)   // Sort document list on sequence
+        // Sort document list on sequence
+        usort($documents_array, function ($a, $b)
         {
             return $a['sequence'] - $b['sequence'];
         });
 
         return $documents_array;
     }
-
 
     /**
      * Function deleting a topic.
@@ -161,11 +137,11 @@ class TopicController extends ResponseController
     {
         $mapper = new TopicDbMapper();
 
-        if ( !( $mapper->hasSubtopic($this->id) || $mapper->hasDocuments($this->id)))
+        // Check if topic has subtopics or documents, deleting is not allowed if topic is not empty
+        if (!($mapper->hasSubtopic($this->id) || $mapper->hasDocuments($this->id)))
             return new Response($mapper->deleteById($this->id), Response::STATUS_CODE_NO_CONTENT);
         else
             return new ErrorResponse(new CantDeleteError());
     }
-
 
 }

@@ -1,9 +1,9 @@
 <?php
 
 require_once 'DBMapper.php';
-require_once 'DbCommunication.php';
-require_once __DIR__.'/../models/Link.php';
-require_once __DIR__.'/../errors/DBError.php';
+require_once 'DBCommunication.php';
+require_once __DIR__ . '/../models/Link.php';
+require_once __DIR__ . '/../errors/DBError.php';
 
 class LinkDBMapper extends DBMapper
 {
@@ -32,12 +32,12 @@ class LinkDBMapper extends DBMapper
             ));
             $raw = $result->fetchAll();
             $objects = [];
-            foreach($raw as $raw_item){
+            foreach ($raw as $raw_item) {
                 array_push($objects, Link::fromDBArray($raw_item));
             }
             $response = $objects;
 
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
@@ -56,12 +56,12 @@ class LinkDBMapper extends DBMapper
             ));
             $raw = $result->fetchAll();
             $objects = [];
-            foreach($raw as $raw_item){
+            foreach ($raw as $raw_item) {
                 array_push($objects, $raw_item);
             }
             $response = $objects;
 
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
@@ -82,12 +82,12 @@ class LinkDBMapper extends DBMapper
             ));
             $raw = $result->fetchAll();
             $objects = [];
-            foreach($raw as $raw_item){
+            foreach ($raw as $raw_item) {
                 array_push($objects, Link::fromDBArray($raw_item));
             }
             $response = $objects;
 
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
@@ -106,12 +106,12 @@ class LinkDBMapper extends DBMapper
             ));
             $raw = $result->fetchAll();
             $objects = [];
-            foreach($raw as $raw_item){
+            foreach ($raw as $raw_item) {
                 array_push($objects, $raw_item);
             }
             $response = $objects;
 
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
@@ -132,5 +132,5 @@ class LinkDBMapper extends DBMapper
             $this->add($l);
         }
     }
-    
+
 }

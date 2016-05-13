@@ -7,7 +7,7 @@ class Link implements iModel
 {
     const SQL_GET_ALL = "SELECT * FROM link;";
     const SQL_GET_BY_ID = "SELECT * FROM link WHERE id = :id;";
-    const REQUIRED_POST_FIELDS = ['text','url','link_category_id','document_id','document_timestamp'];
+    const REQUIRED_POST_FIELDS = ['text', 'url', 'link_category_id', 'document_id', 'document_timestamp'];
     const SQL_INSERT = "
         INSERT INTO link(id,text,description,url,link_category_id,document_id,document_timestamp,link_document_id)
         VALUES (null,:text,:description,:url,:link_category_id,:document_id,:document_timestamp,:link_document_id);";
@@ -68,13 +68,7 @@ class Link implements iModel
      */
     public function setText($text)
     {
-        if (strlen($text) > ModelValidation::TEXT_MAX_LENGTH) {
-            $this->text = ModelValidation::getValidText($text);
-            echo "Text is too long, set to: " . $this->text;
-        }
-        else {
-            $this->text = $text;
-        }
+        $this->text = ModelValidation::getValidText($text);
     }
 
     public function getDescription()
@@ -88,13 +82,7 @@ class Link implements iModel
      */
     public function setDescription($description)
     {
-        if (strlen($description) > ModelValidation::DESCRIPTION_MAX_LENGTH) {
-            $this->description = ModelValidation::getValidDescription($description);
-            echo "Description is too long, set to: " . $this->description;
-        }
-        else {
-            $this->description = $description;
-        }
+        $this->description = ModelValidation::getValidDescription($description);
     }
 
     public function getUrl()
@@ -104,7 +92,7 @@ class Link implements iModel
 
     public function setUrl($url)
     {
-        $this->url = $url;
+        $this->url = ModelValidation::getValidURL($url);
     }
 
     public function getLinkCategoryId()
@@ -169,7 +157,7 @@ class Link implements iModel
      */
     public function toJSON()
     {
-        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+        return json_encode($this->toArray(), JSON_PRETTY_PRINT);
     }
 
     /**
@@ -200,14 +188,14 @@ class Link implements iModel
     {
 
         return new Link(
-            (array_key_exists('id', $json)) ? $json['id'] : null,
-            $json['text'],
-            (array_key_exists('description', $json)) ? $json['description'] : null,
-            $json['url'],
-            $json['linkCategoryId'],
-            $json['documentId'],
-            $json['documentTimestamp'],
-            (array_key_exists('linkDocumentId', $json)) ? $json['linkDocumentId'] : null
+            getValueFromArray($json, 'id'),
+            getValueFromArray($json, 'text'),
+            getValueFromArray($json, 'description'),
+            getValueFromArray($json, 'url'),
+            getValueFromArray($json, 'linkCategoryId'),
+            getValueFromArray($json, 'documentId'),
+            getValueFromArray($json, 'documentTimestamp'),
+            getValueFromArray($json, 'linkDocumentId')
         );
     }
 
@@ -226,7 +214,7 @@ class Link implements iModel
             ':document_timestamp' => $this->document_timestamp,
             ':link_document_id' => $this->link_document_id
         );
-        if($this->id){
+        if ($this->id) {
             $db_array[":id"] = $this->id;
         }
         return $db_array;

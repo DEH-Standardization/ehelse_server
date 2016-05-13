@@ -12,8 +12,8 @@ class Mandatory implements iModel
     const SQL_UPDATE = "UPDATE mandatory SET name = :name, description = :description WHERE id = :id;";
     const SQL_DELETE = "DELETE FROM mandatory WHERE id = :id;";
 
-    const REQUIRED_POST_FIELDS = ['name', 'description'];
-    const REQUIRED_PUT_FIELDS = ['name', 'description'];
+    const REQUIRED_POST_FIELDS = ['name'];
+    const REQUIRED_PUT_FIELDS = ['name'];
 
     private $id, $name, $description;
 
@@ -46,13 +46,7 @@ class Mandatory implements iModel
      */
     public function setName($name)
     {
-        if (strlen($name) > ModelValidation::NAME_MAX_LENGTH) {
-            $this->name = ModelValidation::getValidName($name);
-            echo "Name is too long, set to: " . $this->name;
-        }
-        else {
-            $this->name = $name;
-        }
+        $this->name = ModelValidation::getValidName($name);
     }
 
     public function getDescription()
@@ -66,12 +60,7 @@ class Mandatory implements iModel
      */
     public function setDescription($description)
     {
-        if (strlen($description) > ModelValidation::DESCRIPTION_MAX_LENGTH) {
-            $this->description = ModelValidation::getValidDescription($description);
-            echo "Description is too long, set to: " . $this->description;
-        } else {
-            $this->description = $description;
-        }
+        $this->description = ModelValidation::getValidDescription($description);
     }
 
     /**
@@ -92,7 +81,7 @@ class Mandatory implements iModel
      */
     public function toJSON()
     {
-        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+        return json_encode($this->toArray(), JSON_PRETTY_PRINT);
     }
 
     /**
@@ -116,9 +105,10 @@ class Mandatory implements iModel
     public static function fromJSON($json)
     {
         return new Action(
-            $json['id'],
-            $json['name'],
-            $json['description']);
+            getValueFromArray($json, 'id'),
+            getValueFromArray($json, 'name'),
+            getValueFromArray($json, 'description')
+        );
     }
 
     /**
@@ -131,7 +121,7 @@ class Mandatory implements iModel
             ':name' => $this->name,
             ':description' => $this->description
         );
-        if($this->id){
+        if ($this->id) {
             $db_array[':id'] = $this->id;
         }
         return $db_array;

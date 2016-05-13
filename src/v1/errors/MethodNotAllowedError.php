@@ -13,7 +13,7 @@ class MethodNotAllowedError extends ApplicationError
     public function __construct($method)
     {
         $this->title = "Error: Method not allowed";
-        if(array_key_exists('PATH_INFO', $_SERVER)){
+        if (array_key_exists('PATH_INFO', $_SERVER)) {
             $this->path = $_SERVER['PATH_INFO'];
         }
         $this->message = 'Method <{$method}> not allowed at <{$this->path}>';

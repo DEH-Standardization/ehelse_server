@@ -1,7 +1,7 @@
 <?php
 
 require_once 'ApplicationError.php';
-require_once __DIR__.'/../responses/Response.php';
+require_once __DIR__ . '/../responses/Response.php';
 
 /**
  * Error message for database errors
@@ -15,12 +15,15 @@ class DBError extends ApplicationError
      */
     public function __construct($exception)
     {
-
         $this->title = "Database Error";
         $this->message = $exception->getMessage();
         $this->response_code = Response::STATUS_CODE_INTERNAL_ERROR;
     }
 
+    /**
+     * Returns JSON representation
+     * @return string
+     */
     public function toJSON()
     {
         return json_encode(array(
@@ -28,8 +31,6 @@ class DBError extends ApplicationError
             "message" => $this->message
         ), JSON_PRETTY_PRINT);
     }
-
-
 
 
 }

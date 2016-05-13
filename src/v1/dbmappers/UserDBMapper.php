@@ -24,8 +24,8 @@ class UserDBMapper extends DBMapper
         $response = null;
         try {
             $this->queryDBWithAssociativeArray(User::SQL_UPDATE_PASSWORD_STATEMENT, $user->toResetPasswordDBArray());
-            $response = $user->getId();//$this->connection->lastInsertId();
-        } catch(PDOException $e) {
+            $response = $user->getId();
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;
@@ -42,7 +42,7 @@ class UserDBMapper extends DBMapper
         try {
             $result = $this->queryDBWithAssociativeArray(User::SQL_GET_USER_BY_EMAIL, array(":email" => $email));
             $response = $result->fetch();
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $response = new DBError($e);
         }
         return $response;

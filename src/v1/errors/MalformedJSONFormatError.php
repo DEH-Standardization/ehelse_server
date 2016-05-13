@@ -5,6 +5,10 @@ require_once 'ApplicationError.php';
 class MalformedJSONFormatError extends ApplicationError
 {
 
+    /**
+     * MalformedJSONFormatError constructor.
+     * @param $missing_fields
+     */
     public function __construct($missing_fields)
     {
         $this->title = "Error: Invalid JSON";

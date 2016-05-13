@@ -5,14 +5,14 @@ require_once 'iModel.php';
 
 class TargetGroup implements iModel
 {
-   const SQL_GET_ALL = "SELECT * FROM target_group;";
+    const SQL_GET_ALL = "SELECT * FROM target_group;";
     const SQL_GET_BY_ID = "SELECT * FROM target_group WHERE id = :id;";
     const SQL_INSERT = "INSERT INTO target_group(name, description, parent_id, abbreviation) VALUES (:name, :description, :parent_id, :abbreviation);";
     const SQL_UPDATE = "UPDATE target_group set name=:name, description=:description, parent_id=:parent_id, abbreviation=:abbreviation WHERE id=:id;";
     const SQL_DELETE = "DELETE FROM target_group WHERE id=:id";
 
-    const REQUIRED_POST_FIELDS = ['name', 'parentId', 'abbreviation'];
-    const REQUIRED_PUT_FIELDS = ['name', 'parentId', 'abbreviation'];
+    const REQUIRED_POST_FIELDS = ['name'];
+    const REQUIRED_PUT_FIELDS = ['name'];
 
     private $id, $name, $description, $parent_id, $abbreviation, $children;
 
@@ -30,7 +30,7 @@ class TargetGroup implements iModel
         $this->setName($name);
         $this->setDescription($description);
         $this->parent_id = $parent_id;
-        $this->abbreviation = $abbreviation;
+        $this->setAbbreviation($abbreviation);
         $this->children = [];
     }
 
@@ -53,10 +53,12 @@ class TargetGroup implements iModel
     {
         return $this->abbreviation;
     }
+
     public function addChild($child)
     {
         array_push($this->children, $child);
     }
+
     public function addChildren($children)
     {
         $this->children = array_merge($this->children, $children);
@@ -68,13 +70,7 @@ class TargetGroup implements iModel
      */
     public function setName($name)
     {
-        if (strlen($name) > ModelValidation::NAME_MAX_LENGTH) {
-            $this->name = ModelValidation::getValidName($name);
-            echo "Name is too long, set to: " . $this->name;
-        }
-        else {
-            $this->name = $name;
-        }
+        $this->name = ModelValidation::getValidName($name);
     }
 
     public function getDescription()
@@ -88,13 +84,12 @@ class TargetGroup implements iModel
      */
     public function setDescription($description)
     {
-        if (strlen($description) > ModelValidation::DESCRIPTION_MAX_LENGTH) {
-            $this->description = ModelValidation::getValidDescription($description);
-            echo "Description is too long, set to: " . $this->description;
-        }
-        else {
-            $this->description = $description;
-        }
+        $this->description = ModelValidation::getValidDescription($description);
+    }
+
+    public function setAbbreviation($abbreviation)
+    {
+        $this->abbreviation = ModelValidation::getValidAbbreviation($abbreviation);
     }
 
     /**
@@ -117,7 +112,7 @@ class TargetGroup implements iModel
      */
     public function toJSON()
     {
-        return json_encode($this->toArray(),JSON_PRETTY_PRINT);
+        return json_encode($this->toArray(), JSON_PRETTY_PRINT);
     }
 
     /**
@@ -128,11 +123,11 @@ class TargetGroup implements iModel
     public static function fromJSON($json)
     {
         return new TargetGroup(
-            (array_key_exists('id', $json)) ? $json['id'] : null,
-            $json['name'],
-            $json['description'],
-            $json['parentId'],
-            $json['abbreviation']
+            getValueFromArray($json, 'id'),
+            getValueFromArray($json, 'name'),
+            getValueFromArray($json, 'description'),
+            getValueFromArray($json, 'parentId'),
+            getValueFromArray($json, 'abbreviation')
         );
     }
 
@@ -163,7 +158,7 @@ class TargetGroup implements iModel
             ":parent_id" => $this->parent_id,
             ":abbreviation" => $this->abbreviation
         );
-        if($this->id){
+        if ($this->id) {
             $db_array[":id"] = $this->id;
         }
         return $db_array;
