@@ -1,4 +1,5 @@
 .idea
 
 src/v1/dbmappers/db_info.php
+tests/db_info.php
 src/v1/dbmappers/test.php
