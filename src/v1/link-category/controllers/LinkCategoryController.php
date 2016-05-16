@@ -19,7 +19,7 @@ class LinkCategoryController extends ResponseController
     {
         $this->init($path, $method, $body);
         $this->db_mapper = 'LinkCategoryDBMapper';
-        $this->list_name = 'link_categories';
+        $this->list_name = 'linkCategories';
         $this->model = 'LinkCategory';
     }
 
