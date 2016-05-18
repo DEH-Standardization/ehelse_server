@@ -2,6 +2,4 @@
 <dataset>
     <target_group id="1" name="Apotek" description="desc"  abbreviation="A"/>
     <target_group id="2" name="Allmennlegetjenesten" description="desc"  abbreviation="AL"/>
-    <target_group id="3" name="Apotek som kan levere multidosepakkede legemidler" description="desc" parent_id="1" abbreviation="Am"/>
-    <target_group id="4" name="Test" description="Helseforetak" parent_id="3" abbreviation="HF"/>
 </dataset>
