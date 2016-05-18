@@ -36,6 +36,18 @@ class MandatoryTest extends EHelseDatabaseTestCase
         self::assertIsValidResponse($response);
     }
 
+    public function test_get_all_mandatory_on_basic_table_returns_list_of_mandatory()
+    {
+        $this->mySetup(__DIR__ . "/basic_mandatory_table.xml");
+        $controller = new MandatoryController([], Response::REQUEST_METHOD_GET, array());
+        $response = $controller->getResponse();
+        $new_data = array(
+            array('id' => 1, 'name' => 'Obligatorisk', 'description' => 'Obligatorisk å bruke'),
+            array('id' => 2, 'name' => 'Anbefalt', 'description' => 'Anbefalt å bruke')
+        );
+        $json = json_encode($new_data, JSON_PRETTY_PRINT);
+        return self::assertIsCorrectResponseData($json, $response);
+    }
 
     public function test_delete_mandatory_returns()
     {
