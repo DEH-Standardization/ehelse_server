@@ -168,6 +168,6 @@ class UserController extends ResponseController
     protected function delete()
     {
         $user_db_mapper = new UserDBMapper();
-        return new Response(json_encode($user_db_mapper->deleteById($this->id), JSON_PRETTY_PRINT));
+        return new Response(json_encode($user_db_mapper->deleteById($this->id), JSON_PRETTY_PRINT), Response::STATUS_CODE_NO_CONTENT);
     }
 }
