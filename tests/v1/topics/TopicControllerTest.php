@@ -1,104 +1,162 @@
 <?php
 
+require_once __DIR__ . "/../EHelseDatabaseTestCase.php";
 require_once __DIR__ . "/../EHelseTestCase.php";
 require_once __DIR__ . "/../../../src/v1/topics/controllers/TopicController.php";
+require_once __DIR__ . "/../../../src/v1/errors/AuthenticationError.php";
+require_once __DIR__ . "/../../../src/v1/errors/NotFoundError.php";
+require_once __DIR__ . "/../../../src/v1/errors/AuthorizationError.php";
 
-
-class TopicControllerTest extends EHelseTestCase
+class TopicControllerTest extends EHelseDatabaseTestCase
 {
+    const list_name = "topics";
+    const fields = ["id", "title", "description", "sequence", "comment"];
 
-    public function testGetResponse__path_empty__method_get__body_empty__returns_topics()
+    /**
+     * Test get all empty db
+     */
+    public function test_get_all_topics_on_empty_table_returns_empty_array()
     {
-        $_SERVER['PATH_INFO'] = "/v1/topics/";
-        $controller = new TopicController($path = [], $method = Response::REQUEST_METHOD_GET, $body = "");
+        $this->mySetup(__DIR__ . "/empty_topic_table.xml");
+        $controller = new TopicController([], Response::REQUEST_METHOD_GET, array());
         $response = $controller->getResponse();
 
-        $this->assertEquals(Response::CONTENT_TYPE_JSON, $response->getContentType());
-        $this->assertEquals(Response::STATUS_CODE_OK, $response->getResponseCode());
-        $json=json_decode($response->getBody(), true);
-        $this->assertTrue($this->validateJSONTopicList($json));
+        self::assertIsValidResponseList($response);
     }
 
-    public function testGetResponse__path_contains_letter__method_get__body_empty__returns_invalid_path_error()
+    /**
+     * Test topic empty db
+     */
+    public function test_get_topic_on_empty_table_returns_error()
     {
-
-        $_SERVER['PATH_INFO'] = "/v1/topics/a/";
-        $controller = new TopicController($path = ['a'], $method = Response::REQUEST_METHOD_GET, $body = "");
+        $this->mySetup(__DIR__ . "/empty_topic_table.xml");
+        $controller = new TopicController([1], Response::REQUEST_METHOD_GET, array());
         $response = $controller->getResponse();
 
-        $this->assertTrue(get_class($response) == ErrorResponse::class);
-        $error = $response->getError();
-        $this->assertTrue(get_class($error) == InvalidPathError::class);
+        self::assertIsValidErrorResponse($response, Response::STATUS_CODE_NOT_FOUND);
     }
 
-   /* public function testPostResponse__path_id__method_get__body_empty__returns_topic()
+    /**
+     * Test get all topics
+     */
+    public function test_get_all_topics_on_basic_table_returns_topics()
     {
-        $_SERVER['PATH_INFO'] = "/v1/topics/1/";
-        $controller = new TopicController($path = [1], $method = Response::REQUEST_METHOD_GET, $body = "");
+        $this->mySetup(__DIR__ . "/basic_topic_table.xml");
+        $controller = new TopicController([], Response::REQUEST_METHOD_GET, array());
         $response = $controller->getResponse();
 
-        $this->assertEquals(Response::CONTENT_TYPE_JSON, $response->getContentType());
-        $this->assertEquals(Response::STATUS_CODE_OK, $response->getResponseCode());
-        $json=json_decode($response->getBody(), true);
-        $this->assertTrue($this->validateJSONTopic($json));
-    }*/
-
-   /* public function testPostResponse__path_empty__method_post__body_json__returns_topic()
-    {
-
-        $_SERVER['PATH_INFO'] = "/v1/topics/";
-        $topic = new Topic(null,null,"test","unit test",true,0,null);
-
-
-        $controller = new TopicController($path = [], $method = Response::REQUEST_METHOD_POST, $body = $topic->toArray());
-        $response = $controller->getResponse();
-
-        $this->assertEquals(Response::CONTENT_TYPE_JSON, $response->getContentType());
-        $this->assertEquals(Response::STATUS_CODE_OK, $response->getResponseCode());
-        $json=json_decode($response->getBody(), true);
-        $this->assertTrue($this->validateJSONTopic($json));
-    }*/
-
-
-
-
-    private function validateJSONTopicList($json)
-    {
-        $valid = true;
-        $topics = $json['topics'];
-        if(is_array($topics)){
-            foreach( $topics as $topic){
-                if( !$this->validateJSONTopic($topic)){
-                    $valid = false;
-                    break;
-                }
-            }
-        }
-        else{
-            $valid = false;
-        }
-
-        return $valid;
+        self::assertIsValidResponseList($response);
     }
 
-    private function validateJSONTopic($topic)
+    /**
+     * Test get topic
+     */
+    public function test_get_topic_on_basic_table_returns_topic()
     {
-        $valid = true;
-        try{
-            $topic['id'];
-            $topic['timestamp'];
-            $topic['title'];
-            $topic['description'];
-            $topic['parent'];
-            $topic['isInCatalog'];
-            $topic['sequence'];
-            $topic['children'];
-            $topic['documents'];
-        }
-        catch(Exception $e){
-            $valid = false;
-        }
-        return $valid;
+        $this->mySetup(__DIR__ . "/basic_topic_table.xml");
+        $controller = new TopicController([1], Response::REQUEST_METHOD_GET, array());
+        $response = $controller->getResponse();
+
+        self::assertIsValidResponse($response);
+    }
+
+    /**
+     * Test delete topic without documents
+     */
+    public function test_delete_topic_returns()
+    {
+        $this->mySetup(__DIR__ . "/basic_topic_table.xml");
+        $controller = new TopicController([0], Response::REQUEST_METHOD_DELETE, array());
+        $response = $controller->getResponse();
+        self::assertIsValidDeleteResponse($response);
+    }
+
+    /**
+     * Test delete topic with documents
+     */
+    public function test_delete_topic_with_document_under_returns()
+    {
+        $this->mySetup(__DIR__ . "/topic_table_with_document.xml");
+        $controller = new TopicController([1], Response::REQUEST_METHOD_DELETE, array());
+        $response = $controller->getResponse();
+        self::assertIsValidErrorResponse($response, Response::STATUS_CODE_BAD_REQUEST);
+    }
+
+
+    /**
+     * Test put topic
+     */
+    public function test_update_topic_updated_topic()
+    {
+        $this->mySetup(__DIR__ . "/basic_topic_table.xml");
+        $new_data = [
+            "id" => 1,
+            "title" => "123",
+            "description" => "321",
+            "sequence" => "1",
+            "comment" => "comment"
+        ];
+        $controller = new TopicController([1], Response::REQUEST_METHOD_PUT, $new_data);
+        $response = $controller->getResponse();
+        self::assertIsValidResponse($response);
+
+        self::assertIsCorrectResponseData($response->getBody(), $new_data);
+    }
+
+    /**
+     * Test post topic
+     */
+    public function test_post_topic_creates_topic()
+    {
+        $this->mySetup(__DIR__ . "/basic_topic_table.xml");
+        $new_data = [
+            "title" => "derp",
+            "description" => "pred",
+            "sequence" => "3",
+            "comment" => "comment"
+        ];
+        $controller = new TopicController([], Response::REQUEST_METHOD_POST, $new_data);
+        $response = $controller->getResponse();
+        self::assertIsValidResponse($response, Response::STATUS_CODE_CREATED);
+
+        self::assertIsCorrectResponseData($response->getBody(), $new_data);
+    }
+
+    /**
+     * Test post subtopic
+     */
+    public function test_post_subtopic_creates_topic()
+    {
+        $this->mySetup(__DIR__ . "/basic_topic_table.xml");
+        $new_data = [
+            "title" => "derp",
+            "description" => "pred",
+            "sequence" => "3",
+            "comment" => "comment",
+            "parentId" => "1"
+        ];
+        $controller = new TopicController([], Response::REQUEST_METHOD_POST, $new_data);
+        $response = $controller->getResponse();
+        self::assertIsValidResponse($response, Response::STATUS_CODE_CREATED);
+
+        self::assertIsCorrectResponseData($response->getBody(), $new_data);
+    }
+
+    /*
+     * Test change sequence
+     */
+    public function test_change_sequence_for_topic()
+    {
+        $this->mySetup(__DIR__ . "/different_sequence_topic_table.xml");
+        $controller = new TopicController([], Response::REQUEST_METHOD_GET, array());
+        $response = $controller->getResponse();
+
+        $json = json_decode($response->getBody(), true);
+        $sequence_element_1 = $json['topics'][0]['sequence'];
+        $sequence_element_2 = $json['topics'][1]['sequence'];
+
+        self::assertEquals(1, $sequence_element_2, 'Topic 2, first element');
+        self::assertEquals(2, $sequence_element_1, 'Topic 1, second element');
     }
 
 }
