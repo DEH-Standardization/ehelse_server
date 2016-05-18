@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<dataset>
+    <topic id="1" timestamp="2016-05-18 08:00:00" title="Del 1: Informasjonssikkerhet" description="Omfatter standarder og andre kravdokumenter."  sequence="1" comment="comment" is_archived="0"/>
+
+    <status id="1" name="Aktiv" description="" />
+    <document_type id="1" name="Standard"/>
+
+    <document id="1" timestamp="2016-05-12 04:42:26" title="test" description="beksrivelse 1" sequence="1" topic_id="1"  status_id="1" document_type_id="1"   internal_id="1" his_number="1"/>
+
+</dataset>
