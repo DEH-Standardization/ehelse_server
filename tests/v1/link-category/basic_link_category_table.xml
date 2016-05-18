@@ -1,0 +1,5 @@
+<?xml version="1.0" ?>
+<dataset>
+    <link_category id="1" name="Bibliografi" description="Bibliografi"  />
+    <link_category id="2" name="Selvdeklarering av programvare" description="Selvdeklarering av programvare"  />
+</dataset>
