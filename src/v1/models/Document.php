@@ -17,7 +17,7 @@ class Document implements iModel
     const SQL_GET_BY_ID = "SELECT * FROM document WHERE id = :id AND is_archived = 0 AND (id,timestamp) IN
       (SELECT id, MAX(timestamp) FROM document GROUP BY id)";
     const SQL_GET_ALL = "SELECT * FROM document WHERE is_archived = 0 AND (id,timestamp) IN (SELECT id, MAX(timestamp)
-      FROM document GROUP BY id);";
+      FROM document GROUP BY id) ORDER BY sequence;";
     const SQL_DELETE = "UPDATE document SET is_archived = 1 WHERE id = :id AND timestamp = :timestamp;";
 
     const SQL_GET_MAX_TIMESTAMP = "SELECT MAX(timestamp) FROM document WHERE id = :id;";
