@@ -112,7 +112,6 @@ class UserController extends ResponseController
                         $this->body, EmailSender::REGISTER_EMAIL);  // Set random password and notify user by email
                     $response = $this->get();
                 } else {
-                    //todo not sure how best to handle this
                     throw new Exception("Not implemented error");
                 }
             } else {
