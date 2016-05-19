@@ -11,13 +11,16 @@ require_once __DIR__ . "/../../../src/v1/errors/AuthorizationError.php";
 class TargetGroupControllerTest extends EHelseDatabaseTestCase
 {
 
+    const list_name = "targetGroups";
+    const fields = ['id', 'name', 'description', 'parentId', 'abbreviation'];
+
     public function test_get_all_topics_on_empty_table_returns_empty_array()
     {
         $this->mySetup(__DIR__ . "/empty_target_group_table.xml");
         $controller = new TargetGroupController([], Response::REQUEST_METHOD_GET,array());
         $response = $controller->getResponse();
 
-        self::assertIsValidResponse($response, Response::STATUS_CODE_OK, "TargetGroupControllerTest::isValidTargetGroupListJSON");
+        self::assertIsValidResponseList($response, Response::STATUS_CODE_OK);
     }
 
     public function test_get_topic_on_empty_table_returns_not_found_error()
@@ -42,7 +45,7 @@ class TargetGroupControllerTest extends EHelseDatabaseTestCase
             'abbreviation' => 'A',
             'parentId' => null);
 
-        self::assertIsValidResponse($response, Response::STATUS_CODE_OK, "TargetGroupControllerTest::isValidTargetGroupJSON");
+        self::assertIsValidResponse($response, Response::STATUS_CODE_OK);
         self::assertIsCorrectResponseData($response->getBody(), $topic_data);
     }
 
@@ -59,22 +62,11 @@ class TargetGroupControllerTest extends EHelseDatabaseTestCase
         $controller = new TargetGroupController(["1"], Response::REQUEST_METHOD_PUT, $topic_data);
         $response = $controller->getResponse();
 
-        self::assertIsValidResponse($response, Response::STATUS_CODE_OK, "TargetGroupControllerTest::isValidTargetGroupJSON");
+        self::assertIsValidResponse($response, Response::STATUS_CODE_OK);
         self::assertIsCorrectResponseData($response->getBody(), $topic_data);
     }
 
 
-    protected function isValidTargetGroupListJSON($body)
-    {
-        $json =  json_decode($body, true);
-        return self::isValidJSONList($json, "targetGroups", "TargetGroupControllerTest::isValidTargetGroupListJSON");
-    }
-
-    protected function isValidTargetGroupJSON($body)
-    {
-        $json = json_decode($body, true);
-        return self::isValidJSON($json,['id', 'name', 'description', 'parentId', 'abbreviation']);
-    }
 
 
 

@@ -46,8 +46,8 @@ abstract class ResponseController implements iController
             } elseif (is_numeric($db_response)) {
                 $this->id = $db_response;
                 $response = $this->get();
+                $response->setResponseCode(Response::STATUS_CODE_CREATED);
             } else {
-                //todo not sure how best to handle this
                 throw new Exception("Not implemented error");
             }
         } else {
