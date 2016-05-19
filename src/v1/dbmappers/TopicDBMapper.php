@@ -115,7 +115,7 @@ class TopicDbMapper extends DBMapper
             else
                 $has_subtopics = false;
         } catch (PDOException $e) {
-            printf($e);     // TODO: find a better way to handle this
+            //printf($e);
             $has_subtopics = false; // does this make sense?
         }
         return $has_subtopics;
@@ -136,7 +136,7 @@ class TopicDbMapper extends DBMapper
             else
                 $has_documents = false;
         } catch (PDOException $e) {
-            printf($e);     // TODO: find a better way to handle this
+            //printf($e);
             $has_documents = false; // does this make sense?
         }
         return $has_documents;
