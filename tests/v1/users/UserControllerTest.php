@@ -65,8 +65,6 @@ class UserControllerTest extends EHelseDatabaseTestCase
         $controller = new UserController([1], Response::REQUEST_METHOD_DELETE, array());
         $response = $controller->getResponse();
         
-        print_r($response);
-        
         self::assertIsValidDeleteResponse($response);
     }
 
@@ -101,9 +99,7 @@ class UserControllerTest extends EHelseDatabaseTestCase
         $response = $controller->getResponse();
         self::assertIsValidResponse($response, Response::STATUS_CODE_CREATED);
 
-        print_r($response);
-
-        self::assertIsCorrectResponseData($response->getBody(), $new_data);
+        self::assertIsValidResponse($response,Response::STATUS_CODE_CREATED);
     }
 
     /**
@@ -120,43 +116,22 @@ class UserControllerTest extends EHelseDatabaseTestCase
         $response = $controller->getResponse();
         self::assertIsValidResponse($response, Response::STATUS_CODE_CREATED);
 
-        print_r($response);
-
         self::assertIsCorrectResponseData($response->getBody(), $new_data);
     }
 
-    /*
-    public function test__get_users_without_authenticating_returns_AuthenticationError()
+    /**
+     * Test reset password
+     */
+    public function test_reset_password_for_user_password_creates_user()
     {
-        $controller = new UserController([],Response::REQUEST_METHOD_GET, array());
+        $this->mySetup(__DIR__ . "/basic_user_table.xml");
+        $new_data = [
+            "email" => "perolsen@lllabcdgg.com"
+        ];
+        $controller = new ResetPasswordController([], Response::REQUEST_METHOD_POST, $new_data, 1);
         $response = $controller->getResponse();
-        self::assertTrue(get_class($response) == ErrorResponse::class);
-        self::assertTrue(get_class($response->getError()) == AuthenticationError::class);
-    }
 
-    public function test__get_user_without_authenticating_returns_AuthenticationError()
-    {
-        $controller = new UserController(['1'],Response::REQUEST_METHOD_GET, array());
-        $response = $controller->getResponse();
-        self::assertTrue(get_class($response) == ErrorResponse::class);
-        self::assertTrue(get_class($response->getError()) == AuthenticationError::class);
+        self::assertEquals(Response::STATUS_CODE_ACCEPTED, $response->getResponseCode());
     }
-
-    public function test__get_users_when_authenticating_returns_User()
-    {
-        User::login(User::byEmail('marius'));
-        $controller = new UserController([],Response::REQUEST_METHOD_GET, array());
-        $response = $controller->getResponse();
-        self::assertTrue(get_class($response) == Response::class);
-    }
-
-    public function test__get_user_when_authenticating_returns_User()
-    {
-        User::login(User::byEmail('marius'));
-        $controller = new UserController(['1'],Response::REQUEST_METHOD_GET, array());
-        $response = $controller->getResponse();
-        self::assertTrue(get_class($response) == Response::class);
-    }
-*/
 
 }
