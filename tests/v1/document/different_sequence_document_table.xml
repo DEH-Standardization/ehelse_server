@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<dataset>
+
+    <document_type id="1" name="Standard"/>
+    <document_type id="2" name="Profil"/>
+    <document_type id="3" name="Støttedokument"/>
+
+    <target_group id="1" name="ambu" description="ambulase"  abbreviation="a"/>
+
+
+    <mandatory id="1" name="obligatorisk" description="ob" />
+
+    <action id="1" name="sende" description="sende"/>
+    <link_category id="1" name="link c" description="beskrivelse av link c"/>
+
+    <status id="1" name="Aktiv" description="" />
+    <status id="2" name="Ikke i refkat" description="" />
+
+    <topic id="1" timestamp="2016-05-12 04:42:26" title="topick" description="beskrivelse" sequence="1" comment="Topic" is_archived=""/>
+    <document_field id="1" name="" description="test" sequence="1" mandatory="true" document_type_id="1" />
+
+
+
+    <document id="1" timestamp="2016-05-12 04:42:26" title="test" description="beksrivelse 1" sequence="2" topic_id="1"  status_id="1" document_type_id="1"   internal_id="1" his_number="1"/>
+    <document id="2" timestamp="2016-05-12 04:42:26" title="test2" description="beskrivelse 2" sequence="1" topic_id="1" status_id="2" document_type_id="2" standard_id="1"  internal_id="2" his_number="2"/>
+    <document id="3" timestamp="2016-05-12 04:42:26" title="test3" description="beskrivelse 3" sequence="3" topic_id="1" status_id="1" document_type_id="2" standard_id="1"  internal_id="3" his_number="3" prev_document_id="1"/>
+
+
+    <link id="1" text="test" description="dfgdfg" url="" link_category_id="1" document_id="1" document_timestamp="2016-05-12 04:42:26" />
+    <document_field_value document_field_id="1" value="test" document_id="1" document_timestamp="2016-05-12 04:42:26"/>
+    <document_target_group target_group_id="1" deadline="idk" description="bla" action_id="1" mandatory_id="1" document_id="1" document_timestamp="2016-05-12 04:42:26"/>
+
+
+
+</dataset>
