@@ -70,7 +70,7 @@ class PasswordController extends ResponseController
                 } else {
                     $user = $mapper->getById($this->id);
                     if ($user) {
-                        $response = new Response(json_encode($user->toArray(), JSON_PRETTY_PRINT));
+                        $response = new Response(json_encode($user->toArray(), JSON_PRETTY_PRINT), Response::STATUS_CODE_CREATED);
                     } else {
                         $response = new ErrorResponse(new NotFoundError());
                     }
