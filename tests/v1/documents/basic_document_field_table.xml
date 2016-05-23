@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<dataset>
+    <document_type id="1" name="standard" />
+    <mandatory id="1" name="Obligatorisk" description="Obligatorisk å bruke"  />
+
+    <document_field id="1" name="Utgiver" description="Utgiver" sequence="1" mandatory="1" document_type_id="1"  />
+    <document_field id="2" name="Mottaker" description="Mottaker" sequence="2" mandatory="1" document_type_id="1"  />
+</dataset>
