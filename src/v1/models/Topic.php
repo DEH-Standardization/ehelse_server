@@ -120,7 +120,7 @@ class Topic implements iModel
 
     public function setComment($comment)
     {
-        $this->description = ModelValidation::getValidComment($comment);
+        $this->comment = ModelValidation::getValidComment($comment);
     }
 
     public function getComment()
