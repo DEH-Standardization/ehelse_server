@@ -20,7 +20,6 @@ class UserController extends ResponseController
      */
     public function __construct($path, $method, $body)
     {
-        echo 'path: ';print_r($path);
         $this->body = $body;
         $this->method = $method;
         $this->path = $path;
