@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../db_info.php';
 require_once "MainController.php";
 require_once "v1/errors/InvalidJSONError.php";
 require_once 'utils.php';
