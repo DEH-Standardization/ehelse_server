@@ -1,11 +1,13 @@
 <?php
 require_once __DIR__ . '/../../src/v1/responses/Response.php';
 
-class EHelseDatabaseTestCase extends PHPUnit_Extensions_Database_TestCase
+abstract class EHelseDatabaseTestCase extends PHPUnit_Extensions_Database_TestCase
 {
 // only instantiate pdo once for test clean-up/fixture load
     static private $pdo = null;
     protected $databaseTester;
+    const list_name = "";
+    const fields = [];
 
     // only instantiate PHPUnit_Extensions_Database_DB_IDatabaseConnection once per test
     private $conn = null;
@@ -71,10 +73,17 @@ class EHelseDatabaseTestCase extends PHPUnit_Extensions_Database_TestCase
         return parent::assertTrue($a, debug_backtrace()[1]['function']);
     }
 
-    public static function assertIsValidResponse(Response $response, $status_code, $validation_function, $class = Response::class)
+    public static function assertIsValidResponse(Response $response, $status_code = Response::STATUS_CODE_OK, $class = Response::class)
     {
         return self::assertTrue(
-            self::isValidResponse($response, $status_code, $validation_function, $class = Response::class)
+            self::isValidResponse($response, $status_code, $class)
+        );
+    }
+
+    public static function assertIsValidDeleteResponse(Response $response, $status_code = Response::STATUS_CODE_NO_CONTENT, $class = Response::class)
+    {
+        return self::assertTrue(
+            self::isValidResponse($response, $status_code, $class, [])
         );
     }
 
@@ -94,13 +103,18 @@ class EHelseDatabaseTestCase extends PHPUnit_Extensions_Database_TestCase
     }
 
 
-    public static function isValidJSONList($json, $list_name, $validation_function)
+    public static function isValidJSONList($json, $called_class = null)
     {
+
+        $class = $called_class ?  $called_class : get_called_class();
+        if(!is_array($json)){
+            $json = json_decode($json, true);
+        }
         $valid = false;
-        if(array_key_exists($list_name, $json)){
+        if(array_key_exists($class::list_name, $json)){
             $valid = true;
-            foreach($json[$list_name] as $element){
-                if(!call_user_func($validation_function, $element)){
+            foreach($json[$class::list_name] as $element){
+                if(!self::isValidJSON($element, $class::fields)){
                     $valid = false;
                     break;
                 }
@@ -109,8 +123,15 @@ class EHelseDatabaseTestCase extends PHPUnit_Extensions_Database_TestCase
         return $valid;
     }
 
-    protected static function isValidJSON($json, $keys)
+    protected static function isValidJSON($json, $keys, $called_class = null)
     {
+        $class = $called_class ?  $called_class : get_called_class();
+        if(!is_array($json)){
+            $json = json_decode($json, true);
+        }
+        if($json == "{}"){
+            $json = [];
+        }
         $valid = true;
         foreach($keys as $key){
             if(!array_key_exists($key, $json)){
@@ -122,16 +143,43 @@ class EHelseDatabaseTestCase extends PHPUnit_Extensions_Database_TestCase
     }
 
 
-    protected static function isValidResponse(Response $response, $status_code, $validation_function, $class = Response::class)
+    protected function isValidResponse(Response $response, $status_code, $class = Response::class, $fields = null)
     {
-        return get_class($response) == $class &&
-        $response->getResponseCode() == $status_code &&
-        call_user_func($validation_function, $response->getBody());
+        if(!is_array($fields)){
+            $called_class = get_called_class();
+            $fields = $called_class::fields;
+        }
+        $received_class = get_class($response);
+        $is_correct_class = $received_class == $class;
+        echo $is_correct_class ? "" : "Expected class <{$class}> got <{$received_class}>\n";
+
+        $is_correct_response_code = $response->getResponseCode() == $status_code;
+        echo $is_correct_response_code ? "" : "Expected Response code <{$status_code}> got <{$response->getResponseCode()}>\n";
+
+        $is_valid_json = self::isValidJSON($response->getBody(), $fields);
+        echo $is_valid_json ? "" : "Invalid JSON\n";
+        if(!$is_valid_json){
+            print_r($fields);
+            print_r($response);
+        }
+
+        return $is_correct_class && $is_correct_response_code && $is_valid_json;
+    }
+
+    protected static function assertIsValidResponseList(Response $response, $status_code = Response::STATUS_CODE_OK, $class = Response::class)
+    {
+        $called_class = get_called_class();
+        self::assertTrue(
+            get_class($response) == $class &&
+            $response->getResponseCode() == $status_code &&
+            self::isValidJSONList($response->getBody(), $called_class));
     }
 
     protected static function isValidErrorResponse(ErrorResponse $response, $status_code)
     {
-        return self::isValidResponse($response, $status_code, "EHelseDatabaseTestCase::isValidErrorResponseJSON", ErrorResponse::class);
+        return get_class($response) == ErrorResponse::class &&
+        $response->getResponseCode() == $status_code &&
+        self::isValidErrorResponseJSON($response->getBody());
     }
 
     protected static function isValidErrorResponseJSON($body)

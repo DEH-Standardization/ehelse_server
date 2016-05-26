@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/ModelValidation.php';
 require_once __DIR__ . '/iModel.php';
+require_once __DIR__ . '/../../utils.php';
 
 class Status implements iModel
 {
@@ -90,7 +91,7 @@ class Status implements iModel
      */
     public static function fromDBArray($db_array)
     {
-        return new Action(
+        return new Status(
             $db_array['id'],
             $db_array['name'],
             $db_array['description']
@@ -104,7 +105,7 @@ class Status implements iModel
      */
     public static function fromJSON($json)
     {
-        return new Action(
+        return new Status(
             getValueFromArray($json, 'id'),
             getValueFromArray($json, 'name'),
             getValueFromArray($json, 'description')

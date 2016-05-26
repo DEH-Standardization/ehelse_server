@@ -1,0 +1,5 @@
+<?xml version="1.0" ?>
+<dataset>
+    <user id="1" name="Per Olsen" email="perolsen@lllabcdgg.com"  password_hash="$2y$10$anhBgOSExihValPMUBoQq.Zfs9KuvalF.3BnLadWuRgMQtx6g29Si" pw_date_edited="2016-04-18 10:00:00" />
+    <user id="2" name="Gunnar Pedersen" email="gunnarpedersen@lllabcdgg.com"  password_hash="$2y$10$anhBgOSExihValPMUBoQq.Zfs9KuvalF.3BnLadWuRgMQtx6g29Si" pw_date_edited="2016-04-58 14:00:00" />
+</dataset>

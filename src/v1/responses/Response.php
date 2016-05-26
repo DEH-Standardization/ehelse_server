@@ -67,4 +67,13 @@ class Response implements iResponse
         return $this->response_code;
     }
 
+    /**
+     * Sets response code
+     * @param $response_code
+     */
+    public function setResponseCode($response_code)
+    {
+        $this->response_code = $response_code;
+    }
+
 }

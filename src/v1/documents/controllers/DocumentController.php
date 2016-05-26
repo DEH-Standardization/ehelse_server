@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../../responses/ResponseController.php';
 require_once __DIR__ . '/../../models/Document.php';
 require_once __DIR__ . '/../../errors/MalformedJSONFormatError.php';
+require_once __DIR__ . '/../../errors/NotFoundError.php';
 require_once __DIR__ . '/../../responses/ErrorResponse.php';
 require_once __DIR__ . '/../../dbmappers/DocumentDBMapper.php';
 require_once __DIR__ . '/../../dbmappers/StatusDBMapper.php';
@@ -13,6 +14,7 @@ require_once __DIR__ . '/../../dbmappers/DocumentTargetGroupDBMapper.php';
 require_once __DIR__ . '/../../dbmappers/ActionDBMapper.php';
 require_once __DIR__ . '/../../dbmappers/MandatoryDBMapper.php';
 require_once __DIR__ . '/../../responses/Response.php';
+require_once __DIR__ . '/../../responses/ErrorResponse.php';
 
 class DocumentController extends ResponseController
 {
@@ -64,7 +66,7 @@ class DocumentController extends ResponseController
      * @param $document
      * @return array
      */
-    public static function getTargetGroups($document)   // TODO: Might be better to move this to TargetGroup
+    public static function getTargetGroups($document)
     {
         $document_target_group_mapper = new DocumentTargetGroupDBMapper();
 
@@ -124,7 +126,7 @@ class DocumentController extends ResponseController
      * @param $document
      * @return array
      */
-    public static function getLinks($document)  // TODO: Might be better to move this to Link
+    public static function getLinks($document)
     {
         $link_mapper = new LinkDBMapper();
 
@@ -142,7 +144,7 @@ class DocumentController extends ResponseController
      * @param $document
      * @return array
      */
-    public static function getFields($document) // TODO: Might be better to move this to Field
+    public static function getFields($document)
     {
         $field_mapper = new DocumentFieldValueDBMapper();
         $fields = $field_mapper->getFieldsByDocumentIdAndDocumentTimestamp(

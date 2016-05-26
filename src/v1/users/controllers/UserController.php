@@ -20,6 +20,7 @@ class UserController extends ResponseController
      */
     public function __construct($path, $method, $body)
     {
+        echo 'path: ';print_r($path);
         $this->body = $body;
         $this->method = $method;
         $this->path = $path;
@@ -111,8 +112,8 @@ class UserController extends ResponseController
                     ResetPasswordController::setNewPassword(
                         $this->body, EmailSender::REGISTER_EMAIL);  // Set random password and notify user by email
                     $response = $this->get();
+                    $response->setResponseCode(Response::STATUS_CODE_CREATED);
                 } else {
-                    //todo not sure how best to handle this
                     throw new Exception("Not implemented error");
                 }
             } else {
@@ -168,6 +169,6 @@ class UserController extends ResponseController
     protected function delete()
     {
         $user_db_mapper = new UserDBMapper();
-        return new Response(json_encode($user_db_mapper->deleteById($this->id), JSON_PRETTY_PRINT));
+        return new Response(json_encode($user_db_mapper->deleteById($this->id), JSON_PRETTY_PRINT), Response::STATUS_CODE_NO_CONTENT);
     }
 }

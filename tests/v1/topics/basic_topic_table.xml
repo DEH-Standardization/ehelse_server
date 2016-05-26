@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<dataset>
+        <topic id="1" timestamp="2016-05-18 08:00:00" title="Del 1: Informasjonssikkerhet" description="Omfatter standarder og andre kravdokumenter."  sequence="1" comment="comment" is_archived="0"/>
+        <topic id="1" timestamp="2016-05-18 07:00:00" title="Del 1" description="Omfatter standarder og andre kravdokumenter."  sequence="1" comment="" is_archived="1"/>
+        <topic id="2" timestamp="22016-05-15 15:00:00" title="Del 2: Kodeverk, terminologier mv" description="Omfatter standarder og andre kravdokumenter som skal bidra til ensartet bruk av termer og koder i helse- og omsorgstjenesten."  sequence="2" comment="comment" is_archived="0"/>
+</dataset>

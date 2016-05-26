@@ -1,0 +1,5 @@
+<?xml version="1.0" ?>
+<dataset>
+    <status id="1" name="Aktiv" description="Aktive dokumenter"  />
+    <status id="2" name="Ikke i refkat" description="Dokumenter som er ikke med i referansekatalogen"  />
+</dataset>
