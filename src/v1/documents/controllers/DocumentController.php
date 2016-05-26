@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../../responses/ResponseController.php';
 require_once __DIR__ . '/../../models/Document.php';
 require_once __DIR__ . '/../../errors/MalformedJSONFormatError.php';
+require_once __DIR__ . '/../../errors/NotFoundError.php';
 require_once __DIR__ . '/../../responses/ErrorResponse.php';
 require_once __DIR__ . '/../../dbmappers/DocumentDBMapper.php';
 require_once __DIR__ . '/../../dbmappers/StatusDBMapper.php';
@@ -13,6 +14,7 @@ require_once __DIR__ . '/../../dbmappers/DocumentTargetGroupDBMapper.php';
 require_once __DIR__ . '/../../dbmappers/ActionDBMapper.php';
 require_once __DIR__ . '/../../dbmappers/MandatoryDBMapper.php';
 require_once __DIR__ . '/../../responses/Response.php';
+require_once __DIR__ . '/../../responses/ErrorResponse.php';
 
 class DocumentController extends ResponseController
 {
