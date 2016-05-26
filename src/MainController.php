@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . 'v1/iController.php';
-require_once __DIR__ . 'v1/APIV1Controller.php';
-require_once __DIR__ . 'utils.php';
+require_once __DIR__ . '/v1/iController.php';
+require_once __DIR__ . '/v1/APIV1Controller.php';
+require_once __DIR__ . '/utils.php';
 
 class MainController implements iController
 {
